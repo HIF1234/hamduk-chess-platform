@@ -69,7 +69,7 @@ export const respondDraw = createServerFn({ method: "POST" })
         game_id: game.id, type: "draw_accept", by_user: userId, payload: {},
       });
       await supabaseAdmin.rpc("apply_elo", {
-        p_white: game.white_id, p_black: game.black_id, p_result: "draw",
+        p_white: game.white_id, p_black: game.black_id, p_result: "draw", p_game_id: game.id,
       });
       {
         const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
@@ -264,7 +264,7 @@ export const checkFlag = createServerFn({ method: "POST" })
       game_id: game.id, type: "flag", by_user: null, payload: { loser: turn },
     });
     await supabaseAdmin.rpc("apply_elo", {
-      p_white: game.white_id, p_black: game.black_id, p_result: result,
+      p_white: game.white_id, p_black: game.black_id, p_result: result, p_game_id: game.id,
     });
     {
       const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
