@@ -48,7 +48,7 @@ export const submitMove = createServerFn({ method: "POST" })
     const { userId } = context;
     const { data: game, error: gErr } = await supabaseAdmin
       .from("games")
-      .select("id, white_id, black_id, fen, pgn, ply, status, time_white_ms, time_black_ms, increment_sec, last_clock_update, initial_sec, chess960_start_fen, variant")
+      .select("id, white_id, black_id, fen, pgn, ply, status, time_white_ms, time_black_ms, increment_sec, last_clock_update, initial_sec, chess960_start_fen, variant, is_correspondence, days_per_move")
       .eq("id", data.gameId)
       .single();
     if (gErr || !game) throw new Error("Game not found");
@@ -68,17 +68,20 @@ export const submitMove = createServerFn({ method: "POST" })
       throw new Error("Not your turn");
     }
 
-    // Server-authoritative clock update
+    // Server-authoritative clock update (correspondence games use day deadlines instead)
+    const isCorrespondence = !!game.is_correspondence;
     const now = Date.now();
     const lastUpdate = game.last_clock_update ? new Date(game.last_clock_update).getTime() : now;
     const elapsedServer = Math.max(0, now - lastUpdate);
     const incMs = (game.increment_sec ?? 0) * 1000;
 
-    let newWhiteMs = game.time_white_ms ?? (game.initial_sec ?? 300) * 1000;
-    let newBlackMs = game.time_black_ms ?? (game.initial_sec ?? 300) * 1000;
-    const flagged = expectedColor === "w"
-      ? newWhiteMs - elapsedServer <= 0 && game.ply >= 2
-      : newBlackMs - elapsedServer <= 0 && game.ply >= 2;
+    let newWhiteMs = game.time_white_ms ?? (isCorrespondence ? 0 : (game.initial_sec ?? 300) * 1000);
+    let newBlackMs = game.time_black_ms ?? (isCorrespondence ? 0 : (game.initial_sec ?? 300) * 1000);
+    const flagged = isCorrespondence
+      ? false
+      : expectedColor === "w"
+        ? newWhiteMs - elapsedServer <= 0 && game.ply >= 2
+        : newBlackMs - elapsedServer <= 0 && game.ply >= 2;
 
     if (flagged) {
       // Mover ran out of time
@@ -106,8 +109,10 @@ export const submitMove = createServerFn({ method: "POST" })
       throw new Error("Flagged on time");
     }
 
-    if (expectedColor === "w") newWhiteMs = Math.max(0, newWhiteMs - elapsedServer) + incMs;
-    else newBlackMs = Math.max(0, newBlackMs - elapsedServer) + incMs;
+    if (!isCorrespondence) {
+      if (expectedColor === "w") newWhiteMs = Math.max(0, newWhiteMs - elapsedServer) + incMs;
+      else newBlackMs = Math.max(0, newBlackMs - elapsedServer) + incMs;
+    }
 
     const from = data.uci.slice(0, 2);
     const to = data.uci.slice(2, 4);
@@ -143,6 +148,10 @@ export const submitMove = createServerFn({ method: "POST" })
       endReason = "draw";
     }
 
+    const nextDeadline = isCorrespondence && status === "active"
+      ? new Date(Date.now() + (game.days_per_move ?? 1) * 24 * 60 * 60 * 1000).toISOString()
+      : null;
+
     const baseUpdate = {
       fen: newFen,
       pgn: newPgn,
@@ -152,6 +161,7 @@ export const submitMove = createServerFn({ method: "POST" })
       time_white_ms: newWhiteMs,
       time_black_ms: newBlackMs,
       status,
+      ...(isCorrespondence ? { move_deadline: nextDeadline } : {}),
       // Any pending offer is canceled when a move is made
       draw_offer_by: null,
       draw_offer_at: null,

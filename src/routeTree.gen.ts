@@ -15,6 +15,7 @@ import { Route as LobbyRouteImport } from './routes/lobby'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as FeedRouteImport } from './routes/feed'
+import { Route as CorrespondenceRouteImport } from './routes/correspondence'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as ApiDashboardRouteImport } from './routes/api-dashboard'
 import { Route as AnalysisRouteImport } from './routes/analysis'
@@ -33,6 +34,7 @@ import { Route as AssistantIndexRouteImport } from './routes/assistant.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
 import { Route as StudyStudyIdRouteImport } from './routes/study.$studyId'
+import { Route as SpectateGameIdRouteImport } from './routes/spectate.$gameId'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
@@ -98,6 +100,11 @@ const InsightsRoute = InsightsRouteImport.update({
 const FeedRoute = FeedRouteImport.update({
   id: '/feed',
   path: '/feed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CorrespondenceRoute = CorrespondenceRouteImport.update({
+  id: '/correspondence',
+  path: '/correspondence',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BillingRoute = BillingRouteImport.update({
@@ -188,6 +195,11 @@ const TacticsThemeRoute = TacticsThemeRouteImport.update({
 const StudyStudyIdRoute = StudyStudyIdRouteImport.update({
   id: '/study/$studyId',
   path: '/study/$studyId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SpectateGameIdRoute = SpectateGameIdRouteImport.update({
+  id: '/spectate/$gameId',
+  path: '/spectate/$gameId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PuzzlesStormRoute = PuzzlesStormRouteImport.update({
@@ -387,6 +399,7 @@ export interface FileRoutesByFullPath {
   '/analysis': typeof AnalysisRoute
   '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
+  '/correspondence': typeof CorrespondenceRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
   '/leaderboard': typeof LeaderboardRoute
@@ -411,6 +424,7 @@ export interface FileRoutesByFullPath {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/spectate/$gameId': typeof SpectateGameIdRoute
   '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
   '/admin/': typeof AdminIndexRoute
@@ -448,6 +462,7 @@ export interface FileRoutesByTo {
   '/analysis': typeof AnalysisRoute
   '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
+  '/correspondence': typeof CorrespondenceRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
   '/leaderboard': typeof LeaderboardRoute
@@ -472,6 +487,7 @@ export interface FileRoutesByTo {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/spectate/$gameId': typeof SpectateGameIdRoute
   '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
   '/admin': typeof AdminIndexRoute
@@ -511,6 +527,7 @@ export interface FileRoutesById {
   '/analysis': typeof AnalysisRoute
   '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
+  '/correspondence': typeof CorrespondenceRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
   '/leaderboard': typeof LeaderboardRoute
@@ -535,6 +552,7 @@ export interface FileRoutesById {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/spectate/$gameId': typeof SpectateGameIdRoute
   '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
   '/admin/': typeof AdminIndexRoute
@@ -575,6 +593,7 @@ export interface FileRouteTypes {
     | '/analysis'
     | '/api-dashboard'
     | '/billing'
+    | '/correspondence'
     | '/feed'
     | '/insights'
     | '/leaderboard'
@@ -599,6 +618,7 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/spectate/$gameId'
     | '/study/$studyId'
     | '/tactics/$theme'
     | '/admin/'
@@ -636,6 +656,7 @@ export interface FileRouteTypes {
     | '/analysis'
     | '/api-dashboard'
     | '/billing'
+    | '/correspondence'
     | '/feed'
     | '/insights'
     | '/leaderboard'
@@ -660,6 +681,7 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/spectate/$gameId'
     | '/study/$studyId'
     | '/tactics/$theme'
     | '/admin'
@@ -698,6 +720,7 @@ export interface FileRouteTypes {
     | '/analysis'
     | '/api-dashboard'
     | '/billing'
+    | '/correspondence'
     | '/feed'
     | '/insights'
     | '/leaderboard'
@@ -722,6 +745,7 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/spectate/$gameId'
     | '/study/$studyId'
     | '/tactics/$theme'
     | '/admin/'
@@ -761,6 +785,7 @@ export interface RootRouteChildren {
   AnalysisRoute: typeof AnalysisRoute
   ApiDashboardRoute: typeof ApiDashboardRoute
   BillingRoute: typeof BillingRoute
+  CorrespondenceRoute: typeof CorrespondenceRoute
   FeedRoute: typeof FeedRoute
   InsightsRoute: typeof InsightsRoute
   LeaderboardRoute: typeof LeaderboardRoute
@@ -778,6 +803,7 @@ export interface RootRouteChildren {
   PlayGameIdRoute: typeof PlayGameIdRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
+  SpectateGameIdRoute: typeof SpectateGameIdRoute
   StudyStudyIdRoute: typeof StudyStudyIdRoute
   TacticsThemeRoute: typeof TacticsThemeRoute
   AssistantIndexRoute: typeof AssistantIndexRoute
@@ -844,6 +870,13 @@ declare module '@tanstack/react-router' {
       path: '/feed'
       fullPath: '/feed'
       preLoaderRoute: typeof FeedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/correspondence': {
+      id: '/correspondence'
+      path: '/correspondence'
+      fullPath: '/correspondence'
+      preLoaderRoute: typeof CorrespondenceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/billing': {
@@ -970,6 +1003,13 @@ declare module '@tanstack/react-router' {
       path: '/study/$studyId'
       fullPath: '/study/$studyId'
       preLoaderRoute: typeof StudyStudyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/spectate/$gameId': {
+      id: '/spectate/$gameId'
+      path: '/spectate/$gameId'
+      fullPath: '/spectate/$gameId'
+      preLoaderRoute: typeof SpectateGameIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/puzzles/storm': {
@@ -1320,6 +1360,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalysisRoute: AnalysisRoute,
   ApiDashboardRoute: ApiDashboardRoute,
   BillingRoute: BillingRoute,
+  CorrespondenceRoute: CorrespondenceRoute,
   FeedRoute: FeedRoute,
   InsightsRoute: InsightsRoute,
   LeaderboardRoute: LeaderboardRoute,
@@ -1337,6 +1378,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlayGameIdRoute: PlayGameIdRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
+  SpectateGameIdRoute: SpectateGameIdRoute,
   StudyStudyIdRoute: StudyStudyIdRoute,
   TacticsThemeRoute: TacticsThemeRoute,
   AssistantIndexRoute: AssistantIndexRoute,
