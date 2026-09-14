@@ -22,6 +22,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TacticsIndexRouteImport } from './routes/tactics.index'
 import { Route as StudyIndexRouteImport } from './routes/study.index'
+import { Route as SpectateIndexRouteImport } from './routes/spectate.index'
 import { Route as PuzzlesIndexRouteImport } from './routes/puzzles.index'
 import { Route as OpeningsIndexRouteImport } from './routes/openings.index'
 import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
@@ -132,6 +133,11 @@ const TacticsIndexRoute = TacticsIndexRouteImport.update({
 const StudyIndexRoute = StudyIndexRouteImport.update({
   id: '/study/',
   path: '/study/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SpectateIndexRoute = SpectateIndexRouteImport.update({
+  id: '/spectate/',
+  path: '/spectate/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PuzzlesIndexRoute = PuzzlesIndexRouteImport.update({
@@ -415,6 +421,7 @@ export interface FileRoutesByFullPath {
   '/lessons/': typeof LessonsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
+  '/spectate/': typeof SpectateIndexRoute
   '/study/': typeof StudyIndexRoute
   '/tactics/': typeof TacticsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
@@ -475,6 +482,7 @@ export interface FileRoutesByTo {
   '/lessons': typeof LessonsIndexRoute
   '/openings': typeof OpeningsIndexRoute
   '/puzzles': typeof PuzzlesIndexRoute
+  '/spectate': typeof SpectateIndexRoute
   '/study': typeof StudyIndexRoute
   '/tactics': typeof TacticsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
@@ -537,6 +545,7 @@ export interface FileRoutesById {
   '/lessons/': typeof LessonsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
+  '/spectate/': typeof SpectateIndexRoute
   '/study/': typeof StudyIndexRoute
   '/tactics/': typeof TacticsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
@@ -600,6 +609,7 @@ export interface FileRouteTypes {
     | '/lessons/'
     | '/openings/'
     | '/puzzles/'
+    | '/spectate/'
     | '/study/'
     | '/tactics/'
     | '/admin/users/$userId'
@@ -660,6 +670,7 @@ export interface FileRouteTypes {
     | '/lessons'
     | '/openings'
     | '/puzzles'
+    | '/spectate'
     | '/study'
     | '/tactics'
     | '/admin/users/$userId'
@@ -721,6 +732,7 @@ export interface FileRouteTypes {
     | '/lessons/'
     | '/openings/'
     | '/puzzles/'
+    | '/spectate/'
     | '/study/'
     | '/tactics/'
     | '/admin/users/$userId'
@@ -775,6 +787,7 @@ export interface RootRouteChildren {
   LessonsIndexRoute: typeof LessonsIndexRoute
   OpeningsIndexRoute: typeof OpeningsIndexRoute
   PuzzlesIndexRoute: typeof PuzzlesIndexRoute
+  SpectateIndexRoute: typeof SpectateIndexRoute
   StudyIndexRoute: typeof StudyIndexRoute
   TacticsIndexRoute: typeof TacticsIndexRoute
   EmbedKindTokenRoute: typeof EmbedKindTokenRoute
@@ -880,6 +893,13 @@ declare module '@tanstack/react-router' {
       path: '/study'
       fullPath: '/study/'
       preLoaderRoute: typeof StudyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/spectate/': {
+      id: '/spectate/'
+      path: '/spectate'
+      fullPath: '/spectate/'
+      preLoaderRoute: typeof SpectateIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/puzzles/': {
@@ -1326,6 +1346,7 @@ const rootRouteChildren: RootRouteChildren = {
   LessonsIndexRoute: LessonsIndexRoute,
   OpeningsIndexRoute: OpeningsIndexRoute,
   PuzzlesIndexRoute: PuzzlesIndexRoute,
+  SpectateIndexRoute: SpectateIndexRoute,
   StudyIndexRoute: StudyIndexRoute,
   TacticsIndexRoute: TacticsIndexRoute,
   EmbedKindTokenRoute: EmbedKindTokenRoute,
