@@ -1672,6 +1672,277 @@ export type Database = {
           },
         ]
       }
+      tournament_chat: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_chat_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_chat_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_games: {
+        Row: {
+          black_id: string | null
+          created_at: string
+          game_id: string | null
+          id: string
+          recorded: boolean
+          result: string | null
+          round: number
+          tournament_id: string
+          white_id: string | null
+        }
+        Insert: {
+          black_id?: string | null
+          created_at?: string
+          game_id?: string | null
+          id?: string
+          recorded?: boolean
+          result?: string | null
+          round: number
+          tournament_id: string
+          white_id?: string | null
+        }
+        Update: {
+          black_id?: string | null
+          created_at?: string
+          game_id?: string | null
+          id?: string
+          recorded?: boolean
+          result?: string | null
+          round?: number
+          tournament_id?: string
+          white_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_games_black_id_fkey"
+            columns: ["black_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_games_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_games_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_games_white_id_fkey"
+            columns: ["white_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_players: {
+        Row: {
+          buchholz: number
+          created_at: string
+          games_played: number
+          id: string
+          paid: boolean
+          paystack_reference: string | null
+          rating_at_join: number
+          score: number
+          seed: number
+          status: string
+          tournament_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          buchholz?: number
+          created_at?: string
+          games_played?: number
+          id?: string
+          paid?: boolean
+          paystack_reference?: string | null
+          rating_at_join?: number
+          score?: number
+          seed?: number
+          status?: string
+          tournament_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          buchholz?: number
+          created_at?: string
+          games_played?: number
+          id?: string
+          paid?: boolean
+          paystack_reference?: string | null
+          rating_at_join?: number
+          score?: number
+          seed?: number
+          status?: string
+          tournament_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_players_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_players_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_rounds: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          pairings: Json
+          round: number
+          status: string
+          tournament_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          pairings?: Json
+          round: number
+          status?: string
+          tournament_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          pairings?: Json
+          round?: number
+          status?: string
+          tournament_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_rounds_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournaments: {
+        Row: {
+          club_id: string | null
+          created_at: string
+          creator_id: string
+          current_round: number
+          description: string | null
+          duration_min: number
+          entry_fee_kobo: number
+          id: string
+          max_players: number
+          min_tier: Database["public"]["Enums"]["subscription_tier_enum"]
+          name: string
+          rated: boolean
+          rounds: number
+          starts_at: string
+          status: string
+          time_control: string
+          type: Database["public"]["Enums"]["tournament_type_enum"]
+          updated_at: string
+          variant: string
+        }
+        Insert: {
+          club_id?: string | null
+          created_at?: string
+          creator_id: string
+          current_round?: number
+          description?: string | null
+          duration_min?: number
+          entry_fee_kobo?: number
+          id?: string
+          max_players?: number
+          min_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
+          name: string
+          rated?: boolean
+          rounds?: number
+          starts_at?: string
+          status?: string
+          time_control?: string
+          type?: Database["public"]["Enums"]["tournament_type_enum"]
+          updated_at?: string
+          variant?: string
+        }
+        Update: {
+          club_id?: string | null
+          created_at?: string
+          creator_id?: string
+          current_round?: number
+          description?: string | null
+          duration_min?: number
+          entry_fee_kobo?: number
+          id?: string
+          max_players?: number
+          min_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
+          name?: string
+          rated?: boolean
+          rounds?: number
+          starts_at?: string
+          status?: string
+          time_control?: string
+          type?: Database["public"]["Enums"]["tournament_type_enum"]
+          updated_at?: string
+          variant?: string
+        }
+        Relationships: []
+      }
       user_endgame_progress: {
         Row: {
           attempts: number
@@ -2085,6 +2356,7 @@ export type Database = {
       admin_role_enum: "super_admin" | "admin" | "moderator" | "support"
       friend_status_enum: "pending" | "accepted" | "blocked"
       subscription_tier_enum: "free" | "plus" | "gold"
+      tournament_type_enum: "swiss" | "arena" | "round_robin" | "knockout"
       video_source_enum: "youtube" | "vimeo" | "cloud"
     }
     CompositeTypes: {
@@ -2216,6 +2488,7 @@ export const Constants = {
       admin_role_enum: ["super_admin", "admin", "moderator", "support"],
       friend_status_enum: ["pending", "accepted", "blocked"],
       subscription_tier_enum: ["free", "plus", "gold"],
+      tournament_type_enum: ["swiss", "arena", "round_robin", "knockout"],
       video_source_enum: ["youtube", "vimeo", "cloud"],
     },
   },
