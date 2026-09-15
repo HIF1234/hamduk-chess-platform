@@ -100,7 +100,7 @@ export const submitMove = createServerFn({ method: "POST" })
         game_id: game.id, type: "flag", by_user: null, payload: { loser: expectedColor },
       });
       await supabaseAdmin.rpc("apply_elo", {
-        p_white: game.white_id, p_black: game.black_id, p_result: result,
+        p_white: game.white_id, p_black: game.black_id, p_result: result, p_game_id: game.id,
       });
       {
         const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
@@ -211,7 +211,7 @@ export const submitMove = createServerFn({ method: "POST" })
       await supabaseAdmin.rpc("apply_elo", {
         p_white: game.white_id,
         p_black: game.black_id,
-        p_result: result,
+        p_result: result, p_game_id: game.id,
       });
       {
         const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
@@ -274,7 +274,7 @@ export const resignGame = createServerFn({ method: "POST" })
     await supabaseAdmin.rpc("apply_elo", {
       p_white: game.white_id,
       p_black: game.black_id,
-      p_result: result,
+      p_result: result, p_game_id: game.id,
     });
     {
       const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
