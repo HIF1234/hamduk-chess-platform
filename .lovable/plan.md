@@ -1,72 +1,49 @@
-# Puzzles + Game Analysis — Phased Build
+# Tournaments & Clubs
 
-This is a large surface (10+ features, 6 new tables, 3 realtime systems). Shipping it as one mega-migration is high risk. I'll cut it into 4 phases and ship them in order. You can stop me after any phase.
+Two large features. Built in two phases so you can try each one as it lands.
 
----
+Note on payments: the app uses Paystack (not Stripe), so entry fees will go through the same Paystack checkout already used for subscriptions.
 
-## Phase 1 — Puzzle foundation (all tiers)
+## Phase 1 — Tournaments
 
-**DB migration**
-- `puzzles` — fen, solution (uci[]), themes (text[]), rating, creator_id (nullable for seeded), approved, daily_date (nullable, unique)
-- `puzzle_ratings` — user_id, puzzle_id, success, attempts, leitner_box (1–5), next_due_at, solved_at
-- `user_puzzle_stats` — user_id, rating, solved_count, current_streak, best_streak, last_solved_date
+### Creating
+A create form asking for name, type, time control, variant, rated/unrated, rounds, start time, max players, minimum membership tier, and entry fee.
+- Free members: can join free tournaments only, cannot create.
+- Plus: create up to 64 players. Gold: up to 256 players.
+- Paid entry: player pays through Paystack before their spot is confirmed.
 
-**Code**
-- Migrate `src/lib/puzzle-storage.ts` (localStorage) → server fns in `src/lib/puzzles.functions.ts`: `getNextPuzzle` (Leitner-weighted: due failures first, then unseen near user rating ±100), `submitPuzzleAttempt` (ELO ±20, advance/reset Leitner box), `getDailyPuzzle(date)`, `getPuzzleById`
-- Route: `src/routes/puzzles.daily.$date.tsx` with OG meta for share links
-- Update `PuzzleHub` + `PuzzleBoard` to use server fns; keep localStorage as offline fallback for guests
-- Seed 200 puzzles from Lichess open DB (CSV → migration insert)
+### Four formats
+- Swiss — players sorted by rating and paired down the list each round; standings tie-broken by Buchholz.
+- Arena — continuous pairing for the whole duration; ranked by points.
+- Round-Robin — everyone plays everyone; ties broken head-to-head.
+- Knockout — seeded single-elimination bracket.
 
----
+Round one is paired when the tournament starts. As games finish, results are recorded automatically and standings update. When every game in a round is done, the next round is paired.
 
-## Phase 2 — Puzzle Storm (Plus/Gold gated)
+### Tournament page (`/tournaments/{id}`)
+- Up to four live boards at once, cycling through the round's games, with the top game featured larger.
+- Standings table that updates live as results come in.
+- Spectator chat.
+- Round progress (e.g. "6 / 12 games complete").
+- A tournaments list page with upcoming, live and finished sections.
 
-**DB**: `puzzle_storm_scores` (user_id, score, solved, mistakes, played_at)
+### Admin
+Admins can force-close a tournament, edit its settings, and override a result.
 
-**Code**
-- `src/routes/puzzles.storm.tsx` — 3-min timer, fetches puzzle stream, +1/−1 scoring
-- Redis: live session state at `storm:{userId}` (TTL 5min), leaderboard at `storm:lb:daily:{yyyy-mm-dd}` and `storm:lb:alltime` (ZADD on completion)
-- Server fns: `startStorm`, `submitStormResult`, `getStormLeaderboard`
-- Tier gate via existing `subscription_tier` check; show upsell for free
+## Phase 2 — Clubs
 
----
-
-## Phase 3 — Game Review (Plus/Gold)
-
-**DB**: `game_analysis` (game_id, depth, eval_per_ply jsonb, classifications jsonb, accuracy_white, accuracy_black, opening_eco, opening_name)
-
-**Code**
-- `src/lib/game-review.ts` — client-side Stockfish runner (reuse `useStockfish`), depth 14 (Plus) / 20 (Gold), computes ACL + classifications (Brilliant / Good / Inaccuracy / Mistake / Blunder by cp delta thresholds)
-- `src/components/chess/GameReview.tsx` — centipawn loss bar chart (Recharts), move list with classification icons, best-move overlay on board
-- Wire into `play.$gameId.tsx` post-game ("Review game" button)
-- Opening classification: bundled ECO table (`src/lib/eco.ts`, ~500 lines)
-
----
-
-## Phase 4 — Deferred (call out, build later)
-
-Each is a non-trivial feature on its own; I'll spin them up one at a time after Phase 3 lands:
-
-- **Puzzle Battle** — Redis matchmaking + realtime channel, 1v1 race-to-5
-- **Puzzle Creator Studio** — FEN editor + Stockfish forced-line verification + admin review queue
-- **Opening Explorer** — needs Hamduk game stats aggregation cron, repertoire CRUD, opponent prep view
-- **Endgame Tablebase** — Syzygy API proxy + Redis 24h cache
-- **Weakness Detection** — batch job recomputing every 10 games, heatmap viz
-
----
+- Public clubs anyone can join (subject to the club's minimum tier); private clubs need an invite or owner approval.
+- Club page with Members, Forum, Study Boards, Tournament History, Club Games Feed, and Events.
+- Club events: tournaments visible only to members, any format.
+- Moderation: pin posts, mute, ban, with an appeal request members can file.
+- Analytics for owners/admins: member activity, games played, tournament participation.
+- HamdukChessClub pre-created as the official club; Gold members get its badge automatically and can use the existing class-session tools inside it.
 
 ## Technical notes
 
-- Stockfish runs in the existing `useStockfish` worker — no new engine infra
-- ELO formula reuses the K=20 model already in `puzzle-storage.ts`
-- All new tables get `GRANT` + RLS scoped to `auth.uid()`; `puzzles.approved=true` is publicly readable
-- Storm/Battle leaderboards live in Redis (already wired via `redis.server.ts`); periodic snapshot to Postgres for durability
-
-## Order of operations
-
-1. Phase 1 migration → approve → regen types → write puzzle server fns + hook up UI + seed
-2. Phase 2 migration → storm route + Redis wiring
-3. Phase 3 migration → review component + Stockfish analysis runner
-4. Pause, review with you, then pick from Phase 4 list
-
-Want me to start Phase 1?
+- New tables: `tournaments`, `tournament_players`, `tournament_rounds` (pairings JSONB), `tournament_chat`; `clubs`, `club_members`, `club_posts`, `club_bans`. RLS scoped to membership/ownership plus admin override, GRANTs alongside each table.
+- Existing `org_tournaments` (B2B API) stays untouched; the new player-facing system is separate.
+- Pairing, standings and tie-break logic in `src/lib/tournaments.server.ts`, exposed via `createServerFn` in `tournaments.functions.ts`; a public sweep route advances rounds and closes arenas.
+- Game completion hooks in `game-webhooks.server.ts` / `matchmaking.functions.ts` gain a tournament result recorder.
+- Realtime: `tournaments` + `tournament_players` added to the realtime publication for live standings; chat via broadcast channel like spectate.
+- Entry fees reuse `initializePaystackCheckout` patterns with a tournament reference; verification confirms registration.
