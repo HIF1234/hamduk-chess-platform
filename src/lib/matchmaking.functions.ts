@@ -100,7 +100,7 @@ export const submitMove = createServerFn({ method: "POST" })
         game_id: game.id, type: "flag", by_user: null, payload: { loser: expectedColor },
       });
       await supabaseAdmin.rpc("apply_elo", {
-        p_white: game.white_id, p_black: game.black_id, p_result: result,
+        p_white: game.white_id, p_black: game.black_id, p_result: result, p_game_id: game.id,
       });
       {
         const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
@@ -207,11 +207,80 @@ export const submitMove = createServerFn({ method: "POST" })
       payload: { uci: data.uci, san: move.san, ply: newPly, elapsed_ms: elapsedServer },
     });
 
+    // Correspondence: auto-play the opponent's stored conditional reply if it matches this move.
+    if (isCorrespondence && status === "active") {
+      const oppId = userId === game.white_id ? game.black_id : game.white_id;
+      const { consumeConditional } = await import("@/lib/correspondence.server");
+      const replyUci = await consumeConditional(game.id, oppId, data.uci);
+      if (replyUci) {
+        try {
+          const rep = chess.move({
+            from: replyUci.slice(0, 2),
+            to: replyUci.slice(2, 4),
+            promotion: (replyUci[4] as "q") ?? "q",
+          });
+          if (rep) {
+            const repPly = newPly + 1;
+            const repFen = chess.fen();
+            let repStatus = "active";
+            let repResult: string | null = null;
+            let repWinner: string | null = null;
+            let repReason: string | null = null;
+            if (chess.isCheckmate()) {
+              repStatus = "completed";
+              repResult = expectedColor === "w" ? "black" : "white";
+              repWinner = repResult === "white" ? game.white_id : game.black_id;
+              repReason = "checkmate";
+            } else if (chess.isStalemate() || chess.isDraw()) {
+              repStatus = "completed";
+              repResult = "draw";
+              repReason = chess.isStalemate() ? "stalemate" : "draw";
+            }
+            await supabaseAdmin.from("games").update({
+              fen: repFen,
+              pgn: chess.pgn(),
+              ply: repPly,
+              last_move_at: new Date().toISOString(),
+              last_clock_update: new Date().toISOString(),
+              status: repStatus,
+              move_deadline: repStatus === "active"
+                ? new Date(Date.now() + (game.days_per_move ?? 1) * 24 * 60 * 60 * 1000).toISOString()
+                : null,
+              ...(repStatus === "completed"
+                ? {
+                    result: repResult,
+                    winner_id: repWinner,
+                    end_reason: repReason,
+                    ended_at: new Date().toISOString(),
+                  }
+                : {}),
+            }).eq("id", game.id);
+            await supabaseAdmin.from("moves").insert({
+              game_id: game.id, ply: repPly, uci: replyUci, san: rep.san, fen: repFen, by_user: oppId,
+            });
+            await supabaseAdmin.from("game_events").insert({
+              game_id: game.id,
+              type: "conditional_move",
+              by_user: oppId,
+              payload: { uci: replyUci, san: rep.san, ply: repPly },
+            });
+            if (repStatus === "completed" && repResult) {
+              await supabaseAdmin.rpc("apply_elo", {
+                p_white: game.white_id, p_black: game.black_id, p_result: repResult, p_game_id: game.id,
+              });
+              const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
+              await emitGameCompleted(game.id);
+            }
+          }
+        } catch { /* no longer legal — skip */ }
+      }
+    }
+
     if (status === "completed" && result) {
       await supabaseAdmin.rpc("apply_elo", {
         p_white: game.white_id,
         p_black: game.black_id,
-        p_result: result,
+        p_result: result, p_game_id: game.id,
       });
       {
         const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
@@ -274,7 +343,7 @@ export const resignGame = createServerFn({ method: "POST" })
     await supabaseAdmin.rpc("apply_elo", {
       p_white: game.white_id,
       p_black: game.black_id,
-      p_result: result,
+      p_result: result, p_game_id: game.id,
     });
     {
       const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
