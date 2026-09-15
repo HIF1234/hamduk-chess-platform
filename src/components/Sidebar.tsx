@@ -16,6 +16,8 @@ import {
   Users,
   Activity,
   Code2,
+  Eye,
+  CalendarClock,
   LogOut,
 
 } from "lucide-react";
@@ -37,12 +39,14 @@ export function Sidebar() {
     { to: "/lessons", label: "Lessons", Icon: Video },
     { to: "/coaches", label: "Coaches", Icon: Users },
     { to: "/analysis", label: "Analysis", Icon: BarChart3 },
+    { to: "/spectate", label: "Watch Live", Icon: Eye },
     { to: "/study", label: "Study Boards", Icon: BookOpen },
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user
       ? [
           { to: "/assistant", label: "AI Coach", Icon: Sparkles },
           { to: "/insights", label: "My Weaknesses", Icon: Activity },
+          { to: "/correspondence", label: "Correspondence", Icon: CalendarClock },
           { to: "/feed", label: "Feed", Icon: Rss },
           { to: "/messages", label: "Messages", Icon: MessageSquare },
           { to: "/api-dashboard", label: "Developer API", Icon: Code2 },

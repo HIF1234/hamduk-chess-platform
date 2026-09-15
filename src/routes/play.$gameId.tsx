@@ -23,6 +23,7 @@ import { GameActionBar } from "@/components/chess/GameActionBar";
 import { OfferBanner } from "@/components/chess/OfferBanner";
 import { DisconnectBanner } from "@/components/chess/DisconnectBanner";
 import { GameReview } from "@/components/chess/GameReview";
+import { CorrespondencePanel } from "@/components/chess/CorrespondencePanel";
 
 type GameRow = {
   id: string;
@@ -324,6 +325,44 @@ function PlayPage() {
               {!game.rated && <span className="rounded bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase">Casual</span>}
             </div>
             <p className="mt-1 font-serif text-lg font-bold">{statusText}</p>
+
+            {game.is_correspondence && pendingMove && (
+              <div className="my-3 flex items-center justify-between gap-2 rounded-lg border border-primary bg-primary/5 px-3 py-2 text-sm">
+                <span>Play <span className="font-mono font-bold">{pendingMove.san}</span>?</span>
+                <span className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      const uci = `${pendingMove.from}${pendingMove.to}${pendingMove.promotion ?? ""}`;
+                      setSubmitting(true);
+                      setPendingMove(null);
+                      void submit({ data: { gameId, uci } })
+                        .catch((e: unknown) => toast.error(e instanceof Error ? e.message : "Move rejected"))
+                        .finally(() => setSubmitting(false));
+                    }}
+                    className="rounded-md bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onClick={() => setPendingMove(null)}
+                    className="rounded-md border border-border px-3 py-1 text-xs font-semibold hover:bg-accent"
+                  >
+                    Cancel
+                  </button>
+                </span>
+              </div>
+            )}
+
+            {game.is_correspondence && isParticipant && (
+              <CorrespondencePanel
+                gameId={gameId}
+                daysPerMove={game.days_per_move}
+                moveDeadline={game.move_deadline}
+                notifyByEmail={game.notify_by_email}
+                myTurn={myTurn}
+                active={game.status === "active"}
+              />
+            )}
 
             {incomingDraw && (
               <OfferBanner
