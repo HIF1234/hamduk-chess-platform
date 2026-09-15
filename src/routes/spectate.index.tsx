@@ -27,6 +27,7 @@ function SpectateIndex() {
         .select("id, white_id, black_id, time_control, variant, ply, spectator_count, rated")
         .eq("status", "active")
         .eq("is_public", true)
+        .eq("is_correspondence", false)
         .order("last_move_at", { ascending: false })
         .limit(30);
       if (error) throw error;
