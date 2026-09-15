@@ -48,6 +48,10 @@ type GameRow = {
   takeback_offer_by: string | null;
   takeback_offer_at: string | null;
   rated: boolean;
+  is_correspondence: boolean;
+  days_per_move: number | null;
+  move_deadline: string | null;
+  notify_by_email: boolean;
 };
 
 type ProfileLite = { id: string; username: string; rating: number };
@@ -82,6 +86,8 @@ function PlayPage() {
   const [opponentDisconnectedAt, setOpponentDisconnectedAt] = useState<string | null>(null);
   const [rematchPending, setRematchPending] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
+  // Correspondence moves are confirmed in two steps to avoid mis-clicks on slow games.
+  const [pendingMove, setPendingMove] = useState<{ from: string; to: string; promotion?: string; san: string } | null>(null);
   const premoves = usePremoves(3);
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [loading, user, navigate]);
@@ -228,6 +234,10 @@ function PlayPage() {
     try { legal = probe.move({ from, to, promotion: "q" }); } catch { return false; }
     if (!legal) return false;
     const uci = `${from}${to}${isPromo ? "q" : ""}`;
+    if (game.is_correspondence) {
+      setPendingMove({ from, to, promotion: isPromo ? "q" : undefined, san: legal.san });
+      return false;
+    }
     setSubmitting(true);
     void submit({ data: { gameId, uci } })
       .catch((e: unknown) => toast.error(e instanceof Error ? e.message : "Move rejected"))
