@@ -62,6 +62,7 @@ import { Route as ApiPublicV1TournamentsRouteImport } from './routes/api/public/
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 import { Route as ApiPublicV1WebhooksRetrySweepRouteImport } from './routes/api/public/v1/webhooks.retry-sweep'
 import { Route as ApiPublicV1WebhooksIdRouteImport } from './routes/api/public/v1/webhooks.$id'
+import { Route as ApiPublicV1TournamentsSweepRouteImport } from './routes/api/public/v1/tournaments.sweep'
 import { Route as ApiPublicV1EmbedTokenRouteImport } from './routes/api/public/v1/embed.token'
 import { Route as ApiPublicV1CorrespondenceSweepRouteImport } from './routes/api/public/v1/correspondence.sweep'
 import { Route as ApiPublicV1ClassesSessionRouteImport } from './routes/api/public/v1/classes.session'
@@ -339,6 +340,12 @@ const ApiPublicV1WebhooksIdRoute = ApiPublicV1WebhooksIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => ApiPublicV1WebhooksRoute,
 } as any)
+const ApiPublicV1TournamentsSweepRoute =
+  ApiPublicV1TournamentsSweepRouteImport.update({
+    id: '/sweep',
+    path: '/sweep',
+    getParentRoute: () => ApiPublicV1TournamentsRoute,
+  } as any)
 const ApiPublicV1EmbedTokenRoute = ApiPublicV1EmbedTokenRouteImport.update({
   id: '/api/public/v1/embed/token',
   path: '/api/public/v1/embed/token',
@@ -448,6 +455,7 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
+  '/api/public/v1/tournaments/sweep': typeof ApiPublicV1TournamentsSweepRoute
   '/api/public/v1/webhooks/$id': typeof ApiPublicV1WebhooksIdRoute
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
@@ -511,6 +519,7 @@ export interface FileRoutesByTo {
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
+  '/api/public/v1/tournaments/sweep': typeof ApiPublicV1TournamentsSweepRoute
   '/api/public/v1/webhooks/$id': typeof ApiPublicV1WebhooksIdRoute
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
@@ -576,6 +585,7 @@ export interface FileRoutesById {
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
+  '/api/public/v1/tournaments/sweep': typeof ApiPublicV1TournamentsSweepRoute
   '/api/public/v1/webhooks/$id': typeof ApiPublicV1WebhooksIdRoute
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
@@ -642,6 +652,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
+    | '/api/public/v1/tournaments/sweep'
     | '/api/public/v1/webhooks/$id'
     | '/api/public/v1/webhooks/retry-sweep'
     | '/api/public/v1/embed/token/$token'
@@ -705,6 +716,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
+    | '/api/public/v1/tournaments/sweep'
     | '/api/public/v1/webhooks/$id'
     | '/api/public/v1/webhooks/retry-sweep'
     | '/api/public/v1/embed/token/$token'
@@ -769,6 +781,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
+    | '/api/public/v1/tournaments/sweep'
     | '/api/public/v1/webhooks/$id'
     | '/api/public/v1/webhooks/retry-sweep'
     | '/api/public/v1/embed/token/$token'
@@ -1201,6 +1214,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1WebhooksIdRouteImport
       parentRoute: typeof ApiPublicV1WebhooksRoute
     }
+    '/api/public/v1/tournaments/sweep': {
+      id: '/api/public/v1/tournaments/sweep'
+      path: '/sweep'
+      fullPath: '/api/public/v1/tournaments/sweep'
+      preLoaderRoute: typeof ApiPublicV1TournamentsSweepRouteImport
+      parentRoute: typeof ApiPublicV1TournamentsRoute
+    }
     '/api/public/v1/embed/token': {
       id: '/api/public/v1/embed/token'
       path: '/api/public/v1/embed/token'
@@ -1296,11 +1316,13 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface ApiPublicV1TournamentsRouteChildren {
+  ApiPublicV1TournamentsSweepRoute: typeof ApiPublicV1TournamentsSweepRoute
   ApiPublicV1TournamentsIdStandingsRoute: typeof ApiPublicV1TournamentsIdStandingsRoute
 }
 
 const ApiPublicV1TournamentsRouteChildren: ApiPublicV1TournamentsRouteChildren =
   {
+    ApiPublicV1TournamentsSweepRoute: ApiPublicV1TournamentsSweepRoute,
     ApiPublicV1TournamentsIdStandingsRoute:
       ApiPublicV1TournamentsIdStandingsRoute,
   }
