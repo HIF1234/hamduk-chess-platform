@@ -8,6 +8,11 @@ import { dispatchForMember } from "@/lib/webhooks.server";
  * Safe to call fire-and-forget: it never throws.
  */
 export async function emitGameCompleted(gameId: string) {
+  // Tournament bookkeeping runs on every game-finish path too.
+  {
+    const { recordTournamentResult } = await import("@/lib/tournaments.server");
+    await recordTournamentResult(gameId);
+  }
   try {
     const { data: game } = await supabaseAdmin
       .from("games")
