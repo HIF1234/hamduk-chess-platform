@@ -21,6 +21,7 @@ import { Route as ApiDashboardRouteImport } from './routes/api-dashboard'
 import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TournamentsIndexRouteImport } from './routes/tournaments.index'
 import { Route as TacticsIndexRouteImport } from './routes/tactics.index'
 import { Route as StudyIndexRouteImport } from './routes/study.index'
 import { Route as SpectateIndexRouteImport } from './routes/spectate.index'
@@ -131,6 +132,11 @@ const AdminRoute = AdminRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TournamentsIndexRoute = TournamentsIndexRouteImport.update({
+  id: '/tournaments/',
+  path: '/tournaments/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TacticsIndexRoute = TacticsIndexRouteImport.update({
@@ -445,6 +451,7 @@ export interface FileRoutesByFullPath {
   '/spectate/': typeof SpectateIndexRoute
   '/study/': typeof StudyIndexRoute
   '/tactics/': typeof TacticsIndexRoute
+  '/tournaments/': typeof TournamentsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
@@ -509,6 +516,7 @@ export interface FileRoutesByTo {
   '/spectate': typeof SpectateIndexRoute
   '/study': typeof StudyIndexRoute
   '/tactics': typeof TacticsIndexRoute
+  '/tournaments': typeof TournamentsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
@@ -575,6 +583,7 @@ export interface FileRoutesById {
   '/spectate/': typeof SpectateIndexRoute
   '/study/': typeof StudyIndexRoute
   '/tactics/': typeof TacticsIndexRoute
+  '/tournaments/': typeof TournamentsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
@@ -642,6 +651,7 @@ export interface FileRouteTypes {
     | '/spectate/'
     | '/study/'
     | '/tactics/'
+    | '/tournaments/'
     | '/admin/users/$userId'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
@@ -706,6 +716,7 @@ export interface FileRouteTypes {
     | '/spectate'
     | '/study'
     | '/tactics'
+    | '/tournaments'
     | '/admin/users/$userId'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
@@ -771,6 +782,7 @@ export interface FileRouteTypes {
     | '/spectate/'
     | '/study/'
     | '/tactics/'
+    | '/tournaments/'
     | '/admin/users/$userId'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
@@ -829,6 +841,7 @@ export interface RootRouteChildren {
   SpectateIndexRoute: typeof SpectateIndexRoute
   StudyIndexRoute: typeof StudyIndexRoute
   TacticsIndexRoute: typeof TacticsIndexRoute
+  TournamentsIndexRoute: typeof TournamentsIndexRoute
   EmbedKindTokenRoute: typeof EmbedKindTokenRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
@@ -925,6 +938,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tournaments/': {
+      id: '/tournaments/'
+      path: '/tournaments'
+      fullPath: '/tournaments/'
+      preLoaderRoute: typeof TournamentsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tactics/': {
@@ -1413,6 +1433,7 @@ const rootRouteChildren: RootRouteChildren = {
   SpectateIndexRoute: SpectateIndexRoute,
   StudyIndexRoute: StudyIndexRoute,
   TacticsIndexRoute: TacticsIndexRoute,
+  TournamentsIndexRoute: TournamentsIndexRoute,
   EmbedKindTokenRoute: EmbedKindTokenRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
