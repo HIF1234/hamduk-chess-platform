@@ -41,6 +41,7 @@ export function Sidebar() {
     { to: "/analysis", label: "Analysis", Icon: BarChart3 },
     { to: "/spectate", label: "Watch Live", Icon: Eye },
     { to: "/study", label: "Study Boards", Icon: BookOpen },
+    { to: "/tournaments", label: "Tournaments", Icon: Trophy },
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user
       ? [

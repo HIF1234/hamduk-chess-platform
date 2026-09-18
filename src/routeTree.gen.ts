@@ -33,6 +33,7 @@ import { Route as EndgameIndexRouteImport } from './routes/endgame.index'
 import { Route as CoachesIndexRouteImport } from './routes/coaches.index'
 import { Route as AssistantIndexRouteImport } from './routes/assistant.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as TournamentsIdRouteImport } from './routes/tournaments.$id'
 import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
 import { Route as StudyStudyIdRouteImport } from './routes/study.$studyId'
 import { Route as SpectateGameIdRouteImport } from './routes/spectate.$gameId'
@@ -193,6 +194,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const TournamentsIdRoute = TournamentsIdRouteImport.update({
+  id: '/tournaments/$id',
+  path: '/tournaments/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const TacticsThemeRoute = TacticsThemeRouteImport.update({
   id: '/tactics/$theme',
@@ -440,6 +446,7 @@ export interface FileRoutesByFullPath {
   '/spectate/$gameId': typeof SpectateGameIdRoute
   '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/tournaments/$id': typeof TournamentsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/assistant/': typeof AssistantIndexRoute
   '/coaches/': typeof CoachesIndexRoute
@@ -505,6 +512,7 @@ export interface FileRoutesByTo {
   '/spectate/$gameId': typeof SpectateGameIdRoute
   '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/tournaments/$id': typeof TournamentsIdRoute
   '/admin': typeof AdminIndexRoute
   '/assistant': typeof AssistantIndexRoute
   '/coaches': typeof CoachesIndexRoute
@@ -572,6 +580,7 @@ export interface FileRoutesById {
   '/spectate/$gameId': typeof SpectateGameIdRoute
   '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/tournaments/$id': typeof TournamentsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/assistant/': typeof AssistantIndexRoute
   '/coaches/': typeof CoachesIndexRoute
@@ -640,6 +649,7 @@ export interface FileRouteTypes {
     | '/spectate/$gameId'
     | '/study/$studyId'
     | '/tactics/$theme'
+    | '/tournaments/$id'
     | '/admin/'
     | '/assistant/'
     | '/coaches/'
@@ -705,6 +715,7 @@ export interface FileRouteTypes {
     | '/spectate/$gameId'
     | '/study/$studyId'
     | '/tactics/$theme'
+    | '/tournaments/$id'
     | '/admin'
     | '/assistant'
     | '/coaches'
@@ -771,6 +782,7 @@ export interface FileRouteTypes {
     | '/spectate/$gameId'
     | '/study/$studyId'
     | '/tactics/$theme'
+    | '/tournaments/$id'
     | '/admin/'
     | '/assistant/'
     | '/coaches/'
@@ -831,6 +843,7 @@ export interface RootRouteChildren {
   SpectateGameIdRoute: typeof SpectateGameIdRoute
   StudyStudyIdRoute: typeof StudyStudyIdRoute
   TacticsThemeRoute: typeof TacticsThemeRoute
+  TournamentsIdRoute: typeof TournamentsIdRoute
   AssistantIndexRoute: typeof AssistantIndexRoute
   CoachesIndexRoute: typeof CoachesIndexRoute
   EndgameIndexRoute: typeof EndgameIndexRoute
@@ -1023,6 +1036,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/tournaments/$id': {
+      id: '/tournaments/$id'
+      path: '/tournaments/$id'
+      fullPath: '/tournaments/$id'
+      preLoaderRoute: typeof TournamentsIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/tactics/$theme': {
       id: '/tactics/$theme'
@@ -1423,6 +1443,7 @@ const rootRouteChildren: RootRouteChildren = {
   SpectateGameIdRoute: SpectateGameIdRoute,
   StudyStudyIdRoute: StudyStudyIdRoute,
   TacticsThemeRoute: TacticsThemeRoute,
+  TournamentsIdRoute: TournamentsIdRoute,
   AssistantIndexRoute: AssistantIndexRoute,
   CoachesIndexRoute: CoachesIndexRoute,
   EndgameIndexRoute: EndgameIndexRoute,
