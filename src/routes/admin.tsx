@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   ScrollText,
   ShieldCheck,
+  Trophy,
   Users,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";

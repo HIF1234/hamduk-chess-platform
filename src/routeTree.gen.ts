@@ -48,6 +48,7 @@ import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboa
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AdminTournamentsRouteImport } from './routes/admin.tournaments'
 import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
@@ -270,6 +271,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTournamentsRoute = AdminTournamentsRouteImport.update({
+  id: '/tournaments',
+  path: '/tournaments',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminRolesRoute = AdminRolesRouteImport.update({
   id: '/roles',
   path: '/roles',
@@ -432,6 +438,7 @@ export interface FileRoutesByFullPath {
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
+  '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -498,6 +505,7 @@ export interface FileRoutesByTo {
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
+  '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -566,6 +574,7 @@ export interface FileRoutesById {
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
+  '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -635,6 +644,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/reports'
     | '/admin/roles'
+    | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -701,6 +711,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/reports'
     | '/admin/roles'
+    | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -768,6 +779,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/reports'
     | '/admin/roles'
+    | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -1142,6 +1154,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/tournaments': {
+      id: '/admin/tournaments'
+      path: '/tournaments'
+      fullPath: '/admin/tournaments'
+      preLoaderRoute: typeof AdminTournamentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/roles': {
       id: '/admin/roles'
       path: '/roles'
@@ -1335,6 +1354,7 @@ interface AdminRouteChildren {
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminReportsRoute: typeof AdminReportsRoute
   AdminRolesRoute: typeof AdminRolesRoute
+  AdminTournamentsRoute: typeof AdminTournamentsRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
   AdminUsersIndexRoute: typeof AdminUsersIndexRoute
@@ -1348,6 +1368,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminReportsRoute: AdminReportsRoute,
   AdminRolesRoute: AdminRolesRoute,
+  AdminTournamentsRoute: AdminTournamentsRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminUsersUserIdRoute: AdminUsersUserIdRoute,
   AdminUsersIndexRoute: AdminUsersIndexRoute,
