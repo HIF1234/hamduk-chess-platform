@@ -31,6 +31,7 @@ import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as EndgameIndexRouteImport } from './routes/endgame.index'
 import { Route as CoachesIndexRouteImport } from './routes/coaches.index'
+import { Route as ClubsIndexRouteImport } from './routes/clubs.index'
 import { Route as AssistantIndexRouteImport } from './routes/assistant.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TournamentsIdRouteImport } from './routes/tournaments.$id'
@@ -184,6 +185,11 @@ const EndgameIndexRoute = EndgameIndexRouteImport.update({
 const CoachesIndexRoute = CoachesIndexRouteImport.update({
   id: '/coaches/',
   path: '/coaches/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClubsIndexRoute = ClubsIndexRouteImport.update({
+  id: '/clubs/',
+  path: '/clubs/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssistantIndexRoute = AssistantIndexRouteImport.update({
@@ -456,6 +462,7 @@ export interface FileRoutesByFullPath {
   '/tournaments/$id': typeof TournamentsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/assistant/': typeof AssistantIndexRoute
+  '/clubs/': typeof ClubsIndexRoute
   '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
@@ -523,6 +530,7 @@ export interface FileRoutesByTo {
   '/tournaments/$id': typeof TournamentsIdRoute
   '/admin': typeof AdminIndexRoute
   '/assistant': typeof AssistantIndexRoute
+  '/clubs': typeof ClubsIndexRoute
   '/coaches': typeof CoachesIndexRoute
   '/endgame': typeof EndgameIndexRoute
   '/learn': typeof LearnIndexRoute
@@ -592,6 +600,7 @@ export interface FileRoutesById {
   '/tournaments/$id': typeof TournamentsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/assistant/': typeof AssistantIndexRoute
+  '/clubs/': typeof ClubsIndexRoute
   '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
@@ -662,6 +671,7 @@ export interface FileRouteTypes {
     | '/tournaments/$id'
     | '/admin/'
     | '/assistant/'
+    | '/clubs/'
     | '/coaches/'
     | '/endgame/'
     | '/learn/'
@@ -729,6 +739,7 @@ export interface FileRouteTypes {
     | '/tournaments/$id'
     | '/admin'
     | '/assistant'
+    | '/clubs'
     | '/coaches'
     | '/endgame'
     | '/learn'
@@ -797,6 +808,7 @@ export interface FileRouteTypes {
     | '/tournaments/$id'
     | '/admin/'
     | '/assistant/'
+    | '/clubs/'
     | '/coaches/'
     | '/endgame/'
     | '/learn/'
@@ -857,6 +869,7 @@ export interface RootRouteChildren {
   TacticsThemeRoute: typeof TacticsThemeRoute
   TournamentsIdRoute: typeof TournamentsIdRoute
   AssistantIndexRoute: typeof AssistantIndexRoute
+  ClubsIndexRoute: typeof ClubsIndexRoute
   CoachesIndexRoute: typeof CoachesIndexRoute
   EndgameIndexRoute: typeof EndgameIndexRoute
   LearnIndexRoute: typeof LearnIndexRoute
@@ -1033,6 +1046,13 @@ declare module '@tanstack/react-router' {
       path: '/coaches'
       fullPath: '/coaches/'
       preLoaderRoute: typeof CoachesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clubs/': {
+      id: '/clubs/'
+      path: '/clubs'
+      fullPath: '/clubs/'
+      preLoaderRoute: typeof ClubsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assistant/': {
@@ -1466,6 +1486,7 @@ const rootRouteChildren: RootRouteChildren = {
   TacticsThemeRoute: TacticsThemeRoute,
   TournamentsIdRoute: TournamentsIdRoute,
   AssistantIndexRoute: AssistantIndexRoute,
+  ClubsIndexRoute: ClubsIndexRoute,
   CoachesIndexRoute: CoachesIndexRoute,
   EndgameIndexRoute: EndgameIndexRoute,
   LearnIndexRoute: LearnIndexRoute,
