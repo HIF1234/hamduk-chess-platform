@@ -31,6 +31,7 @@ import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as EndgameIndexRouteImport } from './routes/endgame.index'
 import { Route as CoachesIndexRouteImport } from './routes/coaches.index'
+import { Route as ClubsIndexRouteImport } from './routes/clubs.index'
 import { Route as AssistantIndexRouteImport } from './routes/assistant.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TournamentsIdRouteImport } from './routes/tournaments.$id'
@@ -48,6 +49,7 @@ import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboa
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AdminTournamentsRouteImport } from './routes/admin.tournaments'
 import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
@@ -185,6 +187,11 @@ const CoachesIndexRoute = CoachesIndexRouteImport.update({
   path: '/coaches/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClubsIndexRoute = ClubsIndexRouteImport.update({
+  id: '/clubs/',
+  path: '/clubs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssistantIndexRoute = AssistantIndexRouteImport.update({
   id: '/assistant/',
   path: '/assistant/',
@@ -269,6 +276,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTournamentsRoute = AdminTournamentsRouteImport.update({
+  id: '/tournaments',
+  path: '/tournaments',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminRolesRoute = AdminRolesRouteImport.update({
   id: '/roles',
@@ -432,6 +444,7 @@ export interface FileRoutesByFullPath {
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
+  '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -449,6 +462,7 @@ export interface FileRoutesByFullPath {
   '/tournaments/$id': typeof TournamentsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/assistant/': typeof AssistantIndexRoute
+  '/clubs/': typeof ClubsIndexRoute
   '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
@@ -498,6 +512,7 @@ export interface FileRoutesByTo {
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
+  '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -515,6 +530,7 @@ export interface FileRoutesByTo {
   '/tournaments/$id': typeof TournamentsIdRoute
   '/admin': typeof AdminIndexRoute
   '/assistant': typeof AssistantIndexRoute
+  '/clubs': typeof ClubsIndexRoute
   '/coaches': typeof CoachesIndexRoute
   '/endgame': typeof EndgameIndexRoute
   '/learn': typeof LearnIndexRoute
@@ -566,6 +582,7 @@ export interface FileRoutesById {
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
+  '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -583,6 +600,7 @@ export interface FileRoutesById {
   '/tournaments/$id': typeof TournamentsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/assistant/': typeof AssistantIndexRoute
+  '/clubs/': typeof ClubsIndexRoute
   '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
@@ -635,6 +653,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/reports'
     | '/admin/roles'
+    | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -652,6 +671,7 @@ export interface FileRouteTypes {
     | '/tournaments/$id'
     | '/admin/'
     | '/assistant/'
+    | '/clubs/'
     | '/coaches/'
     | '/endgame/'
     | '/learn/'
@@ -701,6 +721,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/reports'
     | '/admin/roles'
+    | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -718,6 +739,7 @@ export interface FileRouteTypes {
     | '/tournaments/$id'
     | '/admin'
     | '/assistant'
+    | '/clubs'
     | '/coaches'
     | '/endgame'
     | '/learn'
@@ -768,6 +790,7 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/reports'
     | '/admin/roles'
+    | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -785,6 +808,7 @@ export interface FileRouteTypes {
     | '/tournaments/$id'
     | '/admin/'
     | '/assistant/'
+    | '/clubs/'
     | '/coaches/'
     | '/endgame/'
     | '/learn/'
@@ -845,6 +869,7 @@ export interface RootRouteChildren {
   TacticsThemeRoute: typeof TacticsThemeRoute
   TournamentsIdRoute: typeof TournamentsIdRoute
   AssistantIndexRoute: typeof AssistantIndexRoute
+  ClubsIndexRoute: typeof ClubsIndexRoute
   CoachesIndexRoute: typeof CoachesIndexRoute
   EndgameIndexRoute: typeof EndgameIndexRoute
   LearnIndexRoute: typeof LearnIndexRoute
@@ -1023,6 +1048,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoachesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/clubs/': {
+      id: '/clubs/'
+      path: '/clubs'
+      fullPath: '/clubs/'
+      preLoaderRoute: typeof ClubsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/assistant/': {
       id: '/assistant/'
       path: '/assistant'
@@ -1141,6 +1173,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/tournaments': {
+      id: '/admin/tournaments'
+      path: '/tournaments'
+      fullPath: '/admin/tournaments'
+      preLoaderRoute: typeof AdminTournamentsRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/roles': {
       id: '/admin/roles'
@@ -1335,6 +1374,7 @@ interface AdminRouteChildren {
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminReportsRoute: typeof AdminReportsRoute
   AdminRolesRoute: typeof AdminRolesRoute
+  AdminTournamentsRoute: typeof AdminTournamentsRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
   AdminUsersIndexRoute: typeof AdminUsersIndexRoute
@@ -1348,6 +1388,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminReportsRoute: AdminReportsRoute,
   AdminRolesRoute: AdminRolesRoute,
+  AdminTournamentsRoute: AdminTournamentsRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminUsersUserIdRoute: AdminUsersUserIdRoute,
   AdminUsersIndexRoute: AdminUsersIndexRoute,
@@ -1445,6 +1486,7 @@ const rootRouteChildren: RootRouteChildren = {
   TacticsThemeRoute: TacticsThemeRoute,
   TournamentsIdRoute: TournamentsIdRoute,
   AssistantIndexRoute: AssistantIndexRoute,
+  ClubsIndexRoute: ClubsIndexRoute,
   CoachesIndexRoute: CoachesIndexRoute,
   EndgameIndexRoute: EndgameIndexRoute,
   LearnIndexRoute: LearnIndexRoute,

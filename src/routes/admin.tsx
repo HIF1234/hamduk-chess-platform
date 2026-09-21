@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   ScrollText,
   ShieldCheck,
+  Trophy,
   Users,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
@@ -38,6 +39,7 @@ const NAV = [
   { to: "/admin/payments", label: "Payments", icon: CreditCard },
   { to: "/admin/coaches", label: "Coaches", icon: BadgeCheck },
   { to: "/admin/orgs", label: "Organisations", icon: Building2 },
+  { to: "/admin/tournaments", label: "Tournaments", icon: Trophy },
   { to: "/admin/reports", label: "Reports", icon: Flag },
   { to: "/admin/audit-log", label: "Audit log", icon: ScrollText },
 ];

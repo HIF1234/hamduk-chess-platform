@@ -373,3 +373,50 @@ export const verifyTournamentEntry = createServerFn({ method: "POST" })
     });
     return { ok: true as const, tournamentId: tx.metadata.tournament_id };
   });
+
+/** Admin view: recent tournaments with their pairings for overrides. */
+export const adminListTournaments = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    if (!(await isAdmin(context.userId))) throw new Error("Administrator access required");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: tournaments } = await supabaseAdmin
+      .from("tournaments")
+      .select("id, name, type, status, rounds, current_round, starts_at, entry_fee_kobo, max_players")
+      .order("starts_at", { ascending: false })
+      .limit(40);
+    const ids = (tournaments ?? []).map((t) => t.id);
+    const { data: pairings } = ids.length
+      ? await supabaseAdmin
+          .from("tournament_games")
+          .select("id, tournament_id, round, white_id, black_id, result, recorded")
+          .in("tournament_id", ids)
+          .order("round", { ascending: false })
+      : { data: [] as Array<Record<string, never>> };
+    const userIds = Array.from(
+      new Set(
+        (pairings ?? []).flatMap((p) => [
+          (p as { white_id: string | null }).white_id,
+          (p as { black_id: string | null }).black_id,
+        ]),
+      ),
+    ).filter(Boolean) as string[];
+    const { data: profs } = userIds.length
+      ? await supabaseAdmin.from("profiles").select("id, username").in("id", userIds)
+      : { data: [] as Array<{ id: string; username: string }> };
+    const names: Record<string, string> = {};
+    for (const p of profs ?? []) names[p.id] = p.username;
+    return {
+      tournaments: tournaments ?? [],
+      pairings: (pairings ?? []) as unknown as Array<{
+        id: string;
+        tournament_id: string;
+        round: number;
+        white_id: string | null;
+        black_id: string | null;
+        result: string | null;
+        recorded: boolean;
+      }>,
+      names,
+    };
+  });
