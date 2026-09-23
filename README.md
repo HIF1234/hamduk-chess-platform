@@ -1,4 +1,4 @@
-# Hamduk Chess
+# Hamduk Chess.
 
 Core Chess Gameplay
 
