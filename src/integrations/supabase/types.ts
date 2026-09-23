@@ -1576,6 +1576,7 @@ export type Database = {
           losses: number
           paystack_customer_code: string | null
           paystack_subscription_code: string | null
+          preferences: Json
           rating: number
           subscription_renews_at: string | null
           subscription_status: string
@@ -1605,6 +1606,7 @@ export type Database = {
           losses?: number
           paystack_customer_code?: string | null
           paystack_subscription_code?: string | null
+          preferences?: Json
           rating?: number
           subscription_renews_at?: string | null
           subscription_status?: string
@@ -1634,6 +1636,7 @@ export type Database = {
           losses?: number
           paystack_customer_code?: string | null
           paystack_subscription_code?: string | null
+          preferences?: Json
           rating?: number
           subscription_renews_at?: string | null
           subscription_status?: string

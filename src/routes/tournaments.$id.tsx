@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useBoardSquares } from "@/lib/preferences";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -78,6 +79,7 @@ type TGame = {
 };
 
 function TournamentPage() {
+  const boardSquares = useBoardSquares();
   const { id } = Route.useParams();
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -366,6 +368,7 @@ function TournamentPage() {
               <div className="aspect-square w-full max-w-[520px]">
                 <Chessboard
                   options={{
+                    ...boardSquares,
                     position: visible[0]!.fen,
                     boardOrientation: "white",
                     allowDragging: false,
@@ -379,6 +382,7 @@ function TournamentPage() {
                     <Link key={b.id} to="/spectate/$gameId" params={{ gameId: b.id }} className="block">
                       <Chessboard
                         options={{
+                          ...boardSquares,
                           position: b.fen,
                           boardOrientation: "white",
                           allowDragging: false,

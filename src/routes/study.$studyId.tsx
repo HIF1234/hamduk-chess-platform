@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useBoardSquares } from "@/lib/preferences";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -58,6 +59,7 @@ type ChatRow = { id: string; user_id: string; content: string; created_at: strin
 type Snapshot = { id: string; name: string; created_at: string; data: { fen: string; pgn: string; comment: string | null } };
 
 function StudyBoardPage() {
+  const boardSquares = useBoardSquares();
   const { studyId } = Route.useParams();
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -287,6 +289,7 @@ function StudyBoardPage() {
         <div className="aspect-square w-full max-w-[640px]">
           <Chessboard
             options={{
+              ...boardSquares,
               position: chess.fen(),
               onPieceDrop: handleDrop,
               onSquareClick: ({ square }: { square: string }) => toggleShape(square),

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useBoardSquares } from "@/lib/preferences";
 import { Chessboard } from "react-chessboard";
 import { type Square, type PieceSymbol, type Color } from "chess.js";
 import { Chess } from "chess.js";
@@ -222,6 +223,7 @@ export function ChessApp() {
     return styles;
   }, [selected, legalTargets, game.lastMove]);
 
+  const boardSquares = useBoardSquares();
   const boardOptions = useMemo(
     () => ({
       position: game.fen,
@@ -229,14 +231,13 @@ export function ChessApp() {
       onSquareClick,
       boardOrientation: orientation,
       squareStyles,
-      darkSquareStyle: { backgroundColor: "#a8a29e" },
-      lightSquareStyle: { backgroundColor: "#e7e5e4" },
+      ...boardSquares,
       animationDurationInMs: 180,
       allowDragging: !game.gameOver,
       id: "main-board",
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [game.fen, orientation, squareStyles, game.gameOver],
+    [game.fen, orientation, squareStyles, game.gameOver, boardSquares],
   );
 
   const handleNewGame = () => { game.reset(); setSelected(null); setPendingPromo(null); };

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useBoardSquares } from "@/lib/preferences";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Chess, type Square } from "chess.js";
@@ -63,6 +64,7 @@ export const Route = createFileRoute("/play/$gameId")({
 });
 
 function PlayPage() {
+  const boardSquares = useBoardSquares();
   const { gameId } = Route.useParams();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -299,6 +301,7 @@ function PlayPage() {
           <div className="my-2 aspect-square w-full max-w-[640px]">
             <Chessboard
               options={{
+                ...boardSquares,
                 position: chess.fen(),
                 onPieceDrop: handleDrop,
                 boardOrientation: orientation,

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useBoardSquares } from "@/lib/preferences";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
 import { Loader2, X } from "lucide-react";
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export function GameReview({ startFen, sanMoves, orientation, depth = 14, gameId, onClose }: Props) {
+  const boardSquares = useBoardSquares();
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<GameReviewResult | null>(null);
   const [selectedPly, setSelectedPly] = useState(0);
@@ -104,6 +106,7 @@ export function GameReview({ startFen, sanMoves, orientation, depth = 14, gameId
               <div className="aspect-square w-full max-w-[560px]">
                 <Chessboard
                   options={{
+                    ...boardSquares,
                     position: boardFen,
                     boardOrientation: orientation,
                     allowDragging: false,

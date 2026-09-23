@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useBoardSquares } from "@/lib/preferences";
 import { Chessboard } from "react-chessboard";
 import { Chess, type Square } from "chess.js";
 import { usePuzzleSolver } from "@/hooks/usePuzzleSolver";
@@ -101,14 +102,14 @@ export function PuzzleBoard({ puzzle, onComplete }: Props) {
     }
   };
 
+  const boardSquares = useBoardSquares();
   const options = {
     position: fen,
     onPieceDrop: handleDrop,
     onSquareClick: handleSquareClick,
     boardOrientation: orientation as "white" | "black",
     squareStyles,
-    darkSquareStyle: { backgroundColor: "#b58863" },
-    lightSquareStyle: { backgroundColor: "#f0d9b5" },
+    ...boardSquares,
     animationDurationInMs: 200,
     allowDragging: status === "playing",
     id: "puzzle-board",

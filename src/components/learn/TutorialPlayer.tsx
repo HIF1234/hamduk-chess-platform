@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useBoardSquares } from "@/lib/preferences";
 import { Chessboard } from "react-chessboard";
 import { Chess, type Square } from "chess.js";
 import { sounds } from "@/lib/chess-sounds";
@@ -139,14 +140,14 @@ export function TutorialPlayer({ tutorial, initialStep = 0, onStepChange, onComp
     setWrong(false);
   };
 
+  const boardSquares = useBoardSquares();
   const options = {
     position: fen,
     onPieceDrop: handleDrop,
     onSquareClick: handleSquareClick,
     boardOrientation: orientation as "white" | "black",
     squareStyles,
-    darkSquareStyle: { backgroundColor: "#b58863" },
-    lightSquareStyle: { backgroundColor: "#f0d9b5" },
+    ...boardSquares,
     animationDurationInMs: 200,
     allowDragging: isMove && !solved,
     id: "tutorial-board",

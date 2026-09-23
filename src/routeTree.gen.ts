@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -88,6 +89,11 @@ import { Route as ApiPublicV1ClassesSessionIdSetPositionRouteImport } from './ro
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RefundPolicyRoute = RefundPolicyRouteImport.update({
@@ -489,6 +495,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
@@ -565,6 +572,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
@@ -643,6 +651,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
@@ -722,6 +731,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/privacy-policy'
     | '/refund-policy'
+    | '/settings'
     | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
@@ -798,6 +808,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/privacy-policy'
     | '/refund-policy'
+    | '/settings'
     | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
@@ -875,6 +886,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/privacy-policy'
     | '/refund-policy'
+    | '/settings'
     | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
@@ -953,6 +965,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
+  SettingsRoute: typeof SettingsRoute
   TermsRoute: typeof TermsRoute
   ApiChatRoute: typeof ApiChatRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
@@ -1003,6 +1016,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/refund-policy': {
@@ -1634,6 +1654,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RefundPolicyRoute: RefundPolicyRoute,
+  SettingsRoute: SettingsRoute,
   TermsRoute: TermsRoute,
   ApiChatRoute: ApiChatRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,

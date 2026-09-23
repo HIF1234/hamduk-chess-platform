@@ -1,9 +1,13 @@
+import { getPreferences } from "@/lib/preferences";
+
 let ctx: AudioContext | null = null;
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
   if (!ctx) {
-    const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const AC =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (!AC) return null;
     ctx = new AC();
   }
@@ -11,6 +15,7 @@ function getCtx(): AudioContext | null {
 }
 
 function tone(freq: number, durationMs: number, type: OscillatorType = "sine", gain = 0.06) {
+  if (!getPreferences().sound) return;
   const c = getCtx();
   if (!c) return;
   const osc = c.createOscillator();

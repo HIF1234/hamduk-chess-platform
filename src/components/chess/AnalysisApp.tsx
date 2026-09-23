@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useBoardSquares } from "@/lib/preferences";
 import { Chessboard } from "react-chessboard";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -56,18 +57,18 @@ export function AnalysisApp() {
     return styles;
   }, [lastMoveSquares]);
 
+  const boardSquares = useBoardSquares();
   const boardOptions = useMemo(
     () => ({
       position: replay.fen,
       boardOrientation: orientation,
       squareStyles,
-      darkSquareStyle: { backgroundColor: "#a8a29e" },
-      lightSquareStyle: { backgroundColor: "#e7e5e4" },
+      ...boardSquares,
       animationDurationInMs: 180,
       allowDragging: false,
       id: "analysis-board",
     }),
-    [replay.fen, orientation, squareStyles],
+    [replay.fen, orientation, squareStyles, boardSquares],
   );
 
   const currentPgn = useMemo(

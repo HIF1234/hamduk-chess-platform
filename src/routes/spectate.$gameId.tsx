@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useBoardSquares } from "@/lib/preferences";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Chess } from "chess.js";
 import { Chessboard } from "react-chessboard";
@@ -41,6 +42,7 @@ type GameRow = {
 type ChatMsg = { id: string; name: string; text: string };
 
 function SpectatePage() {
+  const boardSquares = useBoardSquares();
   const { gameId } = Route.useParams();
   const { user } = useAuth();
   const [game, setGame] = useState<GameRow | null>(null);
@@ -178,6 +180,7 @@ function SpectatePage() {
             <div className="aspect-square w-full max-w-[600px]">
               <Chessboard
                 options={{
+                  ...boardSquares,
                   position: chess.fen(),
                   boardOrientation: "white",
                   allowDragging: false,

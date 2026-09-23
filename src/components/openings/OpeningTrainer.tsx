@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useBoardSquares } from "@/lib/preferences";
 import { Chessboard } from "react-chessboard";
 import { Chess, type Square } from "chess.js";
 import { sounds } from "@/lib/chess-sounds";
@@ -175,14 +176,14 @@ export function OpeningTrainer({ opening, onSessionComplete }: Props) {
     finish(ply, session.correct, session.attempts);
   };
 
+  const boardSquares = useBoardSquares();
   const options = {
     position: fen,
     onPieceDrop: handleDrop,
     onSquareClick: handleSquareClick,
     boardOrientation: orientation,
     squareStyles,
-    darkSquareStyle: { backgroundColor: "#b58863" },
-    lightSquareStyle: { backgroundColor: "#f0d9b5" },
+    ...boardSquares,
     animationDurationInMs: 200,
     allowDragging: isUserTurn && !done,
     id: "opening-board",

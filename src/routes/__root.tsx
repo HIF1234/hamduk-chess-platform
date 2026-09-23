@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-router";
 import { Toaster } from "sonner";
 import { initTheme } from "@/lib/theme";
+import { setLocalPreferences } from "@/lib/preferences";
 import { BottomNav } from "@/components/BottomNav";
 import { Sidebar } from "@/components/Sidebar";
 import { supabase } from "@/integrations/supabase/client";
@@ -143,9 +144,16 @@ function AuthAwareShell() {
   const queryClient = useQueryClient();
   useEffect(() => {
     initTheme();
-    const { data } = supabase.auth.onAuthStateChange(() => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
       router.invalidate();
       queryClient.invalidateQueries();
+      // Pull the account's saved preferences so boards match on every device.
+      if (session && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) {
+        void import("@/lib/preferences.functions")
+          .then(({ getMySettings }) => getMySettings())
+          .then((s) => setLocalPreferences(s.preferences))
+          .catch(() => {});
+      }
     });
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
