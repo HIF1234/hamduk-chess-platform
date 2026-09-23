@@ -124,6 +124,11 @@ export function Sidebar() {
             </span>
           )}
           <div className="flex justify-center gap-3 text-[11px] text-muted-foreground">
+            {user && (
+              <Link to="/settings" className="hover:text-foreground">
+                Settings
+              </Link>
+            )}
             <Link to="/terms" className="hover:text-foreground">
               Terms
             </Link>
