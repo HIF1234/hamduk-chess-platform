@@ -11,7 +11,7 @@ export async function aiModel(): Promise<LanguageModel> {
   if (googleKey) {
     const { createGoogleGenerativeAI } = await import("@ai-sdk/google");
     const google = createGoogleGenerativeAI({ apiKey: googleKey });
-    return google(process.env.GOOGLE_AI_MODEL || "gemini-2.5-flash");
+    return google(process.env.GOOGLE_AI_MODEL || "gemini-3.6-flash");
   }
   return process.env.AI_GATEWAY_MODEL || "google/gemini-3.6-flash";
 }
