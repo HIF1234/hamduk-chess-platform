@@ -11,7 +11,9 @@ export const getMyRatings = createServerFn({ method: "GET" })
     const { supabase, userId } = context;
     const { data, error } = await supabase
       .from("ratings")
-      .select("time_control, variant, rating, games_played, wins, losses, draws, bot_games, updated_at")
+      .select(
+        "time_control, variant, rating, games_played, wins, losses, draws, bot_games, updated_at",
+      )
       .eq("user_id", userId);
     if (error) throw new Error(error.message);
     return { ratings: data ?? [] };
@@ -31,10 +33,14 @@ export const getUserRatings = createServerFn({ method: "GET" })
 
 export const recordBotGame = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({
-    timeControl: TimeControl,
-    variant: Variant.default("standard"),
-  }).parse(d))
+  .inputValidator((d) =>
+    z
+      .object({
+        timeControl: TimeControl,
+        variant: Variant.default("standard"),
+      })
+      .parse(d),
+  )
   .handler(async ({ data, context }) => {
     // Written with the service role for the authenticated user. (The record_bot_game
     // RPC keys off auth.uid(), which is empty under the service role, so it never counted.)

@@ -1,4 +1,4 @@
-# Chess Hub Pro
+# Hamduk Chess
 
 Core Chess Gameplay
 
@@ -776,25 +776,27 @@ Fantasy chess leagues — Prediction competitions.
 
 Team management system — Manage competitive teams/clubs.
 
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://hamdukchess.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/711c34a3-fcde-4919-9f21-1de6ddc38678).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Requires [Bun](https://bun.sh) and Node.js 22+.
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+bun install
+cp .env.example .env.local   # fill in Supabase, AI Gateway, Paystack and Upstash values
+bun run dev                  # http://localhost:3000
 ```
+
+Checks: `bun run typecheck`, `bun run lint`, `bun run build`.
+
+## Database
+
+Supabase project `hamdukchess-platform` (London). Migrations live in `supabase/migrations`:
+
+```sh
+supabase link --project-ref mzupxdpbsxlovxwcokla
+supabase db push
+```
+
+## Deployment
+
+Deployed on Vercel from the `main` branch. Functions run in London (`lhr1`), next to the database.

@@ -2,9 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
-const MODEL = "google/gemini-3-flash-preview";
-
 const FenSchema = z.object({
   fen: z.string().min(10).max(100),
 });
@@ -17,36 +14,20 @@ const PgnSchema = z.object({
 type AiResult = { markdown: string; error?: undefined } | { markdown?: undefined; error: string };
 
 async function callGateway(systemPrompt: string, userContent: string): Promise<AiResult> {
-  const key = process.env.LOVABLE_API_KEY;
-  if (!key) return { error: "AI is not configured on this project." };
-
-  const res = await fetch(GATEWAY_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userContent },
-      ],
-    }),
-  });
-
-  if (res.status === 429) return { error: "Rate limited — please try again in a moment." };
-  if (res.status === 402) return { error: "AI credits exhausted. Add funds in Settings → Workspace → Usage." };
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error("AI gateway error", res.status, text);
-    return { error: `AI request failed (${res.status}).` };
+  const { generateText } = await import("ai");
+  const { AI_MODEL, aiErrorMessage } = await import("@/lib/ai.server");
+  try {
+    const { text } = await generateText({
+      model: AI_MODEL,
+      system: systemPrompt,
+      prompt: userContent,
+    });
+    if (!text) return { error: "AI returned an empty response." };
+    return { markdown: text };
+  } catch (e) {
+    console.error("AI gateway error", e);
+    return { error: aiErrorMessage(e) };
   }
-
-  const data = await res.json();
-  const markdown: string | undefined = data?.choices?.[0]?.message?.content;
-  if (!markdown) return { error: "AI returned an empty response." };
-  return { markdown };
 }
 
 export const explainPosition = createServerFn({ method: "POST" })
@@ -99,7 +80,8 @@ const ReflectionSchema = z.object({
 });
 
 function describeEval(cp: number): string {
-  if (Math.abs(cp) >= 90_000) return cp > 0 ? "forced mate for the player" : "forced mate against the player";
+  if (Math.abs(cp) >= 90_000)
+    return cp > 0 ? "forced mate for the player" : "forced mate against the player";
   const pawns = (cp / 100).toFixed(1);
   return `${cp >= 0 ? "+" : ""}${pawns} (from the player's side)`;
 }

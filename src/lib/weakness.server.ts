@@ -248,7 +248,8 @@ function buildSuggestions(input: {
   if (out.length === 0) {
     out.push({
       title: "Play a few more rated games",
-      detail: "There isn't enough analysed data yet. Play and review a few games, then recompute your report.",
+      detail:
+        "There isn't enough analysed data yet. Play and review a few games, then recompute your report.",
       href: "/lobby",
     });
   }
@@ -256,49 +257,27 @@ function buildSuggestions(input: {
   return out.slice(0, 5);
 }
 
-/** Plain-language summary of the report, written by Lovable AI. Best-effort. */
+/** Plain-language summary of the report, written by the AI coach. Best-effort. */
 export async function summarizeReport(report: WeaknessReport): Promise<string | null> {
-  const key = process.env.LOVABLE_API_KEY;
-  if (!key || report.games_analyzed === 0) return null;
+  if (report.games_analyzed === 0) return null;
   try {
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Lovable-API-Key": key,
-        "X-Lovable-AIG-SDK": "fetch",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3.6-flash",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a friendly chess coach. In at most 120 words of plain language (no engine jargon, no markdown headings), summarize what this player should fix first and why. Speak directly to the player.",
-          },
-          {
-            role: "user",
-            content: JSON.stringify({
-              games_analyzed: report.games_analyzed,
-              piece_blunders: report.piece_blunders,
-              phase_errors: report.phase_errors,
-              opening_gaps: report.opening_gaps,
-              top_capture_squares: Object.entries(report.capture_heatmap)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 6),
-            }).slice(0, 4000),
-          },
-        ],
-      }),
+    const { generateText } = await import("ai");
+    const { AI_MODEL } = await import("@/lib/ai.server");
+    const { text } = await generateText({
+      model: AI_MODEL,
+      system:
+        "You are a friendly chess coach. In at most 120 words of plain language (no engine jargon, no markdown headings), summarize what this player should fix first and why. Speak directly to the player.",
+      prompt: JSON.stringify({
+        games_analyzed: report.games_analyzed,
+        piece_blunders: report.piece_blunders,
+        phase_errors: report.phase_errors,
+        opening_gaps: report.opening_gaps,
+        top_capture_squares: Object.entries(report.capture_heatmap)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 6),
+      }).slice(0, 4000),
     });
-    if (!res.ok) {
-      console.error("[weakness] summary failed", res.status, await res.text());
-      return null;
-    }
-    const json = (await res.json()) as {
-      choices?: Array<{ message?: { content?: string } }>;
-    };
-    return json.choices?.[0]?.message?.content?.trim() ?? null;
+    return text.trim() || null;
   } catch (e) {
     console.error("[weakness] summary error", e);
     return null;

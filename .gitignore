@@ -16,9 +16,6 @@ dist-ssr
 .nitro
 *.local
 
-# Wrangler / Cloudflare
-.wrangler/
-.dev.vars
 
 # Editor directories and files
 .vscode/*
@@ -33,3 +30,9 @@ dist-ssr
 
 # Supabase CLI local link state
 supabase/.temp/
+
+# Local env files and Vercel link state
+.env
+.env.*
+!.env.example
+.vercel/

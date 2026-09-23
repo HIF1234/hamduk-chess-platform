@@ -110,10 +110,10 @@ export const getSignedVideoUrl = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     if (!lesson || !lesson.published) throw new Error("Lesson not found");
     if (lesson.source !== "cloud" || !lesson.storage_path) {
-      throw new Error("This lesson is not hosted on Lovable Cloud");
+      throw new Error("This lesson is not hosted in cloud storage");
     }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (lesson.is_premium) {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const { data: profile } = await supabaseAdmin
         .from("profiles")
         .select("subscription_tier")
@@ -123,7 +123,8 @@ export const getSignedVideoUrl = createServerFn({ method: "POST" })
         throw new Error("This lesson is available on the Gold plan");
       }
     }
-    const { data: signed, error: signErr } = await supabase.storage
+    // Signed with the service role after the tier check; the bucket has no public policies.
+    const { data: signed, error: signErr } = await supabaseAdmin.storage
       .from("lesson-videos")
       .createSignedUrl(lesson.storage_path, 60 * 60);
     if (signErr || !signed) throw new Error(signErr?.message ?? "Failed to sign URL");

@@ -1,4 +1,4 @@
--- Restores schema that existed on the Lovable-hosted database but was never
+-- Restores schema that existed on the previously hosted database but was never
 -- captured as a migration: per-(time control, variant) ratings, bot-game
 -- tracking and rating deltas on games. Later migrations (20260701205959 onward)
 -- depend on these objects. Reconstructed from the generated types and callers.

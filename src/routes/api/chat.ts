@@ -2,12 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import type { Database } from "@/integrations/supabase/types";
-import {
-  createLovableAiGatewayProvider,
-  getLovableAiGatewayResponseHeaders,
-  getLovableAiGatewayRunId,
-  withLovableAiGatewayRunIdHeader,
-} from "@/lib/ai-gateway.server";
+import { AI_MODEL } from "@/lib/ai.server";
 
 const SYSTEM_PROMPT = `You are Hamduk Chess Coach, a warm, encouraging personal chess companion.
 
@@ -39,12 +34,8 @@ export const Route = createFileRoute("/api/chat")({
 
         const supabaseUrl = process.env.SUPABASE_URL;
         const publishableKey = process.env.SUPABASE_PUBLISHABLE_KEY;
-        const lovableApiKey = process.env.LOVABLE_API_KEY;
         if (!supabaseUrl || !publishableKey) {
           return new Response("Server misconfigured", { status: 500 });
-        }
-        if (!lovableApiKey) {
-          return new Response("AI is not configured", { status: 500 });
         }
 
         const authClient = createClient<Database>(supabaseUrl, publishableKey, {
@@ -88,7 +79,9 @@ export const Route = createFileRoute("/api/chat")({
         const contextChunks: string[] = [];
         const { data: report } = await supabaseAdmin
           .from("weakness_reports")
-          .select("games_analyzed, piece_blunders, phase_errors, opening_gaps, suggestions, summary")
+          .select(
+            "games_analyzed, piece_blunders, phase_errors, opening_gaps, suggestions, summary",
+          )
           .eq("user_id", userId)
           .maybeSingle();
         if (report) {
@@ -149,20 +142,14 @@ export const Route = createFileRoute("/api/chat")({
           if (threadError) console.error("[assistant] thread touch failed", threadError);
         }
 
-        const initialRunId = getLovableAiGatewayRunId(request);
-        const gateway = createLovableAiGatewayProvider(lovableApiKey, initialRunId);
-
         const result = streamText({
-          model: gateway("google/gemini-3.6-flash"),
+          model: AI_MODEL,
           system,
           messages: await convertToModelMessages(messages),
         });
 
-        const response = result.toUIMessageStreamResponse({
+        return result.toUIMessageStreamResponse({
           originalMessages: messages,
-          headers: getLovableAiGatewayResponseHeaders(undefined, {
-            ...(initialRunId ? { "X-Lovable-AIG-Run-ID": initialRunId } : {}),
-          }),
           onFinish: async ({ responseMessage }) => {
             const { error } = await supabaseAdmin.from("assistant_messages").insert({
               thread_id: threadId,
@@ -174,8 +161,6 @@ export const Route = createFileRoute("/api/chat")({
             if (error) console.error("[assistant] assistant message insert failed", error);
           },
         });
-
-        return withLovableAiGatewayRunIdHeader(response, gateway);
       },
     },
   },

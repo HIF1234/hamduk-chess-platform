@@ -14,7 +14,7 @@ type Props = {
   onProgress?: (positionSec: number, completed: boolean) => void;
 };
 
-/** Renders the correct player for youtube, vimeo, or Lovable-hosted (cloud) sources. */
+/** Renders the correct player for youtube, vimeo, or cloud-storage sources. */
 export function VideoPlayer({
   videoId,
   source,
