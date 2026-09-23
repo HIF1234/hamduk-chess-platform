@@ -256,7 +256,7 @@ export function ChessApp() {
       <nav className="h-12 border-b border-zinc-950/5 flex items-center justify-between px-6 bg-panel">
         <div className="flex items-center gap-6">
           <span className="text-xs font-semibold tracking-wider uppercase text-zinc-400">
-            Grandmaster Series // 04
+            Hamduk Chess
           </span>
           <div className="h-4 w-px bg-zinc-950/5" />
           <div className="flex items-center gap-4">

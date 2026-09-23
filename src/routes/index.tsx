@@ -4,10 +4,10 @@ import { ChessApp } from "@/components/chess/ChessApp";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Grandmaster — Chess" },
-      { name: "description", content: "Play chess against a friend or Stockfish in a focused, tournament-grade interface." },
-      { property: "og:title", content: "Grandmaster — Chess" },
-      { property: "og:description", content: "Play chess against a friend or Stockfish in a focused, tournament-grade interface." },
+      { title: "Hamduk Chess — Play, learn and compete" },
+      { name: "description", content: "Play chess online, against Nigerian-persona bots or friends, and learn with puzzles, lessons and coaching." },
+      { property: "og:title", content: "Hamduk Chess — Play, learn and compete" },
+      { property: "og:description", content: "Play chess online, against Nigerian-persona bots or friends, and learn with puzzles, lessons and coaching." },
     ],
   }),
   component: Index,
