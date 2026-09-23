@@ -36,13 +36,21 @@ export const recordBotGame = createServerFn({ method: "POST" })
     variant: Variant.default("standard"),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    // Route via service role so the SECURITY DEFINER RPC is not directly callable
-    // by authenticated clients, but bot-game stats can still be recorded.
+    // Written with the service role for the authenticated user. (The record_bot_game
+    // RPC keys off auth.uid(), which is empty under the service role, so it never counted.)
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.rpc("record_bot_game", {
-      p_time_control: data.timeControl,
-      p_variant: data.variant,
-    });
+    const key = { user_id: context.userId, time_control: data.timeControl, variant: data.variant };
+    const { data: row } = await supabaseAdmin
+      .from("ratings")
+      .select("bot_games")
+      .match(key)
+      .maybeSingle();
+    const { error } = row
+      ? await supabaseAdmin
+          .from("ratings")
+          .update({ bot_games: row.bot_games + 1, updated_at: new Date().toISOString() })
+          .match(key)
+      : await supabaseAdmin.from("ratings").insert({ ...key, bot_games: 1 });
     if (error) throw new Error(error.message);
     return { ok: true, userId: context.userId };
   });

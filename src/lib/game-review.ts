@@ -100,6 +100,21 @@ export class ReviewAnalyzer {
     });
   }
 
+  /** Evaluates the position after playing `uci` from `fen`. Returns cp from White's POV,
+   *  or null if the move is illegal. Only call when no analysis is in flight. */
+  async evaluateAfter(fen: string, uci: string, depth: number): Promise<number | null> {
+    const chess = new Chess(fen);
+    try {
+      chess.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] });
+    } catch {
+      return null;
+    }
+    // Stockfish reports "mate 0" for a mated side, which would read as 0 cp.
+    if (chess.isCheckmate()) return chess.turn() === "w" ? -100000 : 100000;
+    if (chess.isDraw()) return 0;
+    return (await this.evaluate(chess.fen(), depth)).cp;
+  }
+
   /** Analyze the game's SAN move list starting from `startFen`. */
   async analyze(
     startFen: string,

@@ -431,6 +431,7 @@ function PlayPage() {
           sanMoves={chess.history()}
           orientation={orientation}
           depth={14}
+          gameId={game.id}
           onClose={() => setReviewOpen(false)}
         />
       )}

@@ -19,6 +19,7 @@ import {
   Eye,
   CalendarClock,
   LogOut,
+  Castle,
 
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
@@ -42,6 +43,7 @@ export function Sidebar() {
     { to: "/spectate", label: "Watch Live", Icon: Eye },
     { to: "/study", label: "Study Boards", Icon: BookOpen },
     { to: "/tournaments", label: "Tournaments", Icon: Trophy },
+    { to: "/clubs", label: "Clubs", Icon: Castle },
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user
       ? [

@@ -47,6 +47,7 @@ import { Route as LearnTutorialIdRouteImport } from './routes/learn.$tutorialId'
 import { Route as EndgameIdRouteImport } from './routes/endgame.$id'
 import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboard'
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
+import { Route as ClubsSlugRouteImport } from './routes/clubs.$slug'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminTournamentsRouteImport } from './routes/admin.tournaments'
@@ -267,6 +268,11 @@ const CoachesCoachIdRoute = CoachesCoachIdRouteImport.update({
   path: '/coaches/$coachId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClubsSlugRoute = ClubsSlugRouteImport.update({
+  id: '/clubs/$slug',
+  path: '/clubs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssistantThreadIdRoute = AssistantThreadIdRouteImport.update({
   id: '/assistant/$threadId',
   path: '/assistant/$threadId',
@@ -447,6 +453,7 @@ export interface FileRoutesByFullPath {
   '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
+  '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
@@ -515,6 +522,7 @@ export interface FileRoutesByTo {
   '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
+  '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
@@ -585,6 +593,7 @@ export interface FileRoutesById {
   '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
+  '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
@@ -656,6 +665,7 @@ export interface FileRouteTypes {
     | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
+    | '/clubs/$slug'
     | '/coaches/$coachId'
     | '/coaching/dashboard'
     | '/endgame/$id'
@@ -724,6 +734,7 @@ export interface FileRouteTypes {
     | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
+    | '/clubs/$slug'
     | '/coaches/$coachId'
     | '/coaching/dashboard'
     | '/endgame/$id'
@@ -793,6 +804,7 @@ export interface FileRouteTypes {
     | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
+    | '/clubs/$slug'
     | '/coaches/$coachId'
     | '/coaching/dashboard'
     | '/endgame/$id'
@@ -855,6 +867,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRoute
   ApiChatRoute: typeof ApiChatRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
+  ClubsSlugRoute: typeof ClubsSlugRoute
   CoachesCoachIdRoute: typeof CoachesCoachIdRoute
   CoachingDashboardRoute: typeof CoachingDashboardRoute
   EndgameIdRoute: typeof EndgameIdRoute
@@ -1158,6 +1171,13 @@ declare module '@tanstack/react-router' {
       path: '/coaches/$coachId'
       fullPath: '/coaches/$coachId'
       preLoaderRoute: typeof CoachesCoachIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clubs/$slug': {
+      id: '/clubs/$slug'
+      path: '/clubs/$slug'
+      fullPath: '/clubs/$slug'
+      preLoaderRoute: typeof ClubsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assistant/$threadId': {
@@ -1472,6 +1492,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRoute,
   ApiChatRoute: ApiChatRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,
+  ClubsSlugRoute: ClubsSlugRoute,
   CoachesCoachIdRoute: CoachesCoachIdRoute,
   CoachingDashboardRoute: CoachingDashboardRoute,
   EndgameIdRoute: EndgameIdRoute,

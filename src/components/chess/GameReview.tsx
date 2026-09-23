@@ -9,19 +9,22 @@ import {
   CLASSIFICATION_META,
 } from "@/lib/game-review";
 import { classifyOpening } from "@/lib/eco";
+import { ThinkAloudPanel, type Reflection } from "./ThinkAloudPanel";
 
 type Props = {
   startFen: string;
   sanMoves: string[];
   orientation: "white" | "black";
   depth?: number;
+  gameId?: string;
   onClose: () => void;
 };
 
-export function GameReview({ startFen, sanMoves, orientation, depth = 14, onClose }: Props) {
+export function GameReview({ startFen, sanMoves, orientation, depth = 14, gameId, onClose }: Props) {
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<GameReviewResult | null>(null);
   const [selectedPly, setSelectedPly] = useState(0);
+  const [reflections, setReflections] = useState<Record<number, Reflection>>({});
   const analyzerRef = useRef<ReviewAnalyzer | null>(null);
 
   useEffect(() => {
@@ -114,7 +117,24 @@ export function GameReview({ startFen, sanMoves, orientation, depth = 14, onClos
               <EvalChart moves={result.moves} selected={selectedPly} onSelect={setSelectedPly} />
             </div>
 
-            <MoveTable moves={result.moves} selected={selectedPly} onSelect={setSelectedPly} />
+            <div>
+              <MoveTable moves={result.moves} selected={selectedPly} onSelect={setSelectedPly} />
+              {selectedPly > 0 && result.moves[selectedPly - 1] ? (
+                <ThinkAloudPanel
+                  move={result.moves[selectedPly - 1]}
+                  gameId={gameId}
+                  getAnalyzer={() => analyzerRef.current}
+                  saved={reflections[selectedPly]}
+                  onSaved={(r) => setReflections((prev) => ({ ...prev, [selectedPly]: r }))}
+                />
+              ) : (
+                <p className="mt-4 rounded-xl border border-dashed border-gold/50 p-4 text-sm text-muted-foreground">
+                  Pick a move to open the{" "}
+                  <span className="font-semibold text-foreground">Coach Verbal Review</span>. Tell
+                  the coach what you were thinking and get feedback on your reasoning.
+                </p>
+              )}
+            </div>
           </div>
         )}
       </div>

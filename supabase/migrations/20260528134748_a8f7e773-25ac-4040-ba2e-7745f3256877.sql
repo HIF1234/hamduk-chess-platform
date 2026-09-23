@@ -30,9 +30,11 @@ GRANT EXECUTE ON FUNCTION public.find_or_join_match(text, integer) TO service_ro
 
 -- 4. Lock down realtime broadcast/presence by default
 -- (Postgres-changes subscriptions still flow through each table's own RLS.)
-ALTER TABLE IF EXISTS realtime.messages ENABLE ROW LEVEL SECURITY;
-
+-- On newer Supabase projects realtime.messages is owned by the Realtime service,
+-- ships with RLS already enabled and no policies (deny-all), and cannot be
+-- altered by the migration role. Skip in that case — the end state is the same.
 DO $$ BEGIN
+  ALTER TABLE IF EXISTS realtime.messages ENABLE ROW LEVEL SECURITY;
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies
     WHERE schemaname = 'realtime' AND tablename = 'messages'
@@ -44,4 +46,6 @@ DO $$ BEGIN
     TO authenticated, anon
     USING (false);
   END IF;
+EXCEPTION WHEN insufficient_privilege THEN
+  RAISE NOTICE 'realtime.messages is managed by Supabase; keeping its default deny-all RLS';
 END $$;

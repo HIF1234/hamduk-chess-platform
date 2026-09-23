@@ -1214,6 +1214,69 @@ export type Database = {
           },
         ]
       }
+      move_reflections: {
+        Row: {
+          candidates: Json
+          classification: string | null
+          coach_reply: string
+          cp_loss: number | null
+          created_at: string
+          fen_before: string
+          game_id: string | null
+          id: string
+          language: string
+          move_san: string
+          ply: number
+          thought: string
+          user_id: string
+        }
+        Insert: {
+          candidates?: Json
+          classification?: string | null
+          coach_reply: string
+          cp_loss?: number | null
+          created_at?: string
+          fen_before: string
+          game_id?: string | null
+          id?: string
+          language?: string
+          move_san: string
+          ply: number
+          thought: string
+          user_id: string
+        }
+        Update: {
+          candidates?: Json
+          classification?: string | null
+          coach_reply?: string
+          cp_loss?: number | null
+          created_at?: string
+          fen_before?: string
+          game_id?: string | null
+          id?: string
+          language?: string
+          move_san?: string
+          ply?: number
+          thought?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "move_reflections_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "move_reflections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       move_telemetry: {
         Row: {
           created_at: string
