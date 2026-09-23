@@ -19,7 +19,12 @@ const TokenSchema = z.object({
       session_id: z.string().uuid().optional(),
     })
     .default({}),
-  ttl_hours: z.number().int().min(1).max(24 * 365).default(720),
+  ttl_hours: z
+    .number()
+    .int()
+    .min(1)
+    .max(24 * 365)
+    .default(720),
 });
 
 export const Route = createFileRoute("/api/public/v1/embed/token")({
@@ -35,7 +40,8 @@ export const Route = createFileRoute("/api/public/v1/embed/token")({
             return json({ error: "bad_request", message: "Invalid JSON body" }, 400);
           }
           const parsed = TokenSchema.safeParse(body);
-          if (!parsed.success) return json({ error: "bad_request", message: parsed.error.issues[0]?.message }, 400);
+          if (!parsed.success)
+            return json({ error: "bad_request", message: parsed.error.issues[0]?.message }, 400);
 
           const token = generateToken(20);
           const expires = new Date(Date.now() + parsed.data.ttl_hours * 3600_000).toISOString();

@@ -1,14 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { timingSafeEqual } from "node:crypto";
-
-function authorized(request: Request) {
-  const secret = process.env.CRON_SECRET;
-  const header = request.headers.get("authorization") ?? "";
-  if (!secret || !header.startsWith("Bearer ")) return false;
-  const given = Buffer.from(header.slice("Bearer ".length));
-  const expected = Buffer.from(secret);
-  return given.length === expected.length && timingSafeEqual(given, expected);
-}
+import { hasInternalSecret } from "@/lib/internal-auth.server";
 
 /** Internal scheduler entry point, called every minute by Supabase pg_cron. Runs every
  *  sweep independently so one failure doesn't stop the others. */
@@ -16,7 +7,7 @@ export const Route = createFileRoute("/api/cron/tick")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        if (!authorized(request)) return new Response("Unauthorized", { status: 401 });
+        if (!hasInternalSecret(request)) return new Response("Unauthorized", { status: 401 });
 
         const jobs: Record<string, () => Promise<unknown>> = {
           tournaments: async () => (await import("@/lib/tournaments.server")).sweepTournaments(),

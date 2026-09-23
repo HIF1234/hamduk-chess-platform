@@ -9,7 +9,12 @@ const CreateSchema = z.object({
   rounds: z.number().int().min(1).max(20).default(5),
   starts_at: z.string().datetime().optional(),
   players: z
-    .array(z.object({ username: z.string().min(1).max(64).optional(), display_name: z.string().min(1).max(80) }))
+    .array(
+      z.object({
+        username: z.string().min(1).max(64).optional(),
+        display_name: z.string().min(1).max(80),
+      }),
+    )
     .max(200)
     .default([]),
 });
@@ -22,7 +27,9 @@ export const Route = createFileRoute("/api/public/v1/tournaments")({
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const { data } = await supabaseAdmin
             .from("org_tournaments")
-            .select("id, name, format, time_control, rounds, current_round, status, starts_at, created_at")
+            .select(
+              "id, name, format, time_control, rounds, current_round, status, starts_at, created_at",
+            )
             .eq("owner_id", ctx.ownerId)
             .order("created_at", { ascending: false })
             .limit(100);
@@ -56,12 +63,16 @@ export const Route = createFileRoute("/api/public/v1/tournaments")({
             })
             .select("id, name, format, time_control, rounds, current_round, status, starts_at")
             .single();
-          if (error || !tournament) return json({ error: "server_error", message: error?.message }, 500);
+          if (error || !tournament)
+            return json({ error: "server_error", message: error?.message }, 500);
 
           if (input.players.length) {
             const usernames = input.players.map((p) => p.username).filter(Boolean) as string[];
             const { data: found } = usernames.length
-              ? await supabaseAdmin.from("profiles").select("id, username").in("username", usernames)
+              ? await supabaseAdmin
+                  .from("profiles")
+                  .select("id, username")
+                  .in("username", usernames)
               : { data: [] as Array<{ id: string; username: string }> };
             const byName = new Map((found ?? []).map((p) => [p.username, p.id]));
             await supabaseAdmin.from("org_tournament_players").insert(

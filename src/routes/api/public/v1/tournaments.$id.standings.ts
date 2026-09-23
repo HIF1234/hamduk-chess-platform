@@ -5,7 +5,13 @@ import { withApiKey, json } from "@/lib/api-keys.server";
 const RoundSchema = z.object({
   round: z.number().int().min(1).max(20),
   results: z
-    .array(z.object({ player_id: z.string().uuid(), score: z.number(), tiebreak: z.number().optional() }))
+    .array(
+      z.object({
+        player_id: z.string().uuid(),
+        score: z.number(),
+        tiebreak: z.number().optional(),
+      }),
+    )
     .default([]),
 });
 
@@ -49,7 +55,8 @@ export const Route = createFileRoute("/api/public/v1/tournaments/$id/standings")
             return json({ error: "bad_request", message: "Invalid JSON body" }, 400);
           }
           const parsed = RoundSchema.safeParse(body);
-          if (!parsed.success) return json({ error: "bad_request", message: parsed.error.issues[0]?.message }, 400);
+          if (!parsed.success)
+            return json({ error: "bad_request", message: parsed.error.issues[0]?.message }, 400);
 
           const { data: tournament } = await supabaseAdmin
             .from("org_tournaments")

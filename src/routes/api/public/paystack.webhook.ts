@@ -18,10 +18,7 @@ export const Route = createFileRoute("/api/public/paystack/webhook")({
 
         const sigBuf = Buffer.from(signature, "hex");
         const expBuf = Buffer.from(expected, "hex");
-        if (
-          sigBuf.length !== expBuf.length ||
-          !timingSafeEqual(sigBuf, expBuf)
-        ) {
+        if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) {
           return new Response("Invalid signature", { status: 401 });
         }
 

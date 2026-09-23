@@ -8,7 +8,11 @@ export const Route = createFileRoute("/api/public/v1/users/$username/rating")({
         withApiKey(request, "/v1/users/{username}/rating", "ratings:read", async (ctx) => {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const profile = await resolveOrgUser(ctx.ownerId, params.username);
-          if (!profile) return json({ error: "not_found", message: "No org-linked user with that username" }, 404);
+          if (!profile)
+            return json(
+              { error: "not_found", message: "No org-linked user with that username" },
+              404,
+            );
 
           const { data: ratings } = await supabaseAdmin
             .from("ratings")

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/terms")({
 
 const ngn = (n: number) => `₦${n.toLocaleString("en-NG")}`;
 
-function TermsPage() {
+export function TermsPage() {
   return (
     <LegalPage
       title="Terms of Service"

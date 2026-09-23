@@ -14,10 +14,17 @@ export const Route = createFileRoute("/api/public/v1/users/$username/games")({
         withApiKey(request, "/v1/users/{username}/games", "games:read", async (ctx) => {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const profile = await resolveOrgUser(ctx.ownerId, params.username);
-          if (!profile) return json({ error: "not_found", message: "No org-linked user with that username" }, 404);
+          if (!profile)
+            return json(
+              { error: "not_found", message: "No org-linked user with that username" },
+              404,
+            );
 
           const url = new URL(request.url);
-          const limit = Math.min(Math.max(Number(url.searchParams.get("limit") ?? 20) || 20, 1), 100);
+          const limit = Math.min(
+            Math.max(Number(url.searchParams.get("limit") ?? 20) || 20, 1),
+            100,
+          );
           const tc = url.searchParams.get("tc");
 
           let query = supabaseAdmin

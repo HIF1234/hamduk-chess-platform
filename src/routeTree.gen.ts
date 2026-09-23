@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PolicyRouteImport } from './routes/policy'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LobbyRouteImport } from './routes/lobby'
@@ -63,6 +66,7 @@ import { Route as AdminAuditLogRouteImport } from './routes/admin.audit-log'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as EmbedKindTokenRouteImport } from './routes/embed.$kind.$token'
+import { Route as ApiHealthAiRouteImport } from './routes/api/health/ai'
 import { Route as ApiCronTickRouteImport } from './routes/api/cron/tick'
 import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
 import { Route as ApiPublicV1WebhooksRouteImport } from './routes/api/public/v1/webhooks'
@@ -86,9 +90,24 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RefundPolicyRoute = RefundPolicyRouteImport.update({
+  id: '/refund-policy',
+  path: '/refund-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PolicyRoute = PolicyRouteImport.update({
+  id: '/policy',
+  path: '/policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesRoute = MessagesRouteImport.update({
@@ -351,6 +370,11 @@ const EmbedKindTokenRoute = EmbedKindTokenRouteImport.update({
   path: '/embed/$kind/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiHealthAiRoute = ApiHealthAiRouteImport.update({
+  id: '/api/health/ai',
+  path: '/api/health/ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronTickRoute = ApiCronTickRouteImport.update({
   id: '/api/cron/tick',
   path: '/api/cron/tick',
@@ -461,7 +485,10 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/policy': typeof PolicyRoute
   '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
@@ -502,6 +529,7 @@ export interface FileRoutesByFullPath {
   '/tournaments/': typeof TournamentsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/api/cron/tick': typeof ApiCronTickRoute
+  '/api/health/ai': typeof ApiHealthAiRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
@@ -533,7 +561,10 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/policy': typeof PolicyRoute
   '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
@@ -574,6 +605,7 @@ export interface FileRoutesByTo {
   '/tournaments': typeof TournamentsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/api/cron/tick': typeof ApiCronTickRoute
+  '/api/health/ai': typeof ApiHealthAiRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users': typeof AdminUsersIndexRoute
@@ -607,7 +639,10 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/policy': typeof PolicyRoute
   '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
@@ -648,6 +683,7 @@ export interface FileRoutesById {
   '/tournaments/': typeof TournamentsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/api/cron/tick': typeof ApiCronTickRoute
+  '/api/health/ai': typeof ApiHealthAiRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
@@ -682,7 +718,10 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/policy'
     | '/privacy'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
@@ -723,6 +762,7 @@ export interface FileRouteTypes {
     | '/tournaments/'
     | '/admin/users/$userId'
     | '/api/cron/tick'
+    | '/api/health/ai'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
     | '/admin/users/'
@@ -754,7 +794,10 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/policy'
     | '/privacy'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
@@ -795,6 +838,7 @@ export interface FileRouteTypes {
     | '/tournaments'
     | '/admin/users/$userId'
     | '/api/cron/tick'
+    | '/api/health/ai'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
     | '/admin/users'
@@ -827,7 +871,10 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/policy'
     | '/privacy'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
@@ -868,6 +915,7 @@ export interface FileRouteTypes {
     | '/tournaments/'
     | '/admin/users/$userId'
     | '/api/cron/tick'
+    | '/api/health/ai'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
     | '/admin/users/'
@@ -901,7 +949,10 @@ export interface RootRouteChildren {
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
+  PolicyRoute: typeof PolicyRoute
   PrivacyRoute: typeof PrivacyRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  RefundPolicyRoute: typeof RefundPolicyRoute
   TermsRoute: typeof TermsRoute
   ApiChatRoute: typeof ApiChatRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
@@ -932,6 +983,7 @@ export interface RootRouteChildren {
   TacticsIndexRoute: typeof TacticsIndexRoute
   TournamentsIndexRoute: typeof TournamentsIndexRoute
   ApiCronTickRoute: typeof ApiCronTickRoute
+  ApiHealthAiRoute: typeof ApiHealthAiRoute
   EmbedKindTokenRoute: typeof EmbedKindTokenRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
@@ -953,11 +1005,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/refund-policy': {
+      id: '/refund-policy'
+      path: '/refund-policy'
+      fullPath: '/refund-policy'
+      preLoaderRoute: typeof RefundPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/policy': {
+      id: '/policy'
+      path: '/policy'
+      fullPath: '/policy'
+      preLoaderRoute: typeof PolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/messages': {
@@ -1324,6 +1397,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmbedKindTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/health/ai': {
+      id: '/api/health/ai'
+      path: '/api/health/ai'
+      fullPath: '/api/health/ai'
+      preLoaderRoute: typeof ApiHealthAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/tick': {
       id: '/api/cron/tick'
       path: '/api/cron/tick'
@@ -1550,7 +1630,10 @@ const rootRouteChildren: RootRouteChildren = {
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
+  PolicyRoute: PolicyRoute,
   PrivacyRoute: PrivacyRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  RefundPolicyRoute: RefundPolicyRoute,
   TermsRoute: TermsRoute,
   ApiChatRoute: ApiChatRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,
@@ -1581,6 +1664,7 @@ const rootRouteChildren: RootRouteChildren = {
   TacticsIndexRoute: TacticsIndexRoute,
   TournamentsIndexRoute: TournamentsIndexRoute,
   ApiCronTickRoute: ApiCronTickRoute,
+  ApiHealthAiRoute: ApiHealthAiRoute,
   EmbedKindTokenRoute: EmbedKindTokenRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,

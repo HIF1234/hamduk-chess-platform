@@ -9,7 +9,12 @@ const CreateSchema = z.object({
   position_fen: z.string().min(10).max(120).default(START_FEN),
   locked: z.boolean().default(false),
   students: z
-    .array(z.object({ username: z.string().min(1).max(64).optional(), label: z.string().min(1).max(80) }))
+    .array(
+      z.object({
+        username: z.string().min(1).max(64).optional(),
+        label: z.string().min(1).max(80),
+      }),
+    )
     .max(100)
     .default([]),
 });
@@ -40,7 +45,8 @@ export const Route = createFileRoute("/api/public/v1/classes/session")({
             body = {};
           }
           const parsed = CreateSchema.safeParse(body);
-          if (!parsed.success) return json({ error: "bad_request", message: parsed.error.issues[0]?.message }, 400);
+          if (!parsed.success)
+            return json({ error: "bad_request", message: parsed.error.issues[0]?.message }, 400);
 
           const { data: session, error } = await supabaseAdmin
             .from("class_sessions")
@@ -53,12 +59,18 @@ export const Route = createFileRoute("/api/public/v1/classes/session")({
             })
             .select("id, title, position_fen, locked, status, created_at")
             .single();
-          if (error || !session) return json({ error: "server_error", message: error?.message }, 500);
+          if (error || !session)
+            return json({ error: "server_error", message: error?.message }, 500);
 
           if (parsed.data.students.length) {
-            const usernames = parsed.data.students.map((s) => s.username).filter(Boolean) as string[];
+            const usernames = parsed.data.students
+              .map((s) => s.username)
+              .filter(Boolean) as string[];
             const { data: found } = usernames.length
-              ? await supabaseAdmin.from("profiles").select("id, username").in("username", usernames)
+              ? await supabaseAdmin
+                  .from("profiles")
+                  .select("id, username")
+                  .in("username", usernames)
               : { data: [] as Array<{ id: string; username: string }> };
             const byName = new Map((found ?? []).map((p) => [p.username, p.id]));
             await supabaseAdmin.from("class_session_students").insert(

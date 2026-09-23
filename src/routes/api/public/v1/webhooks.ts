@@ -31,7 +31,8 @@ export const Route = createFileRoute("/api/public/v1/webhooks")({
             return json({ error: "bad_request", message: "Invalid JSON body" }, 400);
           }
           const parsed = Schema.safeParse(body);
-          if (!parsed.success) return json({ error: "bad_request", message: parsed.error.issues[0]?.message }, 400);
+          if (!parsed.success)
+            return json({ error: "bad_request", message: parsed.error.issues[0]?.message }, 400);
 
           const secret = generateToken(24);
           const { data, error } = await supabaseAdmin
