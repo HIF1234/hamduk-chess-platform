@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LobbyRouteImport } from './routes/lobby'
@@ -61,6 +63,7 @@ import { Route as AdminAuditLogRouteImport } from './routes/admin.audit-log'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as EmbedKindTokenRouteImport } from './routes/embed.$kind.$token'
+import { Route as ApiCronTickRouteImport } from './routes/api/cron/tick'
 import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
 import { Route as ApiPublicV1WebhooksRouteImport } from './routes/api/public/v1/webhooks'
 import { Route as ApiPublicV1TournamentsRouteImport } from './routes/api/public/v1/tournaments'
@@ -78,6 +81,16 @@ import { Route as ApiPublicV1EmbedTokenTokenRouteImport } from './routes/api/pub
 import { Route as ApiPublicV1ClassesSessionIdStudentsRouteImport } from './routes/api/public/v1/classes.session.$id.students'
 import { Route as ApiPublicV1ClassesSessionIdSetPositionRouteImport } from './routes/api/public/v1/classes.session.$id.set-position'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MessagesRoute = MessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
@@ -338,6 +351,11 @@ const EmbedKindTokenRoute = EmbedKindTokenRouteImport.update({
   path: '/embed/$kind/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronTickRoute = ApiCronTickRouteImport.update({
+  id: '/api/cron/tick',
+  path: '/api/cron/tick',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminUsersUserIdRoute = AdminUsersUserIdRouteImport.update({
   id: '/users/$userId',
   path: '/users/$userId',
@@ -443,6 +461,8 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
@@ -481,6 +501,7 @@ export interface FileRoutesByFullPath {
   '/tactics/': typeof TacticsIndexRoute
   '/tournaments/': typeof TournamentsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
+  '/api/cron/tick': typeof ApiCronTickRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
@@ -512,6 +533,8 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
@@ -550,6 +573,7 @@ export interface FileRoutesByTo {
   '/tactics': typeof TacticsIndexRoute
   '/tournaments': typeof TournamentsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
+  '/api/cron/tick': typeof ApiCronTickRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users': typeof AdminUsersIndexRoute
@@ -583,6 +607,8 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
@@ -621,6 +647,7 @@ export interface FileRoutesById {
   '/tactics/': typeof TacticsIndexRoute
   '/tournaments/': typeof TournamentsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
+  '/api/cron/tick': typeof ApiCronTickRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
@@ -655,6 +682,8 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/privacy'
+    | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
     | '/admin/games'
@@ -693,6 +722,7 @@ export interface FileRouteTypes {
     | '/tactics/'
     | '/tournaments/'
     | '/admin/users/$userId'
+    | '/api/cron/tick'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
     | '/admin/users/'
@@ -724,6 +754,8 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/privacy'
+    | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
     | '/admin/games'
@@ -762,6 +794,7 @@ export interface FileRouteTypes {
     | '/tactics'
     | '/tournaments'
     | '/admin/users/$userId'
+    | '/api/cron/tick'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
     | '/admin/users'
@@ -794,6 +827,8 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/privacy'
+    | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
     | '/admin/games'
@@ -832,6 +867,7 @@ export interface FileRouteTypes {
     | '/tactics/'
     | '/tournaments/'
     | '/admin/users/$userId'
+    | '/api/cron/tick'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
     | '/admin/users/'
@@ -865,6 +901,8 @@ export interface RootRouteChildren {
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
+  PrivacyRoute: typeof PrivacyRoute
+  TermsRoute: typeof TermsRoute
   ApiChatRoute: typeof ApiChatRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
   ClubsSlugRoute: typeof ClubsSlugRoute
@@ -893,6 +931,7 @@ export interface RootRouteChildren {
   StudyIndexRoute: typeof StudyIndexRoute
   TacticsIndexRoute: typeof TacticsIndexRoute
   TournamentsIndexRoute: typeof TournamentsIndexRoute
+  ApiCronTickRoute: typeof ApiCronTickRoute
   EmbedKindTokenRoute: typeof EmbedKindTokenRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
@@ -907,6 +946,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/messages': {
       id: '/messages'
       path: '/messages'
@@ -1271,6 +1324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmbedKindTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/tick': {
+      id: '/api/cron/tick'
+      path: '/api/cron/tick'
+      fullPath: '/api/cron/tick'
+      preLoaderRoute: typeof ApiCronTickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/users/$userId': {
       id: '/admin/users/$userId'
       path: '/users/$userId'
@@ -1490,6 +1550,8 @@ const rootRouteChildren: RootRouteChildren = {
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
+  PrivacyRoute: PrivacyRoute,
+  TermsRoute: TermsRoute,
   ApiChatRoute: ApiChatRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,
   ClubsSlugRoute: ClubsSlugRoute,
@@ -1518,6 +1580,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudyIndexRoute: StudyIndexRoute,
   TacticsIndexRoute: TacticsIndexRoute,
   TournamentsIndexRoute: TournamentsIndexRoute,
+  ApiCronTickRoute: ApiCronTickRoute,
   EmbedKindTokenRoute: EmbedKindTokenRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,

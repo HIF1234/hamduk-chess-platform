@@ -123,6 +123,14 @@ export function Sidebar() {
               Guest account
             </span>
           )}
+          <div className="flex justify-center gap-3 text-[11px] text-muted-foreground">
+            <Link to="/terms" className="hover:text-foreground">
+              Terms
+            </Link>
+            <Link to="/privacy" className="hover:text-foreground">
+              Privacy
+            </Link>
+          </div>
         </div>
       </nav>
     </aside>

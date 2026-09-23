@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ai-sdk/react": "^4.0.55",
+    "@ai-sdk/google": "^4.0.76",
+    "@ai-sdk/react": "^4.0.110",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -48,7 +49,7 @@
     "@tanstack/react-start": "^1.167.50",
     "@tanstack/router-plugin": "^1.167.28",
     "@upstash/redis": "^1.38.0",
-    "ai": "^7.0.52",
+    "ai": "7.0.107",
     "bcryptjs": "^3.0.3",
     "chess.js": "^1.4.0",
     "class-variance-authority": "^0.7.1",

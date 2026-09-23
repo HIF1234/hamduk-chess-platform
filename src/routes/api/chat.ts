@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import type { Database } from "@/integrations/supabase/types";
-import { AI_MODEL } from "@/lib/ai.server";
+import { aiModel } from "@/lib/ai.server";
 
 const SYSTEM_PROMPT = `You are Hamduk Chess Coach, a warm, encouraging personal chess companion.
 
@@ -143,7 +143,7 @@ export const Route = createFileRoute("/api/chat")({
         }
 
         const result = streamText({
-          model: AI_MODEL,
+          model: await aiModel(),
           system,
           messages: await convertToModelMessages(messages),
         });

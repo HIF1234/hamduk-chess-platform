@@ -262,9 +262,9 @@ export async function summarizeReport(report: WeaknessReport): Promise<string | 
   if (report.games_analyzed === 0) return null;
   try {
     const { generateText } = await import("ai");
-    const { AI_MODEL } = await import("@/lib/ai.server");
+    const { aiModel } = await import("@/lib/ai.server");
     const { text } = await generateText({
-      model: AI_MODEL,
+      model: await aiModel(),
       system:
         "You are a friendly chess coach. In at most 120 words of plain language (no engine jargon, no markdown headings), summarize what this player should fix first and why. Speak directly to the player.",
       prompt: JSON.stringify({

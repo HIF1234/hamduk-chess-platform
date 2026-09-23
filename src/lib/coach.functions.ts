@@ -15,10 +15,10 @@ type AiResult = { markdown: string; error?: undefined } | { markdown?: undefined
 
 async function callGateway(systemPrompt: string, userContent: string): Promise<AiResult> {
   const { generateText } = await import("ai");
-  const { AI_MODEL, aiErrorMessage } = await import("@/lib/ai.server");
+  const { aiModel, aiErrorMessage } = await import("@/lib/ai.server");
   try {
     const { text } = await generateText({
-      model: AI_MODEL,
+      model: await aiModel(),
       system: systemPrompt,
       prompt: userContent,
     });

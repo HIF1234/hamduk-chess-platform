@@ -185,6 +185,17 @@ function LoginPage() {
               {mode === "signin" ? "Create account" : "Sign in"}
             </button>
           </p>
+          <p className="mt-3 text-center text-xs text-muted-foreground">
+            By continuing, you agree to our{" "}
+            <Link to="/terms" className="underline hover:text-foreground">
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link to="/privacy" className="underline hover:text-foreground">
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>
