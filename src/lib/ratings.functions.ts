@@ -38,6 +38,11 @@ export const recordBotGame = createServerFn({ method: "POST" })
       .object({
         timeControl: TimeControl,
         variant: Variant.default("standard"),
+        botId: z.string().min(1).max(40),
+        result: z.enum(["win", "loss", "draw"]),
+        playerColor: z.enum(["white", "black"]).default("white"),
+        endReason: z.string().max(40).optional(),
+        ply: z.number().int().min(0).max(2000).default(0),
       })
       .parse(d),
   )
@@ -45,6 +50,36 @@ export const recordBotGame = createServerFn({ method: "POST" })
     // Written with the service role for the authenticated user. (The record_bot_game
     // RPC keys off auth.uid(), which is empty under the service role, so it never counted.)
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { getPersona } = await import("@/lib/bot-personas");
+
+    // Bots run in the browser, so the server can't stop play — but only games the
+    // player's tier allows count towards stats, streaks and achievements.
+    const persona = getPersona(data.botId);
+    if (!persona || persona.id !== data.botId) throw new Error("Unknown bot");
+    if (persona.tier === "plus") {
+      const { data: profile } = await supabaseAdmin
+        .from("profiles")
+        .select("subscription_tier")
+        .eq("id", context.userId)
+        .maybeSingle();
+      if ((profile?.subscription_tier ?? "free") === "free") {
+        return { ok: false as const, reason: "plus_bot" as const, userId: context.userId };
+      }
+    }
+
+    const { error: gameError } = await supabaseAdmin.from("bot_games").insert({
+      user_id: context.userId,
+      bot_id: persona.id,
+      bot_rating: persona.rating,
+      player_color: data.playerColor,
+      result: data.result,
+      end_reason: data.endReason ?? null,
+      ply: data.ply,
+      time_control: data.timeControl,
+      variant: data.variant,
+    });
+    if (gameError) throw new Error(gameError.message);
+
     const key = { user_id: context.userId, time_control: data.timeControl, variant: data.variant };
     const { data: row } = await supabaseAdmin
       .from("ratings")
@@ -58,7 +93,7 @@ export const recordBotGame = createServerFn({ method: "POST" })
           .match(key)
       : await supabaseAdmin.from("ratings").insert({ ...key, bot_games: 1 });
     if (error) throw new Error(error.message);
-    return { ok: true, userId: context.userId };
+    return { ok: true as const, userId: context.userId };
   });
 
 export const getMyBilling = createServerFn({ method: "GET" })

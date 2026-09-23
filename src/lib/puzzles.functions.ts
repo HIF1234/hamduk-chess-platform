@@ -131,7 +131,8 @@ export const getNextPuzzle = createServerFn({ method: "POST" })
     let fb = admin.from("puzzles").select("id,fen,solution,themes,rating").eq("approved", true);
     if (data.theme) fb = fb.contains("themes", [data.theme]);
     const { data: any2 } = await fb.limit(20);
-    if (any2 && any2.length > 0) return any2[Math.floor(Math.random() * any2.length)] as ServerPuzzle;
+    if (any2 && any2.length > 0)
+      return any2[Math.floor(Math.random() * any2.length)] as ServerPuzzle;
     return null;
   });
 
@@ -145,12 +146,20 @@ export const submitPuzzleAttempt = createServerFn({ method: "POST" })
       p_puzzle_id: data.puzzleId,
       p_success: data.success,
     });
-    if (error) throw error;
+    if (error) {
+      if (error.message.includes("daily_puzzle_limit")) {
+        throw new Error(
+          "You've solved your 20 free puzzles for today. Come back tomorrow, or upgrade to Hamduk Plus for unlimited puzzles.",
+        );
+      }
+      throw error;
+    }
     return res as {
       rating: number;
       delta: number;
       leitner_box: number;
       next_due_at: string;
+      remaining_today: number | null;
     };
   });
 
@@ -246,18 +255,16 @@ export const getMyThemeProgress = createServerFn({ method: "GET" })
       .select("puzzle_id,attempts,success,next_due_at")
       .eq("user_id", userId);
     if (error) throw new Error(error.message);
-    if (!attempts || attempts.length === 0) return [] as Array<{
-      theme: string;
-      attempted: number;
-      solved: number;
-      due: number;
-    }>;
+    if (!attempts || attempts.length === 0)
+      return [] as Array<{
+        theme: string;
+        attempted: number;
+        solved: number;
+        due: number;
+      }>;
 
     const ids = attempts.map((a) => a.puzzle_id as string);
-    const { data: pzs } = await admin
-      .from("puzzles")
-      .select("id,themes")
-      .in("id", ids);
+    const { data: pzs } = await admin.from("puzzles").select("id,themes").in("id", ids);
     const idToThemes = new Map<string, string[]>();
     for (const p of pzs ?? []) idToThemes.set(p.id as string, (p.themes ?? []) as string[]);
 

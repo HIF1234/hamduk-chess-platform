@@ -113,9 +113,21 @@ export function ChessApp() {
   useEffect(() => {
     if (mode !== "engine" || !game.gameOver || recordedRef.current || !user) return;
     recordedRef.current = true;
-    void recordBot({ data: { timeControl: "5+0", variant: "standard" } })
-      .catch(() => { /* silent — bot tracking is best-effort */ });
-  }, [mode, game.gameOver, user, recordBot]);
+    const st = game.status;
+    const winner = st.kind === "checkmate" || st.kind === "resigned" ? st.winner : null;
+    const result = winner === null ? "draw" : winner === engineColor ? "loss" : "win";
+    void recordBot({
+      data: {
+        timeControl: "5+0",
+        variant: "standard",
+        botId: persona.id,
+        result,
+        playerColor: engineColor === "b" ? "white" : "black",
+        endReason: st.kind,
+        ply: game.history.length,
+      },
+    }).catch(() => { /* silent — bot tracking is best-effort */ });
+  }, [mode, game.gameOver, game.status, game.history.length, user, recordBot, persona.id]);
 
   // Reset record flag on new game
   useEffect(() => {

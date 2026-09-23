@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -97,8 +98,15 @@ export function PuzzleHub() {
         const res = await submit({ data: { puzzleId: puzzle.id, success } });
         setLastDelta(res.delta);
         refetchStats();
+        if (res.remaining_today !== null && res.remaining_today <= 3) {
+          toast.info(
+            res.remaining_today === 0
+              ? "That was your last free puzzle today."
+              : `${res.remaining_today} free puzzle${res.remaining_today === 1 ? "" : "s"} left today.`,
+          );
+        }
       } catch (e) {
-        console.error(e);
+        toast.error((e as Error).message);
       }
     } else {
       const updated = recordAttempt(puzzle.id, success, puzzle.rating);

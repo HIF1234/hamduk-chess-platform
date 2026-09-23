@@ -303,6 +303,56 @@ export type Database = {
           },
         ]
       }
+      bot_games: {
+        Row: {
+          bot_id: string
+          bot_rating: number
+          created_at: string
+          end_reason: string | null
+          id: string
+          player_color: string
+          ply: number
+          result: string
+          time_control: string
+          user_id: string
+          variant: string
+        }
+        Insert: {
+          bot_id: string
+          bot_rating: number
+          created_at?: string
+          end_reason?: string | null
+          id?: string
+          player_color: string
+          ply?: number
+          result: string
+          time_control?: string
+          user_id: string
+          variant?: string
+        }
+        Update: {
+          bot_id?: string
+          bot_rating?: number
+          created_at?: string
+          end_reason?: string | null
+          id?: string
+          player_color?: string
+          ply?: number
+          result?: string
+          time_control?: string
+          user_id?: string
+          variant?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_games_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       class_session_students: {
         Row: {
           board_fen: string | null
@@ -1597,6 +1647,45 @@ export type Database = {
         }
         Relationships: []
       }
+      puzzle_attempts: {
+        Row: {
+          correct: boolean
+          created_at: string
+          id: string
+          puzzle_id: string
+          user_id: string
+        }
+        Insert: {
+          correct: boolean
+          created_at?: string
+          id?: string
+          puzzle_id: string
+          user_id: string
+        }
+        Update: {
+          correct?: boolean
+          created_at?: string
+          id?: string
+          puzzle_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "puzzle_attempts_puzzle_id_fkey"
+            columns: ["puzzle_id"]
+            isOneToOne: false
+            referencedRelation: "puzzles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "puzzle_attempts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       puzzle_ratings: {
         Row: {
           attempts: number
@@ -2599,6 +2688,7 @@ export type Database = {
         }
         Returns: string
       }
+      free_daily_puzzle_limit: { Args: never; Returns: number }
       is_admin: { Args: { min_role?: string }; Returns: boolean }
       is_club_admin: {
         Args: { _club_id: string; _user_id: string }
@@ -2608,6 +2698,7 @@ export type Database = {
         Args: { _club_id: string; _user_id: string }
         Returns: boolean
       }
+      puzzles_attempted_today: { Args: { p_user: string }; Returns: number }
       record_bot_game: {
         Args: { p_time_control: string; p_variant?: string }
         Returns: undefined
