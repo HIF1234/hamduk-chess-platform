@@ -102,12 +102,13 @@ function Welcome() {
         Your move is already waiting on the board. No sign-up needed — play a Nigerian bot now,
         challenge a friend on WhatsApp, or find an opponent online.
       </p>
-      {s && (
+      {s && (s.gamesToday > 0 || s.liveGames > 0 || s.puzzlesToday > 0) && (
+        // Only real, non-zero numbers: an empty "0 players" row reads as a dead site.
         <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-          <Stat label="games today" value={s.gamesToday} />
-          <Stat label="live now" value={s.liveGames} />
-          <Stat label="players online" value={s.playersOnline} />
-          <Stat label="puzzles solved today" value={s.puzzlesToday} />
+          {s.gamesToday > 0 && <Stat label="games today" value={s.gamesToday} />}
+          {s.liveGames > 0 && <Stat label="live now" value={s.liveGames} />}
+          {s.playersOnline > 0 && <Stat label="players online" value={s.playersOnline} />}
+          {s.puzzlesToday > 0 && <Stat label="puzzles solved today" value={s.puzzlesToday} />}
         </div>
       )}
       <div className="mt-6 grid gap-2 sm:grid-cols-2">
