@@ -1,4 +1,5 @@
 // Client-safe tournament config (no server imports).
+import { TIME_CONTROL_IDS } from "@/lib/time-controls";
 export const TOURNAMENT_TYPES = [
   { value: "swiss", label: "Swiss", blurb: "Paired by score each round. Buchholz tie-break." },
   { value: "arena", label: "Arena", blurb: "Continuous games for a set duration. Most points wins." },
@@ -8,7 +9,7 @@ export const TOURNAMENT_TYPES = [
 
 export type TournamentType = (typeof TOURNAMENT_TYPES)[number]["value"];
 
-export const TOURNAMENT_TIME_CONTROLS = ["3+0", "5+0", "10+0", "15+10"] as const;
+export const TOURNAMENT_TIME_CONTROLS = TIME_CONTROL_IDS;
 
 export const CREATE_LIMITS = {
   free: 0,

@@ -8,7 +8,7 @@ export function BottomNav() {
   const { user } = useAuth();
   const unread = useUnreadCount();
   const items = [
-    { to: "/lobby", label: "Play", Icon: Swords },
+    { to: "/play", label: "Play", Icon: Swords },
     { to: "/puzzles", label: "Puzzles", Icon: Puzzle },
     { to: "/analysis", label: "Analyze", Icon: BarChart3 },
     user

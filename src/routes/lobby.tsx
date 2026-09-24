@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { CATEGORY_LABEL, TIME_CONTROLS as TC_LIST, type TimeControlId } from "@/lib/time-controls";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
@@ -20,12 +21,7 @@ export const Route = createFileRoute("/lobby")({
   component: LobbyPage,
 });
 
-const TIME_CONTROLS = [
-  { id: "3+0", label: "Blitz", sub: "3 min" },
-  { id: "5+0", label: "Blitz", sub: "5 min" },
-  { id: "10+0", label: "Rapid", sub: "10 min" },
-  { id: "15+10", label: "Rapid", sub: "15 | +10" },
-] as const;
+const TIME_CONTROLS = TC_LIST.map((t) => ({ id: t.id, label: CATEGORY_LABEL[t.category], sub: t.label }));
 
 const REGIONS = [
   { id: "africa-west-1", label: "Africa West" },
@@ -98,7 +94,7 @@ function LobbyPage() {
       try {
         const { gameId } = await find({
           data: {
-            timeControl: searching as "3+0" | "5+0" | "10+0" | "15+10",
+            timeControl: searching as TimeControlId,
             variant,
           },
         });
@@ -113,7 +109,7 @@ function LobbyPage() {
   async function handleFind(tc: string) {
     setSearching(tc);
     try {
-      const { gameId } = await find({ data: { timeControl: tc as "3+0" | "5+0" | "10+0" | "15+10", variant } });
+      const { gameId } = await find({ data: { timeControl: tc as TimeControlId, variant } });
       if (gameId) {
         navigate({ to: "/play/$gameId", params: { gameId } });
       } else {

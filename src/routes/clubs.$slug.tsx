@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CATEGORY_LABEL, TIME_CONTROLS, type TimeControlId } from "@/lib/time-controls";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -512,7 +513,7 @@ function Events({ clubId, isAdmin }: { clubId: string; isAdmin: boolean }) {
   const [form, setForm] = useState({
     name: "",
     type: "swiss" as "swiss" | "arena" | "round_robin" | "knockout",
-    timeControl: "5+0" as "3+0" | "5+0" | "10+0" | "15+10",
+    timeControl: "5+0" as TimeControlId,
     rounds: 5,
     startsAt: "",
   });
@@ -598,10 +599,11 @@ function Events({ clubId, isAdmin }: { clubId: string; isAdmin: boolean }) {
                   }
                   className="w-full rounded-md border border-border bg-background px-3 py-2"
                 >
-                  <option value="3+0">3+0 Blitz</option>
-                  <option value="5+0">5+0 Blitz</option>
-                  <option value="10+0">10+0 Rapid</option>
-                  <option value="15+10">15+10 Rapid</option>
+                  {TIME_CONTROLS.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.id} {CATEGORY_LABEL[t.category]}
+                    </option>
+                  ))}
                 </select>
               </Field>
               <Field label="Rounds">

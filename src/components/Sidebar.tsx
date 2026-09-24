@@ -90,12 +90,12 @@ export function Sidebar() {
 
         <div className="mt-auto flex flex-col gap-2 pb-3 pt-4">
           <Link
-            to="/lobby"
+            to="/play"
             className="mx-1 inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
             activeProps={{ className: "ring-2 ring-primary/40" }}
           >
             <Swords className="h-4 w-4" />
-            Play Online
+            Play
           </Link>
 
           <div className="flex items-center justify-between gap-2 px-2">

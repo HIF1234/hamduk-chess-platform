@@ -2,13 +2,14 @@
 // already trusts (games, bot_games, puzzle stats, …), so badges can't be claimed
 // from the client. `scope` limits work to the rules a given event can affect.
 import { supabaseAdmin as db } from "@/integrations/supabase/client.server";
+import { idsIn } from "@/lib/time-controls";
 import { notify } from "@/lib/notifications.server";
 import { OPENINGS } from "@/lib/openings-data";
 
 export type AchievementScope = "games" | "bots" | "puzzles" | "social" | "profile" | "analysis";
 
-const BLITZ = ["3+0", "3+2", "5+0", "5+3"];
-const BULLET = ["1+0", "1+1", "2+1"];
+const BLITZ = idsIn("blitz");
+const BULLET = idsIn("bullet");
 
 type Ctx = { userId: string };
 type Rule = { slug: string; scopes: AchievementScope[]; test: (c: Ctx) => Promise<boolean> };

@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { TIME_CONTROL_IDS } from "@/lib/time-controls";
 import { AchievementsGrid } from "@/components/AchievementsGrid";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -184,7 +185,7 @@ function RatingsPanel({ userId }: { userId: string }) {
   const ratings = data?.ratings ?? [];
   if (ratings.length === 0) return null;
 
-  const tcOrder = ["3+0", "5+0", "10+0", "15+10"];
+  const tcOrder: string[] = TIME_CONTROL_IDS;
   const sorted = [...ratings].sort((a, b) => {
     const ai = tcOrder.indexOf(a.time_control);
     const bi = tcOrder.indexOf(b.time_control);

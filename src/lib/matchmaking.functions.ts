@@ -1,11 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
+import { TIME_CONTROL_IDS } from "@/lib/time-controls";
 import { z } from "zod";
 import { Chess } from "chess.js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { chess960StartFen } from "./chess960";
 
-const TimeControl = z.enum(["3+0", "5+0", "10+0", "15+10"]);
+const TimeControl = z.enum(TIME_CONTROL_IDS);
 const Variant = z.enum(["standard", "chess960"]);
 
 export const findOrJoinMatch = createServerFn({ method: "POST" })

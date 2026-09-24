@@ -34,6 +34,7 @@ import { Route as TacticsIndexRouteImport } from './routes/tactics.index'
 import { Route as StudyIndexRouteImport } from './routes/study.index'
 import { Route as SpectateIndexRouteImport } from './routes/spectate.index'
 import { Route as PuzzlesIndexRouteImport } from './routes/puzzles.index'
+import { Route as PlayIndexRouteImport } from './routes/play.index'
 import { Route as OpeningsIndexRouteImport } from './routes/openings.index'
 import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
@@ -48,6 +49,7 @@ import { Route as StudyStudyIdRouteImport } from './routes/study.$studyId'
 import { Route as SpectateGameIdRouteImport } from './routes/spectate.$gameId'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
+import { Route as PlayBotRouteImport } from './routes/play.bot'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
 import { Route as OpeningsEcoRouteImport } from './routes/openings.$eco'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
@@ -56,6 +58,7 @@ import { Route as EndgameIdRouteImport } from './routes/endgame.$id'
 import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboard'
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as ClubsSlugRouteImport } from './routes/clubs.$slug'
+import { Route as ChallengeIdRouteImport } from './routes/challenge.$id'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminTournamentsRouteImport } from './routes/admin.tournaments'
@@ -213,6 +216,11 @@ const PuzzlesIndexRoute = PuzzlesIndexRouteImport.update({
   path: '/puzzles/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlayIndexRoute = PlayIndexRouteImport.update({
+  id: '/play/',
+  path: '/play/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpeningsIndexRoute = OpeningsIndexRouteImport.update({
   id: '/openings/',
   path: '/openings/',
@@ -283,6 +291,11 @@ const ProfileUsernameRoute = ProfileUsernameRouteImport.update({
   path: '/profile/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlayBotRoute = PlayBotRouteImport.update({
+  id: '/play/bot',
+  path: '/play/bot',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlayGameIdRoute = PlayGameIdRouteImport.update({
   id: '/play/$gameId',
   path: '/play/$gameId',
@@ -321,6 +334,11 @@ const CoachesCoachIdRoute = CoachesCoachIdRouteImport.update({
 const ClubsSlugRoute = ClubsSlugRouteImport.update({
   id: '/clubs/$slug',
   path: '/clubs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChallengeIdRoute = ChallengeIdRouteImport.update({
+  id: '/challenge/$id',
+  path: '/challenge/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssistantThreadIdRoute = AssistantThreadIdRouteImport.update({
@@ -521,6 +539,7 @@ export interface FileRoutesByFullPath {
   '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
+  '/challenge/$id': typeof ChallengeIdRoute
   '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
@@ -529,6 +548,7 @@ export interface FileRoutesByFullPath {
   '/lessons/$id': typeof LessonsIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
+  '/play/bot': typeof PlayBotRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/spectate/$gameId': typeof SpectateGameIdRoute
@@ -543,6 +563,7 @@ export interface FileRoutesByFullPath {
   '/learn/': typeof LearnIndexRoute
   '/lessons/': typeof LessonsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
+  '/play/': typeof PlayIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
   '/spectate/': typeof SpectateIndexRoute
   '/study/': typeof StudyIndexRoute
@@ -600,6 +621,7 @@ export interface FileRoutesByTo {
   '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
+  '/challenge/$id': typeof ChallengeIdRoute
   '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
@@ -608,6 +630,7 @@ export interface FileRoutesByTo {
   '/lessons/$id': typeof LessonsIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
+  '/play/bot': typeof PlayBotRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/spectate/$gameId': typeof SpectateGameIdRoute
@@ -622,6 +645,7 @@ export interface FileRoutesByTo {
   '/learn': typeof LearnIndexRoute
   '/lessons': typeof LessonsIndexRoute
   '/openings': typeof OpeningsIndexRoute
+  '/play': typeof PlayIndexRoute
   '/puzzles': typeof PuzzlesIndexRoute
   '/spectate': typeof SpectateIndexRoute
   '/study': typeof StudyIndexRoute
@@ -681,6 +705,7 @@ export interface FileRoutesById {
   '/admin/tournaments': typeof AdminTournamentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
+  '/challenge/$id': typeof ChallengeIdRoute
   '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
@@ -689,6 +714,7 @@ export interface FileRoutesById {
   '/lessons/$id': typeof LessonsIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
+  '/play/bot': typeof PlayBotRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/spectate/$gameId': typeof SpectateGameIdRoute
@@ -703,6 +729,7 @@ export interface FileRoutesById {
   '/learn/': typeof LearnIndexRoute
   '/lessons/': typeof LessonsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
+  '/play/': typeof PlayIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
   '/spectate/': typeof SpectateIndexRoute
   '/study/': typeof StudyIndexRoute
@@ -763,6 +790,7 @@ export interface FileRouteTypes {
     | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
+    | '/challenge/$id'
     | '/clubs/$slug'
     | '/coaches/$coachId'
     | '/coaching/dashboard'
@@ -771,6 +799,7 @@ export interface FileRouteTypes {
     | '/lessons/$id'
     | '/openings/$eco'
     | '/play/$gameId'
+    | '/play/bot'
     | '/profile/$username'
     | '/puzzles/storm'
     | '/spectate/$gameId'
@@ -785,6 +814,7 @@ export interface FileRouteTypes {
     | '/learn/'
     | '/lessons/'
     | '/openings/'
+    | '/play/'
     | '/puzzles/'
     | '/spectate/'
     | '/study/'
@@ -842,6 +872,7 @@ export interface FileRouteTypes {
     | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
+    | '/challenge/$id'
     | '/clubs/$slug'
     | '/coaches/$coachId'
     | '/coaching/dashboard'
@@ -850,6 +881,7 @@ export interface FileRouteTypes {
     | '/lessons/$id'
     | '/openings/$eco'
     | '/play/$gameId'
+    | '/play/bot'
     | '/profile/$username'
     | '/puzzles/storm'
     | '/spectate/$gameId'
@@ -864,6 +896,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/lessons'
     | '/openings'
+    | '/play'
     | '/puzzles'
     | '/spectate'
     | '/study'
@@ -922,6 +955,7 @@ export interface FileRouteTypes {
     | '/admin/tournaments'
     | '/api/chat'
     | '/assistant/$threadId'
+    | '/challenge/$id'
     | '/clubs/$slug'
     | '/coaches/$coachId'
     | '/coaching/dashboard'
@@ -930,6 +964,7 @@ export interface FileRouteTypes {
     | '/lessons/$id'
     | '/openings/$eco'
     | '/play/$gameId'
+    | '/play/bot'
     | '/profile/$username'
     | '/puzzles/storm'
     | '/spectate/$gameId'
@@ -944,6 +979,7 @@ export interface FileRouteTypes {
     | '/learn/'
     | '/lessons/'
     | '/openings/'
+    | '/play/'
     | '/puzzles/'
     | '/spectate/'
     | '/study/'
@@ -995,6 +1031,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   ApiChatRoute: typeof ApiChatRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
+  ChallengeIdRoute: typeof ChallengeIdRoute
   ClubsSlugRoute: typeof ClubsSlugRoute
   CoachesCoachIdRoute: typeof CoachesCoachIdRoute
   CoachingDashboardRoute: typeof CoachingDashboardRoute
@@ -1003,6 +1040,7 @@ export interface RootRouteChildren {
   LessonsIdRoute: typeof LessonsIdRoute
   OpeningsEcoRoute: typeof OpeningsEcoRoute
   PlayGameIdRoute: typeof PlayGameIdRoute
+  PlayBotRoute: typeof PlayBotRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
   SpectateGameIdRoute: typeof SpectateGameIdRoute
@@ -1016,6 +1054,7 @@ export interface RootRouteChildren {
   LearnIndexRoute: typeof LearnIndexRoute
   LessonsIndexRoute: typeof LessonsIndexRoute
   OpeningsIndexRoute: typeof OpeningsIndexRoute
+  PlayIndexRoute: typeof PlayIndexRoute
   PuzzlesIndexRoute: typeof PuzzlesIndexRoute
   SpectateIndexRoute: typeof SpectateIndexRoute
   StudyIndexRoute: typeof StudyIndexRoute
@@ -1212,6 +1251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PuzzlesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/': {
+      id: '/play/'
+      path: '/play'
+      fullPath: '/play/'
+      preLoaderRoute: typeof PlayIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/openings/': {
       id: '/openings/'
       path: '/openings'
@@ -1310,6 +1356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/bot': {
+      id: '/play/bot'
+      path: '/play/bot'
+      fullPath: '/play/bot'
+      preLoaderRoute: typeof PlayBotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/play/$gameId': {
       id: '/play/$gameId'
       path: '/play/$gameId'
@@ -1364,6 +1417,13 @@ declare module '@tanstack/react-router' {
       path: '/clubs/$slug'
       fullPath: '/clubs/$slug'
       preLoaderRoute: typeof ClubsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/challenge/$id': {
+      id: '/challenge/$id'
+      path: '/challenge/$id'
+      fullPath: '/challenge/$id'
+      preLoaderRoute: typeof ChallengeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assistant/$threadId': {
@@ -1700,6 +1760,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   ApiChatRoute: ApiChatRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,
+  ChallengeIdRoute: ChallengeIdRoute,
   ClubsSlugRoute: ClubsSlugRoute,
   CoachesCoachIdRoute: CoachesCoachIdRoute,
   CoachingDashboardRoute: CoachingDashboardRoute,
@@ -1708,6 +1769,7 @@ const rootRouteChildren: RootRouteChildren = {
   LessonsIdRoute: LessonsIdRoute,
   OpeningsEcoRoute: OpeningsEcoRoute,
   PlayGameIdRoute: PlayGameIdRoute,
+  PlayBotRoute: PlayBotRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
   SpectateGameIdRoute: SpectateGameIdRoute,
@@ -1721,6 +1783,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearnIndexRoute: LearnIndexRoute,
   LessonsIndexRoute: LessonsIndexRoute,
   OpeningsIndexRoute: OpeningsIndexRoute,
+  PlayIndexRoute: PlayIndexRoute,
   PuzzlesIndexRoute: PuzzlesIndexRoute,
   SpectateIndexRoute: SpectateIndexRoute,
   StudyIndexRoute: StudyIndexRoute,

@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { TIME_CONTROL_IDS } from "@/lib/time-controls";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { CREATE_LIMITS } from "./tournament-config";
@@ -28,7 +29,7 @@ export const createTournament = createServerFn({ method: "POST" })
         name: z.string().min(3).max(80),
         description: z.string().max(500).optional(),
         type: TypeEnum,
-        timeControl: z.enum(["3+0", "5+0", "10+0", "15+10"]),
+        timeControl: z.enum(TIME_CONTROL_IDS),
         variant: z.enum(["standard", "chess960"]).default("standard"),
         rated: z.boolean().default(true),
         rounds: z.number().int().min(1).max(15).default(5),

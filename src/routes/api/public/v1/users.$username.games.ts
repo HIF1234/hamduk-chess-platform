@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { idsIn } from "@/lib/time-controls";
 import { withApiKey, json, resolveOrgUser } from "@/lib/api-keys.server";
 
 const TC_MAP: Record<string, string[]> = {
-  bullet: ["1+0", "2+1"],
-  blitz: ["3+0", "5+0"],
-  rapid: ["10+0", "15+10"],
+  bullet: idsIn("bullet"),
+  blitz: idsIn("blitz"),
+  rapid: idsIn("rapid"),
+  classical: idsIn("classical"),
 };
 
 export const Route = createFileRoute("/api/public/v1/users/$username/games")({

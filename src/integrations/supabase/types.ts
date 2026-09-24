@@ -1038,6 +1038,67 @@ export type Database = {
           },
         ]
       }
+      game_challenges: {
+        Row: {
+          accepted_by: string | null
+          created_at: string
+          creator_color: string
+          creator_id: string
+          expires_at: string
+          game_id: string | null
+          id: string
+          rated: boolean
+          time_control: string
+          variant: string
+        }
+        Insert: {
+          accepted_by?: string | null
+          created_at?: string
+          creator_color?: string
+          creator_id: string
+          expires_at?: string
+          game_id?: string | null
+          id?: string
+          rated?: boolean
+          time_control: string
+          variant?: string
+        }
+        Update: {
+          accepted_by?: string | null
+          created_at?: string
+          creator_color?: string
+          creator_id?: string
+          expires_at?: string
+          game_id?: string | null
+          id?: string
+          rated?: boolean
+          time_control?: string
+          variant?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_challenges_accepted_by_fkey"
+            columns: ["accepted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_challenges_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_challenges_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       game_events: {
         Row: {
           by_user: string | null
