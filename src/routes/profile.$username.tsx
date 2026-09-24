@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { ReportButton } from "@/components/ReportButton";
 import { TIME_CONTROL_IDS } from "@/lib/time-controls";
 import { AchievementsGrid } from "@/components/AchievementsGrid";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -115,6 +116,9 @@ function ProfilePage() {
           </div>
 
           <SocialActions targetId={p.id} targetUsername={p.username} />
+          <div className="mt-2">
+            <ReportButton targetType="user" targetId={p.id} label="Report player" />
+          </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Stat label="Games" value={p.games_played} />

@@ -126,7 +126,16 @@ export function Sidebar() {
               Guest account
             </span>
           )}
-          <div className="flex justify-center gap-3 text-[11px] text-muted-foreground">
+          <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 px-2 text-[11px] text-muted-foreground">
+            <Link to="/about" className="hover:text-foreground">
+              About
+            </Link>
+            <Link to="/support" className="hover:text-foreground">
+              Help
+            </Link>
+            <Link to="/fair-play" className="hover:text-foreground">
+              Fair play
+            </Link>
             {user && (
               <Link to="/settings" className="hover:text-foreground">
                 Settings

@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -23,11 +25,13 @@ import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as InviteRouteImport } from './routes/invite'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as FeedRouteImport } from './routes/feed'
+import { Route as FairPlayRouteImport } from './routes/fair-play'
 import { Route as CorrespondenceRouteImport } from './routes/correspondence'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as ApiDashboardRouteImport } from './routes/api-dashboard'
 import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TournamentsIndexRouteImport } from './routes/tournaments.index'
 import { Route as TacticsIndexRouteImport } from './routes/tactics.index'
@@ -96,9 +100,19 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RefundPolicyRoute = RefundPolicyRouteImport.update({
@@ -161,6 +175,11 @@ const FeedRoute = FeedRouteImport.update({
   path: '/feed',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FairPlayRoute = FairPlayRouteImport.update({
+  id: '/fair-play',
+  path: '/fair-play',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CorrespondenceRoute = CorrespondenceRouteImport.update({
   id: '/correspondence',
   path: '/correspondence',
@@ -184,6 +203,11 @@ const AnalysisRoute = AnalysisRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -510,11 +534,13 @@ const ApiPublicV1ClassesSessionIdSetPositionRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/analysis': typeof AnalysisRoute
   '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
   '/correspondence': typeof CorrespondenceRoute
+  '/fair-play': typeof FairPlayRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
   '/invite': typeof InviteRoute
@@ -527,7 +553,9 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
@@ -593,10 +621,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/analysis': typeof AnalysisRoute
   '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
   '/correspondence': typeof CorrespondenceRoute
+  '/fair-play': typeof FairPlayRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
   '/invite': typeof InviteRoute
@@ -609,7 +639,9 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
@@ -676,11 +708,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/analysis': typeof AnalysisRoute
   '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
   '/correspondence': typeof CorrespondenceRoute
+  '/fair-play': typeof FairPlayRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
   '/invite': typeof InviteRoute
@@ -693,7 +727,9 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
@@ -761,11 +797,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/admin'
     | '/analysis'
     | '/api-dashboard'
     | '/billing'
     | '/correspondence'
+    | '/fair-play'
     | '/feed'
     | '/insights'
     | '/invite'
@@ -778,7 +816,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/privacy-policy'
     | '/refund-policy'
+    | '/reset-password'
     | '/settings'
+    | '/support'
     | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
@@ -844,10 +884,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/analysis'
     | '/api-dashboard'
     | '/billing'
     | '/correspondence'
+    | '/fair-play'
     | '/feed'
     | '/insights'
     | '/invite'
@@ -860,7 +902,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/privacy-policy'
     | '/refund-policy'
+    | '/reset-password'
     | '/settings'
+    | '/support'
     | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
@@ -926,11 +970,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/admin'
     | '/analysis'
     | '/api-dashboard'
     | '/billing'
     | '/correspondence'
+    | '/fair-play'
     | '/feed'
     | '/insights'
     | '/invite'
@@ -943,7 +989,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/privacy-policy'
     | '/refund-policy'
+    | '/reset-password'
     | '/settings'
+    | '/support'
     | '/terms'
     | '/admin/audit-log'
     | '/admin/coaches'
@@ -1010,11 +1058,13 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   AnalysisRoute: typeof AnalysisRoute
   ApiDashboardRoute: typeof ApiDashboardRoute
   BillingRoute: typeof BillingRoute
   CorrespondenceRoute: typeof CorrespondenceRoute
+  FairPlayRoute: typeof FairPlayRoute
   FeedRoute: typeof FeedRoute
   InsightsRoute: typeof InsightsRoute
   InviteRoute: typeof InviteRoute
@@ -1027,7 +1077,9 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
+  SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
   ApiChatRoute: typeof ApiChatRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
@@ -1083,11 +1135,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/refund-policy': {
@@ -1174,6 +1240,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FeedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fair-play': {
+      id: '/fair-play'
+      path: '/fair-play'
+      fullPath: '/fair-play'
+      preLoaderRoute: typeof FairPlayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/correspondence': {
       id: '/correspondence'
       path: '/correspondence'
@@ -1207,6 +1280,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -1739,11 +1819,13 @@ const ApiPublicV1EmbedTokenRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   AnalysisRoute: AnalysisRoute,
   ApiDashboardRoute: ApiDashboardRoute,
   BillingRoute: BillingRoute,
   CorrespondenceRoute: CorrespondenceRoute,
+  FairPlayRoute: FairPlayRoute,
   FeedRoute: FeedRoute,
   InsightsRoute: InsightsRoute,
   InviteRoute: InviteRoute,
@@ -1756,7 +1838,9 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RefundPolicyRoute: RefundPolicyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
+  SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
   ApiChatRoute: ApiChatRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,

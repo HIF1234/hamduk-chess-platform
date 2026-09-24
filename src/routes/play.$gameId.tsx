@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ReportButton } from "@/components/ReportButton";
 import { ShareGame } from "@/components/ShareGame";
 import { useBoardSquares } from "@/lib/preferences";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
@@ -403,6 +404,11 @@ function PlayPage() {
               >
                 Review game
               </button>
+            )}
+            {game.status === "completed" && isParticipant && (
+              <div className="mt-2">
+                <ReportButton targetType="game" targetId={game.id} label="Report this game" />
+              </div>
             )}
             {game.status === "completed" && (
               <div className="mt-3">

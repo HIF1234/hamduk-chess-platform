@@ -30,12 +30,23 @@ function LoginPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data: signUp, error } = await supabase.auth.signUp({
           email,
           password,
-          options: { data: { username: username || undefined } },
+          options: {
+            data: { username: username || undefined },
+            emailRedirectTo: window.location.origin + "/play",
+          },
         });
         if (error) throw error;
+        if (!signUp.session) {
+          // Email confirmation is on: the account is active once they click the link.
+          toast.success("Almost there! Check your email to confirm your account.", {
+            duration: 8000,
+          });
+          setMode("signin");
+          return;
+        }
         toast.success("Account created. You're signed in.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -48,6 +59,23 @@ function LoginPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function handleForgot() {
+    if (!email) {
+      toast.info("Type your email address first, then tap “Forgot password?”.");
+      return;
+    }
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/reset-password",
+    });
+    setLoading(false);
+    if (error) toast.error(error.message);
+    else
+      toast.success("If that email has an account, a reset link is on its way.", {
+        duration: 8000,
+      });
   }
 
   async function handleGoogle() {
@@ -166,6 +194,15 @@ function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               />
+              {mode === "signin" && (
+                <button
+                  type="button"
+                  onClick={() => void handleForgot()}
+                  className="mt-1.5 text-xs text-muted-foreground hover:text-foreground hover:underline"
+                >
+                  Forgot password?
+                </button>
+              )}
             </div>
             <button
               type="submit"
