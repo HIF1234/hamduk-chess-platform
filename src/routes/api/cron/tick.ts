@@ -14,6 +14,7 @@ export const Route = createFileRoute("/api/cron/tick")({
           correspondence: async () =>
             (await import("@/lib/correspondence.server")).sweepCorrespondenceDeadlines(),
           webhooks: async () => (await import("@/lib/webhooks.server")).retryDueDeliveries(),
+          memberships: async () => (await import("@/lib/paystack.server")).expireSubscriptions(),
         };
         const results: Record<string, unknown> = {};
         for (const [name, run] of Object.entries(jobs)) {

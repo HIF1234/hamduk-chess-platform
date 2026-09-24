@@ -139,6 +139,12 @@ export function TermsPage() {
                 your access ends.
               </p>
               <p>
+                Referral rewards: when a new player joins through your invite link and buys their
+                first membership, you receive 30 free days of membership, once per invited player.
+                Rewards have no cash value, and we may withhold rewards obtained through fake or
+                duplicate accounts.
+              </p>
+              <p>
                 Tournament entry fees and coaching session fees are shown before you pay. Coaches on
                 the marketplace are independent; they set their own rates and we keep a platform fee
                 that is shown on the booking.

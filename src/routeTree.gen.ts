@@ -20,6 +20,7 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LobbyRouteImport } from './routes/lobby'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as InviteRouteImport } from './routes/invite'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as CorrespondenceRouteImport } from './routes/correspondence'
@@ -140,6 +141,11 @@ const LobbyRoute = LobbyRouteImport.update({
 const LeaderboardRoute = LeaderboardRouteImport.update({
   id: '/leaderboard',
   path: '/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteRoute = InviteRouteImport.update({
+  id: '/invite',
+  path: '/invite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InsightsRoute = InsightsRouteImport.update({
@@ -493,6 +499,7 @@ export interface FileRoutesByFullPath {
   '/correspondence': typeof CorrespondenceRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
+  '/invite': typeof InviteRoute
   '/leaderboard': typeof LeaderboardRoute
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
@@ -571,6 +578,7 @@ export interface FileRoutesByTo {
   '/correspondence': typeof CorrespondenceRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
+  '/invite': typeof InviteRoute
   '/leaderboard': typeof LeaderboardRoute
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
@@ -651,6 +659,7 @@ export interface FileRoutesById {
   '/correspondence': typeof CorrespondenceRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
+  '/invite': typeof InviteRoute
   '/leaderboard': typeof LeaderboardRoute
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
@@ -732,6 +741,7 @@ export interface FileRouteTypes {
     | '/correspondence'
     | '/feed'
     | '/insights'
+    | '/invite'
     | '/leaderboard'
     | '/lobby'
     | '/login'
@@ -810,6 +820,7 @@ export interface FileRouteTypes {
     | '/correspondence'
     | '/feed'
     | '/insights'
+    | '/invite'
     | '/leaderboard'
     | '/lobby'
     | '/login'
@@ -889,6 +900,7 @@ export interface FileRouteTypes {
     | '/correspondence'
     | '/feed'
     | '/insights'
+    | '/invite'
     | '/leaderboard'
     | '/lobby'
     | '/login'
@@ -969,6 +981,7 @@ export interface RootRouteChildren {
   CorrespondenceRoute: typeof CorrespondenceRoute
   FeedRoute: typeof FeedRoute
   InsightsRoute: typeof InsightsRoute
+  InviteRoute: typeof InviteRoute
   LeaderboardRoute: typeof LeaderboardRoute
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
@@ -1099,6 +1112,13 @@ declare module '@tanstack/react-router' {
       path: '/leaderboard'
       fullPath: '/leaderboard'
       preLoaderRoute: typeof LeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite': {
+      id: '/invite'
+      path: '/invite'
+      fullPath: '/invite'
+      preLoaderRoute: typeof InviteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/insights': {
@@ -1666,6 +1686,7 @@ const rootRouteChildren: RootRouteChildren = {
   CorrespondenceRoute: CorrespondenceRoute,
   FeedRoute: FeedRoute,
   InsightsRoute: InsightsRoute,
+  InviteRoute: InviteRoute,
   LeaderboardRoute: LeaderboardRoute,
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,

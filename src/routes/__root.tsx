@@ -145,6 +145,13 @@ function AuthAwareShell() {
   const queryClient = useQueryClient();
   useEffect(() => {
     initTheme();
+    // Remember an invite code from ?ref=… until the visitor has a real account.
+    try {
+      const ref = new URLSearchParams(window.location.search).get("ref");
+      if (ref && /^[A-Za-z2-9]{8}$/.test(ref)) localStorage.setItem("hamduk:ref", ref.toUpperCase());
+    } catch {
+      /* storage unavailable */
+    }
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       router.invalidate();
       queryClient.invalidateQueries();
@@ -157,6 +164,22 @@ function AuthAwareShell() {
         if (event === "SIGNED_IN") {
           void import("@/lib/achievements.functions")
             .then(({ checkMyAchievements }) => checkMyAchievements())
+            .catch(() => {});
+        }
+      }
+      // Link a new (non-guest) account to the friend whose invite link brought it here.
+      // Includes USER_UPDATED so guests who upgrade to a real account are covered.
+      if (session && !(session.user as { is_anonymous?: boolean }).is_anonymous) {
+        let pendingRef: string | null = null;
+        try {
+          pendingRef = localStorage.getItem("hamduk:ref");
+        } catch {
+          /* storage unavailable */
+        }
+        if (pendingRef) {
+          void import("@/lib/referrals.functions")
+            .then(({ claimReferral }) => claimReferral({ data: { code: pendingRef! } }))
+            .then(() => localStorage.removeItem("hamduk:ref"))
             .catch(() => {});
         }
       }

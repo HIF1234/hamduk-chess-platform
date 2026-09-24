@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ShareGame } from "@/components/ShareGame";
 import { useBoardSquares } from "@/lib/preferences";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -402,6 +403,17 @@ function PlayPage() {
               >
                 Review game
               </button>
+            )}
+            {game.status === "completed" && (
+              <div className="mt-3">
+                <ShareGame
+                  gameId={game.id}
+                  fen={game.fen}
+                  pgn={game.pgn || undefined}
+                  headline={statusText}
+                  orientation={orientation}
+                />
+              </div>
             )}
 
             <div className="mt-3">

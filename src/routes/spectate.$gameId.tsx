@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ShareGame } from "@/components/ShareGame";
 import { useBoardSquares } from "@/lib/preferences";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Chess } from "chess.js";
@@ -198,6 +199,18 @@ function SpectatePage() {
               {game.time_control} · {game.variant}
             </p>
             <p className="mt-1 font-serif text-lg font-bold">{statusText}</p>
+            <div className="mt-3">
+              <ShareGame
+                gameId={game.id}
+                fen={chess.fen()}
+                pgn={game.pgn || undefined}
+                headline={
+                  game.status === "completed"
+                    ? statusText
+                    : `Watch ${white?.username ?? "White"} vs ${black?.username ?? "Black"} live`
+                }
+              />
+            </div>
             <p className="mt-2 flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Engine (depth 10)</span>
               <span className="font-mono font-bold">

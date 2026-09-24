@@ -1649,6 +1649,8 @@ export type Database = {
           paystack_subscription_code: string | null
           preferences: Json
           rating: number
+          referral_code: string | null
+          referred_by: string | null
           subscription_renews_at: string | null
           subscription_status: string
           subscription_tier: Database["public"]["Enums"]["subscription_tier_enum"]
@@ -1679,6 +1681,8 @@ export type Database = {
           paystack_subscription_code?: string | null
           preferences?: Json
           rating?: number
+          referral_code?: string | null
+          referred_by?: string | null
           subscription_renews_at?: string | null
           subscription_status?: string
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
@@ -1709,6 +1713,8 @@ export type Database = {
           paystack_subscription_code?: string | null
           preferences?: Json
           rating?: number
+          referral_code?: string | null
+          referred_by?: string | null
           subscription_renews_at?: string | null
           subscription_status?: string
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
@@ -1719,7 +1725,15 @@ export type Database = {
           vacation_year?: number | null
           wins?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       puzzle_attempts: {
         Row: {
@@ -1923,6 +1937,51 @@ export type Database = {
           wins?: number
         }
         Relationships: []
+      }
+      referral_events: {
+        Row: {
+          converted_tier: Database["public"]["Enums"]["subscription_tier_enum"]
+          created_at: string
+          id: string
+          payment_reference: string | null
+          referred_id: string
+          referrer_id: string
+          reward_days: number
+        }
+        Insert: {
+          converted_tier: Database["public"]["Enums"]["subscription_tier_enum"]
+          created_at?: string
+          id?: string
+          payment_reference?: string | null
+          referred_id: string
+          referrer_id: string
+          reward_days: number
+        }
+        Update: {
+          converted_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
+          created_at?: string
+          id?: string
+          payment_reference?: string | null
+          referred_id?: string
+          referrer_id?: string
+          reward_days?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_events_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_events_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reports: {
         Row: {

@@ -11,7 +11,9 @@ export type NotificationType =
   | "friend_accepted"
   | "message"
   | "club_approved"
-  | "tournament_starting";
+  | "tournament_starting"
+  | "referral_reward"
+  | "membership_expired";
 
 export async function notify(
   userId: string,
