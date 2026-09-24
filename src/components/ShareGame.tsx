@@ -1,8 +1,24 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Copy, Download, FileText, Loader2, MessageCircle, Share2 } from "lucide-react";
+import {
+  Clapperboard,
+  Copy,
+  Download,
+  FileText,
+  Loader2,
+  MessageCircle,
+  Share2,
+} from "lucide-react";
 import { BOARD_THEMES, usePreferences } from "@/lib/preferences";
-import { SITE_URL, copyText, nativeShare, positionImage, whatsappUrl, xUrl } from "@/lib/share";
+import {
+  SITE_URL,
+  copyText,
+  gameGif,
+  nativeShare,
+  positionImage,
+  whatsappUrl,
+  xUrl,
+} from "@/lib/share";
 
 /** Share a finished (or live) game: link, WhatsApp, X, PGN and a position image. */
 export function ShareGame({
@@ -21,6 +37,7 @@ export function ShareGame({
 }) {
   const { boardTheme } = usePreferences();
   const [busy, setBusy] = useState(false);
+  const [gifBusy, setGifBusy] = useState(false);
   const url = `${SITE_URL}/spectate/${gameId}`;
   const text = `${headline} on Hamduk Chess ♟️`;
 
@@ -49,6 +66,36 @@ export function ShareGame({
     }
   }
 
+  async function deliver(blob: Blob, name: string) {
+    const file = new File([blob], name, { type: blob.type });
+    if (await nativeShare({ title: "Hamduk Chess", text, url, files: [file] })) return;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  }
+
+  async function gif() {
+    if (!pgn) return;
+    setGifBusy(true);
+    try {
+      const t = BOARD_THEMES[boardTheme];
+      const blob = await gameGif({
+        pgn,
+        light: t.light,
+        dark: t.dark,
+        orientation,
+        title: headline,
+      });
+      await deliver(blob, `hamduk-${gameId.slice(0, 8)}.gif`);
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setGifBusy(false);
+    }
+  }
+
   const btn =
     "inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium hover:bg-accent";
 
@@ -66,6 +113,16 @@ export function ShareGame({
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}{" "}
         Image
       </button>
+      {pgn && (
+        <button onClick={() => void gif()} disabled={gifBusy} className={btn}>
+          {gifBusy ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Clapperboard className="h-4 w-4" />
+          )}{" "}
+          GIF
+        </button>
+      )}
       <button
         onClick={async () => {
           if (!(await nativeShare({ title: "Hamduk Chess", text, url }))) {
