@@ -20,6 +20,8 @@ import {
   CalendarClock,
   LogOut,
   Castle,
+  MessagesSquare,
+  Tv,
   Gift,
 
 } from "lucide-react";
@@ -46,6 +48,8 @@ export function Sidebar() {
     { to: "/study", label: "Study Boards", Icon: BookOpen },
     { to: "/tournaments", label: "Tournaments", Icon: Trophy },
     { to: "/clubs", label: "Clubs", Icon: Castle },
+    { to: "/forums", label: "Forums", Icon: MessagesSquare },
+    { to: "/tv", label: "HamdukChess TV", Icon: Tv },
     { to: "/invite", label: "Invite friends", Icon: Gift },
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user

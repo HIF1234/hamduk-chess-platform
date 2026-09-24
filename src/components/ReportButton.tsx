@@ -11,7 +11,7 @@ export function ReportButton({
   targetId,
   label = "Report",
 }: {
-  targetType: "user" | "game" | "club_post" | "message";
+  targetType: "user" | "game" | "club_post" | "message" | "forum_post";
   targetId: string;
   label?: string;
 }) {

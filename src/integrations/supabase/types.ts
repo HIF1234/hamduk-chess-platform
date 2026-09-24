@@ -946,6 +946,160 @@ export type Database = {
           },
         ]
       }
+      forum_post_likes: {
+        Row: {
+          created_at: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forum_post_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_posts: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          deleted_at: string | null
+          id: string
+          likes: number
+          parent_post_id: string | null
+          thread_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          likes?: number
+          parent_post_id?: string | null
+          thread_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          likes?: number
+          parent_post_id?: string | null
+          thread_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forum_posts_parent_post_id_fkey"
+            columns: ["parent_post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forum_posts_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "forum_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_threads: {
+        Row: {
+          author_id: string
+          category: string
+          club_id: string | null
+          created_at: string
+          deleted_at: string | null
+          id: string
+          last_reply_at: string
+          locked: boolean
+          pinned: boolean
+          reply_count: number
+          title: string
+          updated_at: string
+          views: number
+        }
+        Insert: {
+          author_id: string
+          category: string
+          club_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          last_reply_at?: string
+          locked?: boolean
+          pinned?: boolean
+          reply_count?: number
+          title: string
+          updated_at?: string
+          views?: number
+        }
+        Update: {
+          author_id?: string
+          category?: string
+          club_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          last_reply_at?: string
+          locked?: boolean
+          pinned?: boolean
+          reply_count?: number
+          title?: string
+          updated_at?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_threads_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forum_threads_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       friends: {
         Row: {
           addressee_id: string
@@ -2483,6 +2637,81 @@ export type Database = {
           },
         ]
       }
+      tv_commentary: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          game_id: string | null
+          id: string
+          ply: number | null
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          game_id?: string | null
+          id?: string
+          ply?: number | null
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          game_id?: string | null
+          id?: string
+          ply?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tv_commentary_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tv_commentary_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tv_commentators: {
+        Row: {
+          added_by: string | null
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          added_by?: string | null
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          added_by?: string | null
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tv_commentators_added_by_fkey"
+            columns: ["added_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tv_commentators_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_achievements: {
         Row: {
           achievement_slug: string
@@ -2915,6 +3144,7 @@ export type Database = {
         }
         Returns: string
       }
+      forum_bump_views: { Args: { p_thread: string }; Returns: undefined }
       free_daily_puzzle_limit: { Args: never; Returns: number }
       is_admin: { Args: { min_role?: string }; Returns: boolean }
       is_club_admin: {

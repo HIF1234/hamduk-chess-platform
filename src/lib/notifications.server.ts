@@ -13,7 +13,8 @@ export type NotificationType =
   | "club_approved"
   | "tournament_starting"
   | "referral_reward"
-  | "membership_expired";
+  | "membership_expired"
+  | "forum_reply";
 
 export async function notify(
   userId: string,

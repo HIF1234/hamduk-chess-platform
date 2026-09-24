@@ -3,6 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Award,
   Bell,
+  Crown,
+  Gift,
+  MessageSquare,
   CheckCheck,
   Loader2,
   Mail,
@@ -38,6 +41,9 @@ const ICONS: Record<string, typeof Bell> = {
   message: Mail,
   club_approved: Users,
   tournament_starting: Swords,
+  forum_reply: MessageSquare,
+  referral_reward: Gift,
+  membership_expired: Crown,
 };
 
 function NotificationsPage() {

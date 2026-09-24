@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TvRouteImport } from './routes/tv'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -42,6 +43,7 @@ import { Route as PlayIndexRouteImport } from './routes/play.index'
 import { Route as OpeningsIndexRouteImport } from './routes/openings.index'
 import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
+import { Route as ForumsIndexRouteImport } from './routes/forums.index'
 import { Route as EndgameIndexRouteImport } from './routes/endgame.index'
 import { Route as CoachesIndexRouteImport } from './routes/coaches.index'
 import { Route as ClubsIndexRouteImport } from './routes/clubs.index'
@@ -58,6 +60,7 @@ import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
 import { Route as OpeningsEcoRouteImport } from './routes/openings.$eco'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as LearnTutorialIdRouteImport } from './routes/learn.$tutorialId'
+import { Route as ForumsCategoryRouteImport } from './routes/forums.$category'
 import { Route as EndgameIdRouteImport } from './routes/endgame.$id'
 import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboard'
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
@@ -75,6 +78,7 @@ import { Route as AdminCoachesRouteImport } from './routes/admin.coaches'
 import { Route as AdminAuditLogRouteImport } from './routes/admin.audit-log'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
+import { Route as ForumsThreadThreadIdRouteImport } from './routes/forums.thread.$threadId'
 import { Route as EmbedKindTokenRouteImport } from './routes/embed.$kind.$token'
 import { Route as ApiHealthAiRouteImport } from './routes/api/health/ai'
 import { Route as ApiCronTickRouteImport } from './routes/api/cron/tick'
@@ -95,6 +99,11 @@ import { Route as ApiPublicV1EmbedTokenTokenRouteImport } from './routes/api/pub
 import { Route as ApiPublicV1ClassesSessionIdStudentsRouteImport } from './routes/api/public/v1/classes.session.$id.students'
 import { Route as ApiPublicV1ClassesSessionIdSetPositionRouteImport } from './routes/api/public/v1/classes.session.$id.set-position'
 
+const TvRoute = TvRouteImport.update({
+  id: '/tv',
+  path: '/tv',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -260,6 +269,11 @@ const LearnIndexRoute = LearnIndexRouteImport.update({
   path: '/learn/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForumsIndexRoute = ForumsIndexRouteImport.update({
+  id: '/forums/',
+  path: '/forums/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EndgameIndexRoute = EndgameIndexRouteImport.update({
   id: '/endgame/',
   path: '/endgame/',
@@ -338,6 +352,11 @@ const LessonsIdRoute = LessonsIdRouteImport.update({
 const LearnTutorialIdRoute = LearnTutorialIdRouteImport.update({
   id: '/learn/$tutorialId',
   path: '/learn/$tutorialId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForumsCategoryRoute = ForumsCategoryRouteImport.update({
+  id: '/forums/$category',
+  path: '/forums/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EndgameIdRoute = EndgameIdRouteImport.update({
@@ -423,6 +442,11 @@ const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
 const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
   id: '/puzzles/daily/$date',
   path: '/puzzles/daily/$date',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForumsThreadThreadIdRoute = ForumsThreadThreadIdRouteImport.update({
+  id: '/forums/thread/$threadId',
+  path: '/forums/thread/$threadId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmbedKindTokenRoute = EmbedKindTokenRouteImport.update({
@@ -557,6 +581,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/tv': typeof TvRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
@@ -572,6 +597,7 @@ export interface FileRoutesByFullPath {
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
+  '/forums/$category': typeof ForumsCategoryRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
@@ -588,6 +614,7 @@ export interface FileRoutesByFullPath {
   '/clubs/': typeof ClubsIndexRoute
   '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
+  '/forums/': typeof ForumsIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/lessons/': typeof LessonsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
@@ -601,6 +628,7 @@ export interface FileRoutesByFullPath {
   '/api/cron/tick': typeof ApiCronTickRoute
   '/api/health/ai': typeof ApiHealthAiRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
+  '/forums/thread/$threadId': typeof ForumsThreadThreadIdRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
@@ -643,6 +671,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/tv': typeof TvRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
@@ -658,6 +687,7 @@ export interface FileRoutesByTo {
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
+  '/forums/$category': typeof ForumsCategoryRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
@@ -674,6 +704,7 @@ export interface FileRoutesByTo {
   '/clubs': typeof ClubsIndexRoute
   '/coaches': typeof CoachesIndexRoute
   '/endgame': typeof EndgameIndexRoute
+  '/forums': typeof ForumsIndexRoute
   '/learn': typeof LearnIndexRoute
   '/lessons': typeof LessonsIndexRoute
   '/openings': typeof OpeningsIndexRoute
@@ -687,6 +718,7 @@ export interface FileRoutesByTo {
   '/api/cron/tick': typeof ApiCronTickRoute
   '/api/health/ai': typeof ApiHealthAiRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
+  '/forums/thread/$threadId': typeof ForumsThreadThreadIdRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users': typeof AdminUsersIndexRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
@@ -731,6 +763,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
+  '/tv': typeof TvRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
@@ -746,6 +779,7 @@ export interface FileRoutesById {
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
+  '/forums/$category': typeof ForumsCategoryRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
@@ -762,6 +796,7 @@ export interface FileRoutesById {
   '/clubs/': typeof ClubsIndexRoute
   '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
+  '/forums/': typeof ForumsIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/lessons/': typeof LessonsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
@@ -775,6 +810,7 @@ export interface FileRoutesById {
   '/api/cron/tick': typeof ApiCronTickRoute
   '/api/health/ai': typeof ApiHealthAiRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
+  '/forums/thread/$threadId': typeof ForumsThreadThreadIdRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
@@ -820,6 +856,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/support'
     | '/terms'
+    | '/tv'
     | '/admin/audit-log'
     | '/admin/coaches'
     | '/admin/games'
@@ -835,6 +872,7 @@ export interface FileRouteTypes {
     | '/coaches/$coachId'
     | '/coaching/dashboard'
     | '/endgame/$id'
+    | '/forums/$category'
     | '/learn/$tutorialId'
     | '/lessons/$id'
     | '/openings/$eco'
@@ -851,6 +889,7 @@ export interface FileRouteTypes {
     | '/clubs/'
     | '/coaches/'
     | '/endgame/'
+    | '/forums/'
     | '/learn/'
     | '/lessons/'
     | '/openings/'
@@ -864,6 +903,7 @@ export interface FileRouteTypes {
     | '/api/cron/tick'
     | '/api/health/ai'
     | '/embed/$kind/$token'
+    | '/forums/thread/$threadId'
     | '/puzzles/daily/$date'
     | '/admin/users/'
     | '/api/public/paystack/webhook'
@@ -906,6 +946,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/support'
     | '/terms'
+    | '/tv'
     | '/admin/audit-log'
     | '/admin/coaches'
     | '/admin/games'
@@ -921,6 +962,7 @@ export interface FileRouteTypes {
     | '/coaches/$coachId'
     | '/coaching/dashboard'
     | '/endgame/$id'
+    | '/forums/$category'
     | '/learn/$tutorialId'
     | '/lessons/$id'
     | '/openings/$eco'
@@ -937,6 +979,7 @@ export interface FileRouteTypes {
     | '/clubs'
     | '/coaches'
     | '/endgame'
+    | '/forums'
     | '/learn'
     | '/lessons'
     | '/openings'
@@ -950,6 +993,7 @@ export interface FileRouteTypes {
     | '/api/cron/tick'
     | '/api/health/ai'
     | '/embed/$kind/$token'
+    | '/forums/thread/$threadId'
     | '/puzzles/daily/$date'
     | '/admin/users'
     | '/api/public/paystack/webhook'
@@ -993,6 +1037,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/support'
     | '/terms'
+    | '/tv'
     | '/admin/audit-log'
     | '/admin/coaches'
     | '/admin/games'
@@ -1008,6 +1053,7 @@ export interface FileRouteTypes {
     | '/coaches/$coachId'
     | '/coaching/dashboard'
     | '/endgame/$id'
+    | '/forums/$category'
     | '/learn/$tutorialId'
     | '/lessons/$id'
     | '/openings/$eco'
@@ -1024,6 +1070,7 @@ export interface FileRouteTypes {
     | '/clubs/'
     | '/coaches/'
     | '/endgame/'
+    | '/forums/'
     | '/learn/'
     | '/lessons/'
     | '/openings/'
@@ -1037,6 +1084,7 @@ export interface FileRouteTypes {
     | '/api/cron/tick'
     | '/api/health/ai'
     | '/embed/$kind/$token'
+    | '/forums/thread/$threadId'
     | '/puzzles/daily/$date'
     | '/admin/users/'
     | '/api/public/paystack/webhook'
@@ -1081,6 +1129,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
+  TvRoute: typeof TvRoute
   ApiChatRoute: typeof ApiChatRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
   ChallengeIdRoute: typeof ChallengeIdRoute
@@ -1088,6 +1137,7 @@ export interface RootRouteChildren {
   CoachesCoachIdRoute: typeof CoachesCoachIdRoute
   CoachingDashboardRoute: typeof CoachingDashboardRoute
   EndgameIdRoute: typeof EndgameIdRoute
+  ForumsCategoryRoute: typeof ForumsCategoryRoute
   LearnTutorialIdRoute: typeof LearnTutorialIdRoute
   LessonsIdRoute: typeof LessonsIdRoute
   OpeningsEcoRoute: typeof OpeningsEcoRoute
@@ -1103,6 +1153,7 @@ export interface RootRouteChildren {
   ClubsIndexRoute: typeof ClubsIndexRoute
   CoachesIndexRoute: typeof CoachesIndexRoute
   EndgameIndexRoute: typeof EndgameIndexRoute
+  ForumsIndexRoute: typeof ForumsIndexRoute
   LearnIndexRoute: typeof LearnIndexRoute
   LessonsIndexRoute: typeof LessonsIndexRoute
   OpeningsIndexRoute: typeof OpeningsIndexRoute
@@ -1115,6 +1166,7 @@ export interface RootRouteChildren {
   ApiCronTickRoute: typeof ApiCronTickRoute
   ApiHealthAiRoute: typeof ApiHealthAiRoute
   EmbedKindTokenRoute: typeof EmbedKindTokenRoute
+  ForumsThreadThreadIdRoute: typeof ForumsThreadThreadIdRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
   ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRouteWithChildren
@@ -1128,6 +1180,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tv': {
+      id: '/tv'
+      path: '/tv'
+      fullPath: '/tv'
+      preLoaderRoute: typeof TvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -1359,6 +1418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forums/': {
+      id: '/forums/'
+      path: '/forums'
+      fullPath: '/forums/'
+      preLoaderRoute: typeof ForumsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/endgame/': {
       id: '/endgame/'
       path: '/endgame'
@@ -1469,6 +1535,13 @@ declare module '@tanstack/react-router' {
       path: '/learn/$tutorialId'
       fullPath: '/learn/$tutorialId'
       preLoaderRoute: typeof LearnTutorialIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forums/$category': {
+      id: '/forums/$category'
+      path: '/forums/$category'
+      fullPath: '/forums/$category'
+      preLoaderRoute: typeof ForumsCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/endgame/$id': {
@@ -1588,6 +1661,13 @@ declare module '@tanstack/react-router' {
       path: '/puzzles/daily/$date'
       fullPath: '/puzzles/daily/$date'
       preLoaderRoute: typeof PuzzlesDailyDateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forums/thread/$threadId': {
+      id: '/forums/thread/$threadId'
+      path: '/forums/thread/$threadId'
+      fullPath: '/forums/thread/$threadId'
+      preLoaderRoute: typeof ForumsThreadThreadIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/embed/$kind/$token': {
@@ -1842,6 +1922,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
+  TvRoute: TvRoute,
   ApiChatRoute: ApiChatRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,
   ChallengeIdRoute: ChallengeIdRoute,
@@ -1849,6 +1930,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoachesCoachIdRoute: CoachesCoachIdRoute,
   CoachingDashboardRoute: CoachingDashboardRoute,
   EndgameIdRoute: EndgameIdRoute,
+  ForumsCategoryRoute: ForumsCategoryRoute,
   LearnTutorialIdRoute: LearnTutorialIdRoute,
   LessonsIdRoute: LessonsIdRoute,
   OpeningsEcoRoute: OpeningsEcoRoute,
@@ -1864,6 +1946,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClubsIndexRoute: ClubsIndexRoute,
   CoachesIndexRoute: CoachesIndexRoute,
   EndgameIndexRoute: EndgameIndexRoute,
+  ForumsIndexRoute: ForumsIndexRoute,
   LearnIndexRoute: LearnIndexRoute,
   LessonsIndexRoute: LessonsIndexRoute,
   OpeningsIndexRoute: OpeningsIndexRoute,
@@ -1876,6 +1959,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCronTickRoute: ApiCronTickRoute,
   ApiHealthAiRoute: ApiHealthAiRoute,
   EmbedKindTokenRoute: EmbedKindTokenRoute,
+  ForumsThreadThreadIdRoute: ForumsThreadThreadIdRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
   ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRouteWithChildren,
