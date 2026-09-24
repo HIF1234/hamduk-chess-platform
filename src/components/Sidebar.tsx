@@ -24,11 +24,11 @@ import {
   Tv,
   Newspaper,
   Gift,
-
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { StaffLink } from "@/components/StaffLink";
 
 // Desktop sidebar (md+). Mobile uses BottomNav.
 export function Sidebar() {
@@ -65,7 +65,6 @@ export function Sidebar() {
         ]
       : []),
     { to: "/billing", label: "Upgrade", Icon: Sparkles },
-
   ] as const;
 
   return (
@@ -95,6 +94,7 @@ export function Sidebar() {
         ))}
 
         <div className="mt-auto flex flex-col gap-2 pb-3 pt-4">
+          <StaffLink className="mx-1 rounded-md border border-gold/40 px-3 py-2 text-sm font-medium text-gold hover:bg-gold/10" />
           <Link
             to="/play"
             className="mx-1 inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"

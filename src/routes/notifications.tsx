@@ -9,6 +9,7 @@ import {
   CheckCheck,
   Loader2,
   Mail,
+  Megaphone,
   Swords,
   Trash2,
   UserPlus,
@@ -42,6 +43,7 @@ const ICONS: Record<string, typeof Bell> = {
   club_approved: Users,
   tournament_starting: Swords,
   forum_reply: MessageSquare,
+  announcement: Megaphone,
   referral_reward: Gift,
   membership_expired: Crown,
 };

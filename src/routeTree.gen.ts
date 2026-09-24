@@ -76,9 +76,12 @@ import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminOrgsRouteImport } from './routes/admin.orgs'
+import { Route as AdminGrowthRouteImport } from './routes/admin.growth'
 import { Route as AdminGamesRouteImport } from './routes/admin.games'
+import { Route as AdminCommunityRouteImport } from './routes/admin.community'
 import { Route as AdminCoachesRouteImport } from './routes/admin.coaches'
 import { Route as AdminAuditLogRouteImport } from './routes/admin.audit-log'
+import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ForumsThreadThreadIdRouteImport } from './routes/forums.thread.$threadId'
@@ -437,9 +440,19 @@ const AdminOrgsRoute = AdminOrgsRouteImport.update({
   path: '/orgs',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminGrowthRoute = AdminGrowthRouteImport.update({
+  id: '/growth',
+  path: '/growth',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminGamesRoute = AdminGamesRouteImport.update({
   id: '/games',
   path: '/games',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCommunityRoute = AdminCommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCoachesRoute = AdminCoachesRouteImport.update({
@@ -450,6 +463,11 @@ const AdminCoachesRoute = AdminCoachesRouteImport.update({
 const AdminAuditLogRoute = AdminAuditLogRouteImport.update({
   id: '/audit-log',
   path: '/audit-log',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
@@ -600,9 +618,12 @@ export interface FileRoutesByFullPath {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/tv': typeof TvRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
+  '/admin/community': typeof AdminCommunityRoute
   '/admin/games': typeof AdminGamesRoute
+  '/admin/growth': typeof AdminGrowthRoute
   '/admin/orgs': typeof AdminOrgsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/reports': typeof AdminReportsRoute
@@ -693,9 +714,12 @@ export interface FileRoutesByTo {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/tv': typeof TvRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
+  '/admin/community': typeof AdminCommunityRoute
   '/admin/games': typeof AdminGamesRoute
+  '/admin/growth': typeof AdminGrowthRoute
   '/admin/orgs': typeof AdminOrgsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/reports': typeof AdminReportsRoute
@@ -788,9 +812,12 @@ export interface FileRoutesById {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/tv': typeof TvRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
+  '/admin/community': typeof AdminCommunityRoute
   '/admin/games': typeof AdminGamesRoute
+  '/admin/growth': typeof AdminGrowthRoute
   '/admin/orgs': typeof AdminOrgsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/reports': typeof AdminReportsRoute
@@ -884,9 +911,12 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/tv'
+    | '/admin/announcements'
     | '/admin/audit-log'
     | '/admin/coaches'
+    | '/admin/community'
     | '/admin/games'
+    | '/admin/growth'
     | '/admin/orgs'
     | '/admin/payments'
     | '/admin/reports'
@@ -977,9 +1007,12 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/tv'
+    | '/admin/announcements'
     | '/admin/audit-log'
     | '/admin/coaches'
+    | '/admin/community'
     | '/admin/games'
+    | '/admin/growth'
     | '/admin/orgs'
     | '/admin/payments'
     | '/admin/reports'
@@ -1071,9 +1104,12 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/tv'
+    | '/admin/announcements'
     | '/admin/audit-log'
     | '/admin/coaches'
+    | '/admin/community'
     | '/admin/games'
+    | '/admin/growth'
     | '/admin/orgs'
     | '/admin/payments'
     | '/admin/reports'
@@ -1688,11 +1724,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrgsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/growth': {
+      id: '/admin/growth'
+      path: '/growth'
+      fullPath: '/admin/growth'
+      preLoaderRoute: typeof AdminGrowthRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/games': {
       id: '/admin/games'
       path: '/games'
       fullPath: '/admin/games'
       preLoaderRoute: typeof AdminGamesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/community': {
+      id: '/admin/community'
+      path: '/community'
+      fullPath: '/admin/community'
+      preLoaderRoute: typeof AdminCommunityRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/coaches': {
@@ -1707,6 +1757,13 @@ declare module '@tanstack/react-router' {
       path: '/audit-log'
       fullPath: '/admin/audit-log'
       preLoaderRoute: typeof AdminAuditLogRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/announcements': {
+      id: '/admin/announcements'
+      path: '/announcements'
+      fullPath: '/admin/announcements'
+      preLoaderRoute: typeof AdminAnnouncementsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/users/': {
@@ -1867,9 +1924,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
   AdminAuditLogRoute: typeof AdminAuditLogRoute
   AdminCoachesRoute: typeof AdminCoachesRoute
+  AdminCommunityRoute: typeof AdminCommunityRoute
   AdminGamesRoute: typeof AdminGamesRoute
+  AdminGrowthRoute: typeof AdminGrowthRoute
   AdminOrgsRoute: typeof AdminOrgsRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminReportsRoute: typeof AdminReportsRoute
@@ -1881,9 +1941,12 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAnnouncementsRoute: AdminAnnouncementsRoute,
   AdminAuditLogRoute: AdminAuditLogRoute,
   AdminCoachesRoute: AdminCoachesRoute,
+  AdminCommunityRoute: AdminCommunityRoute,
   AdminGamesRoute: AdminGamesRoute,
+  AdminGrowthRoute: AdminGrowthRoute,
   AdminOrgsRoute: AdminOrgsRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminReportsRoute: AdminReportsRoute,

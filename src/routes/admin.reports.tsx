@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, EmptyState, Pager, PageHeader, Pill, when } from "@/components/admin/AdminUi";
 import { listReports, resolveReport } from "@/lib/admin.functions";
+import { getReportTargets, removeReportedContent } from "@/lib/admin-extra.functions";
 
 export const Route = createFileRoute("/admin/reports")({
   head: () => ({
@@ -14,7 +15,9 @@ export const Route = createFileRoute("/admin/reports")({
     ],
   }),
   component: AdminReports,
-  errorComponent: ({ error }) => <div className="p-4 text-sm text-destructive">{error.message}</div>,
+  errorComponent: ({ error }) => (
+    <div className="p-4 text-sm text-destructive">{error.message}</div>
+  ),
   notFoundComponent: () => <div className="p-4 text-sm text-muted-foreground">Not found</div>,
 });
 
@@ -27,6 +30,25 @@ function AdminReports() {
   const reports = useQuery({
     queryKey: ["admin-reports", status, page],
     queryFn: () => listReports({ data: { status, page } }),
+  });
+
+  const items = (reports.data?.reports ?? []).map((r) => ({
+    type: r.target_type,
+    id: r.target_id,
+  }));
+  const targets = useQuery({
+    queryKey: ["admin-report-targets", items.map((i) => `${i.type}:${i.id}`).join(",")],
+    enabled: items.length > 0,
+    queryFn: () => getReportTargets({ data: { items } }),
+  });
+  const remove = useMutation({
+    mutationFn: (reportId: string) => removeReportedContent({ data: { reportId } }),
+    onSuccess: () => {
+      toast.success("Content removed and report resolved");
+      qc.invalidateQueries({ queryKey: ["admin-reports"] });
+      qc.invalidateQueries({ queryKey: ["admin-report-targets"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const resolve = useMutation({
@@ -86,8 +108,37 @@ function AdminReports() {
                     {r.reason} <span className="text-muted-foreground">on {r.target_type}</span>
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    by {r.reporterName} · target {r.target_id} · {when(r.created_at)}
+                    by {r.reporterName} · {when(r.created_at)}
                   </p>
+                  {(() => {
+                    const t = targets.data?.[`${r.target_type}:${r.target_id}`];
+                    if (!t) return null;
+                    return (
+                      <div className="mt-2 rounded-lg border border-border bg-muted/30 p-3 text-sm">
+                        {t.href ? (
+                          <Link to={t.href} className="font-medium text-primary hover:underline">
+                            {t.label}
+                          </Link>
+                        ) : (
+                          <span className="font-medium">{t.label}</span>
+                        )}
+                        {t.content ? (
+                          <p className="mt-1 whitespace-pre-wrap text-muted-foreground">
+                            {t.content}
+                          </p>
+                        ) : null}
+                        {t.removable && r.status === "open" ? (
+                          <button
+                            type="button"
+                            onClick={() => remove.mutate(r.id)}
+                            className="mt-2 rounded-lg border border-destructive/50 px-3 py-1 text-xs text-destructive"
+                          >
+                            Remove post & resolve
+                          </button>
+                        ) : null}
+                      </div>
+                    );
+                  })()}
                   {r.details ? <p className="mt-2 text-sm">{r.details}</p> : null}
                   {r.resolution_note ? (
                     <p className="mt-2 text-xs text-muted-foreground">Note: {r.resolution_note}</p>

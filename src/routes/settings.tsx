@@ -17,6 +17,7 @@ import {
 import { getMySettings, updateMyAccount, updateMyPreferences } from "@/lib/preferences.functions";
 import { setVacationMode } from "@/lib/correspondence.functions";
 import { LEGAL } from "@/components/LegalPage";
+import { StaffLink } from "@/components/StaffLink";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [{ title: "Settings — Hamduk Chess" }] }),
@@ -94,7 +95,10 @@ function SettingsPage() {
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-        <h1 className="font-serif text-4xl font-bold tracking-tight">Settings</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="font-serif text-4xl font-bold tracking-tight">Settings</h1>
+          <StaffLink className="rounded-md border border-gold/40 px-3 py-1.5 text-sm font-medium text-gold hover:bg-gold/10" />
+        </div>
         <p className="mt-1 text-muted-foreground">
           {s ? (
             <>
