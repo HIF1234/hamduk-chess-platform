@@ -23,6 +23,13 @@ export async function emitGameCompleted(gameId: string) {
       .maybeSingle();
     if (!game || game.status !== "completed") return;
 
+    {
+      const { checkAchievements } = await import("@/lib/achievements.server");
+      await Promise.all(
+        Array.from(new Set([game.white_id, game.black_id])).map((u) => checkAchievements(u, ["games"])),
+      );
+    }
+
     const { data: players } = await supabaseAdmin
       .from("profiles")
       .select("id, username, rating")

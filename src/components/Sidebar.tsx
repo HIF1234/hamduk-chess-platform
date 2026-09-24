@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 // Desktop sidebar (md+). Mobile uses BottomNav.
 export function Sidebar() {
@@ -64,12 +65,12 @@ export function Sidebar() {
       aria-label="Primary"
       className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-background/95 backdrop-blur md:flex"
     >
-      <Link
-        to="/"
-        className="px-5 py-4 font-serif text-xl font-bold tracking-tight text-foreground"
-      >
-        Hamduk <span className="text-primary">Chess</span>
-      </Link>
+      <div className="flex items-center justify-between py-2 pl-5 pr-2">
+        <Link to="/" className="py-2 font-serif text-xl font-bold tracking-tight text-foreground">
+          Hamduk <span className="text-primary">Chess</span>
+        </Link>
+        {user && <NotificationBell />}
+      </div>
 
       <nav className="flex flex-1 flex-col gap-0.5 px-2">
         {topItems.map(({ to, label, Icon }) => (

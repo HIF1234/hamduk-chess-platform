@@ -261,3 +261,9 @@
   --board-light: oklch(0.78 0.16 75);      /* gold */
   --board-dark:  oklch(0.18 0.01 285);     /* black */
 }
+
+/* Achievement unlock burst (see ConfettiBurst). Disabled under reduced motion. */
+@keyframes hamduk-confetti {
+  0% { transform: translate3d(0, 0, 0) rotate(0); opacity: 1; }
+  100% { transform: translate3d(var(--drift), 105vh, 0) rotate(var(--spin)); opacity: 0.9; }
+}

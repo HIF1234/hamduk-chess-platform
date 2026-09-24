@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { AchievementsGrid } from "@/components/AchievementsGrid";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Trophy, Calendar, Flag, UserPlus, UserCheck, UserMinus, MessageSquare, Check, X } from "lucide-react";
@@ -123,6 +124,8 @@ function ProfilePage() {
         </header>
 
         <RatingsPanel userId={p.id} />
+
+        <AchievementsGrid userId={p.id} />
 
         <section className="mt-8">
           <h2 className="mb-3 font-serif text-xl font-bold">Recent games</h2>

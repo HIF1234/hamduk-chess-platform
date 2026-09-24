@@ -1,18 +1,22 @@
 import { Link } from "@tanstack/react-router";
-import { Swords, Puzzle, BarChart3, Rss, Trophy } from "lucide-react";
+import { Swords, Puzzle, BarChart3, Rss, Trophy, Bell, GraduationCap } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import { useUnreadCount } from "@/components/notifications/useUnreadCount";
 
 // Mobile-only bottom navigation. Hidden on >= md.
 export function BottomNav() {
   const { user } = useAuth();
+  const unread = useUnreadCount();
   const items = [
     { to: "/lobby", label: "Play", Icon: Swords },
     { to: "/puzzles", label: "Puzzles", Icon: Puzzle },
     { to: "/analysis", label: "Analyze", Icon: BarChart3 },
     user
       ? { to: "/feed", label: "Feed", Icon: Rss }
-      : { to: "/leaderboard", label: "Top", Icon: Trophy },
-    { to: "/leaderboard", label: "Ranks", Icon: Trophy },
+      : { to: "/learn", label: "Learn", Icon: GraduationCap },
+    user
+      ? { to: "/notifications", label: "Alerts", Icon: Bell }
+      : { to: "/leaderboard", label: "Ranks", Icon: Trophy },
   ] as const;
 
   return (
@@ -27,7 +31,14 @@ export function BottomNav() {
           className="flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium text-muted-foreground transition-colors hover:text-foreground"
           activeProps={{ className: "text-primary" }}
         >
-          <Icon className="h-5 w-5" />
+          <span className="relative">
+            <Icon className="h-5 w-5" />
+            {to === "/notifications" && unread > 0 && (
+              <span className="absolute -right-2 -top-1 min-w-[16px] rounded-full bg-destructive px-1 text-center text-[9px] font-bold leading-4 text-white">
+                {unread > 9 ? "9+" : unread}
+              </span>
+            )}
+          </span>
           <span>{label}</span>
         </Link>
       ))}

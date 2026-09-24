@@ -11,6 +11,8 @@ import {
 } from "@/lib/game-review";
 import { classifyOpening } from "@/lib/eco";
 import { ThinkAloudPanel, type Reflection } from "./ThinkAloudPanel";
+import { useServerFn } from "@tanstack/react-start";
+import { saveGameAnalysis } from "@/lib/achievements.functions";
 
 type Props = {
   startFen: string;
@@ -50,6 +52,26 @@ export function GameReview({ startFen, sanMoves, orientation, depth = 14, gameId
     }
     return classifyOpening(uciList);
   }, [startFen, sanMoves]);
+
+  // Persist the finished review for this game (history, weakness reports, achievements).
+  const saveAnalysis = useServerFn(saveGameAnalysis);
+  const savedRef = useRef(false);
+  useEffect(() => {
+    if (!result || !gameId || savedRef.current) return;
+    savedRef.current = true;
+    void saveAnalysis({
+      data: {
+        gameId,
+        depth: result.depth,
+        evalPerPly: result.moves.map((m) => Math.round(Math.max(-100000, Math.min(100000, m.evalAfter)))),
+        classifications: result.moves.map((m) => ({ ply: m.ply, classification: m.classification })),
+        accuracyWhite: result.accuracyWhite,
+        accuracyBlack: result.accuracyBlack,
+        openingEco: opening?.eco ?? null,
+        openingName: opening?.name ?? null,
+      },
+    }).catch(() => {});
+  }, [result, gameId, opening, saveAnalysis]);
 
   const boardFen = useMemo(() => {
     if (!result) return startFen;

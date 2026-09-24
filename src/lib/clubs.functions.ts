@@ -81,6 +81,10 @@ export const createClub = createServerFn({ method: "POST" })
       role: "owner",
       status: "approved",
     });
+    {
+      const { checkAchievements } = await import("@/lib/achievements.server");
+      await checkAchievements(context.userId, ["social"]);
+    }
     return { id: club.id as string, slug: club.slug as string };
   });
 
@@ -173,6 +177,15 @@ export const moderateClubMember = createServerFn({ method: "POST" })
         .eq("club_id", data.clubId)
         .eq("status", "approved");
       await db.from("clubs").update({ member_count: count ?? 0 }).eq("id", data.clubId);
+      const { data: club } = await db.from("clubs").select("name, slug").eq("id", data.clubId).maybeSingle();
+      if (club) {
+        const { notify } = await import("@/lib/notifications.server");
+        await notify(data.userId, {
+          type: "club_approved",
+          title: `You're in! Welcome to ${club.name}`,
+          link: `/clubs/${club.slug}`,
+        });
+      }
     } else if (data.action === "reject" || data.action === "remove") {
       await db.from("club_members").delete().match(where);
     } else if (data.action === "promote") {

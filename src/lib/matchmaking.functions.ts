@@ -48,7 +48,7 @@ export const submitMove = createServerFn({ method: "POST" })
     const { userId } = context;
     const { data: game, error: gErr } = await supabaseAdmin
       .from("games")
-      .select("id, white_id, black_id, fen, pgn, ply, status, time_white_ms, time_black_ms, increment_sec, last_clock_update, initial_sec, chess960_start_fen, variant, is_correspondence, days_per_move")
+      .select("id, white_id, black_id, fen, pgn, ply, status, time_white_ms, time_black_ms, increment_sec, last_clock_update, initial_sec, chess960_start_fen, variant, is_correspondence, days_per_move, notify_by_email")
       .eq("id", data.gameId)
       .single();
     if (gErr || !game) throw new Error("Game not found");
@@ -206,6 +206,20 @@ export const submitMove = createServerFn({ method: "POST" })
       by_user: userId,
       payload: { uci: data.uci, san: move.san, ply: newPly, elapsed_ms: elapsedServer },
     });
+
+    // Correspondence: tell the opponent it's their move (and email them if this game has emails on).
+    if (isCorrespondence && status === "active") {
+      const oppId = userId === game.white_id ? game.black_id : game.white_id;
+      const { notify } = await import("@/lib/notifications.server");
+      await notify(oppId, {
+        type: "correspondence_move",
+        title: "Your move in a correspondence game",
+        body: `Your opponent played ${move.san}.`,
+        link: `/play/${game.id}`,
+        payload: { gameId: game.id },
+        email: !!game.notify_by_email,
+      });
+    }
 
     // Correspondence: auto-play the opponent's stored conditional reply if it matches this move.
     if (isCorrespondence && status === "active") {

@@ -141,7 +141,7 @@ export const submitPuzzleAttempt = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => AttemptSchema.parse(i))
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const { supabase, userId } = context;
     const { data: res, error } = await supabase.rpc("submit_puzzle_attempt", {
       p_puzzle_id: data.puzzleId,
       p_success: data.success,
@@ -153,6 +153,10 @@ export const submitPuzzleAttempt = createServerFn({ method: "POST" })
         );
       }
       throw error;
+    }
+    if (data.success) {
+      const { checkAchievements } = await import("@/lib/achievements.server");
+      await checkAchievements(userId, ["puzzles"]);
     }
     return res as {
       rating: number;

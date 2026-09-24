@@ -79,6 +79,10 @@ export const recordBotGame = createServerFn({ method: "POST" })
       variant: data.variant,
     });
     if (gameError) throw new Error(gameError.message);
+    {
+      const { checkAchievements } = await import("@/lib/achievements.server");
+      await checkAchievements(context.userId, ["bots"]);
+    }
 
     const key = { user_id: context.userId, time_control: data.timeControl, variant: data.variant };
     const { data: row } = await supabaseAdmin

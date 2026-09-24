@@ -5,6 +5,11 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const UserIdSchema = z.object({ userId: z.string().uuid() });
 
+async function usernameOf(id: string) {
+  const { data } = await supabaseAdmin.from("profiles").select("username").eq("id", id).maybeSingle();
+  return data?.username ?? "Someone";
+}
+
 // ---------- FOLLOWS ----------
 export const followUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -16,6 +21,17 @@ export const followUser = createServerFn({ method: "POST" })
       .from("follows")
       .insert({ follower_id: userId, following_id: data.userId });
     if (error && !error.message.includes("duplicate")) throw new Error(error.message);
+    if (!error) {
+      const me = await usernameOf(userId);
+      const { notify } = await import("@/lib/notifications.server");
+      await notify(data.userId, {
+        type: "new_follower",
+        title: `${me} started following you`,
+        link: `/profile/${me}`,
+      });
+      const { checkAchievements } = await import("@/lib/achievements.server");
+      await checkAchievements(data.userId, ["social"]);
+    }
     return { ok: true };
   });
 
@@ -57,6 +73,15 @@ export const sendFriendRequest = createServerFn({ method: "POST" })
       .from("friends")
       .insert({ requester_id: userId, addressee_id: data.userId, status: "pending" });
     if (error && !error.message.includes("duplicate")) throw new Error(error.message);
+    if (!error) {
+      const me = await usernameOf(userId);
+      const { notify } = await import("@/lib/notifications.server");
+      await notify(data.userId, {
+        type: "friend_request",
+        title: `${me} sent you a friend request`,
+        link: `/profile/${me}`,
+      });
+    }
     return { ok: true };
   });
 
@@ -68,12 +93,23 @@ export const respondFriendRequest = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     if (data.accept) {
-      const { error } = await supabase
+      const { data: accepted, error } = await supabase
         .from("friends")
         .update({ status: "accepted" })
         .eq("id", data.requestId)
-        .eq("addressee_id", userId);
+        .eq("addressee_id", userId)
+        .select("requester_id")
+        .maybeSingle();
       if (error) throw new Error(error.message);
+      if (accepted) {
+        const me = await usernameOf(userId);
+        const { notify } = await import("@/lib/notifications.server");
+        await notify(accepted.requester_id, {
+          type: "friend_accepted",
+          title: `${me} accepted your friend request`,
+          link: `/profile/${me}`,
+        });
+      }
     } else {
       const { error } = await supabase
         .from("friends")
@@ -196,6 +232,14 @@ export const sendMessage = createServerFn({ method: "POST" })
       .select("id, content, created_at, sender_id, recipient_id, read")
       .single();
     if (error) throw new Error(error.message);
+    const me = await usernameOf(userId);
+    const { notify } = await import("@/lib/notifications.server");
+    await notify(data.recipientId, {
+      type: "message",
+      title: `New message from ${me}`,
+      body: data.content.slice(0, 140),
+      link: `/messages?with=${encodeURIComponent(me)}`,
+    });
     return { message: msg };
   });
 

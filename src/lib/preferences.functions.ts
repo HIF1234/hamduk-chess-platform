@@ -84,5 +84,9 @@ export const updateMyAccount = createServerFn({ method: "POST" })
     if (Object.keys(patch).length === 0) return { ok: true };
     const { error } = await db.from("profiles").update(patch).eq("id", context.userId);
     if (error) throw new Error(error.message);
+    if (patch.country) {
+      const { checkAchievements } = await import("@/lib/achievements.server");
+      await checkAchievements(context.userId, ["profile"]);
+    }
     return { ok: true };
   });

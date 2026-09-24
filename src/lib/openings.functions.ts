@@ -70,6 +70,10 @@ export const recordOpeningSession = createServerFn({ method: "POST" })
         { onConflict: "user_id,eco" },
       );
     if (error) throw new Error(error.message);
+    {
+      const { checkAchievements } = await import("@/lib/achievements.server");
+      await checkAchievements(userId, ["profile"]);
+    }
     return {
       attempts: nextAttempts,
       correct: nextCorrect,

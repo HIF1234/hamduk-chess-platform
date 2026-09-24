@@ -14,6 +14,7 @@ import { initTheme } from "@/lib/theme";
 import { setLocalPreferences } from "@/lib/preferences";
 import { BottomNav } from "@/components/BottomNav";
 import { Sidebar } from "@/components/Sidebar";
+import { NotificationListener } from "@/components/notifications/NotificationListener";
 import { supabase } from "@/integrations/supabase/client";
 
 import appCss from "../styles.css?url";
@@ -153,6 +154,11 @@ function AuthAwareShell() {
           .then(({ getMySettings }) => getMySettings())
           .then((s) => setLocalPreferences(s.preferences))
           .catch(() => {});
+        if (event === "SIGNED_IN") {
+          void import("@/lib/achievements.functions")
+            .then(({ checkMyAchievements }) => checkMyAchievements())
+            .catch(() => {});
+        }
       }
     });
     return () => data.subscription.unsubscribe();
@@ -170,6 +176,7 @@ function AuthAwareShell() {
         <Outlet />
       </div>
       <BottomNav />
+      <NotificationListener />
       <Toaster position="top-right" richColors closeButton theme="system" />
     </div>
   );
