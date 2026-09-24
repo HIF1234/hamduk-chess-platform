@@ -15,6 +15,7 @@ import { setLocalPreferences } from "@/lib/preferences";
 import { BottomNav } from "@/components/BottomNav";
 import { Sidebar } from "@/components/Sidebar";
 import { NotificationListener } from "@/components/notifications/NotificationListener";
+import { Heartbeat } from "@/components/Heartbeat";
 import { supabase } from "@/integrations/supabase/client";
 
 import appCss from "../styles.css?url";
@@ -200,6 +201,7 @@ function AuthAwareShell() {
       </div>
       <BottomNav />
       <NotificationListener />
+      <Heartbeat />
       <Toaster position="top-right" richColors closeButton theme="system" />
     </div>
   );

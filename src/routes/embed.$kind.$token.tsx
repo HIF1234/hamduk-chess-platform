@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { BOARD_STYLE } from "@/lib/preferences";
 import { createFileRoute } from "@tanstack/react-router";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
@@ -163,6 +164,7 @@ function BoardWidget({ payload }: { payload: BoardPayload }) {
     <div>
       <Chessboard
         options={{
+          boardStyle: BOARD_STYLE,
           position: fen,
           boardOrientation: config?.orientation ?? "white",
           allowDragging: interactive,
@@ -245,6 +247,7 @@ function PuzzleWidget({ payload }: { payload: PuzzlePayload }) {
       </div>
       <Chessboard
         options={{
+          boardStyle: BOARD_STYLE,
           position: fen,
           boardOrientation: config?.orientation ?? orientation,
           allowDragging: status === "solving",
@@ -341,6 +344,7 @@ function GameWidget({ payload }: { payload: GamePayload }) {
       </div>
       <Chessboard
         options={{
+          boardStyle: BOARD_STYLE,
           position: fen,
           boardOrientation: config?.orientation ?? "white",
           allowDragging: false,

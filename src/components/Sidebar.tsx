@@ -22,6 +22,7 @@ import {
   Castle,
   MessagesSquare,
   Tv,
+  Newspaper,
   Gift,
 
 } from "lucide-react";
@@ -50,6 +51,7 @@ export function Sidebar() {
     { to: "/clubs", label: "Clubs", Icon: Castle },
     { to: "/forums", label: "Forums", Icon: MessagesSquare },
     { to: "/tv", label: "HamdukChess TV", Icon: Tv },
+    { to: "/news", label: "News", Icon: Newspaper },
     { to: "/invite", label: "Invite friends", Icon: Gift },
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user

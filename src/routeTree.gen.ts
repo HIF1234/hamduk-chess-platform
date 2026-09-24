@@ -41,6 +41,7 @@ import { Route as SpectateIndexRouteImport } from './routes/spectate.index'
 import { Route as PuzzlesIndexRouteImport } from './routes/puzzles.index'
 import { Route as PlayIndexRouteImport } from './routes/play.index'
 import { Route as OpeningsIndexRouteImport } from './routes/openings.index'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as ForumsIndexRouteImport } from './routes/forums.index'
@@ -58,6 +59,8 @@ import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayBotRouteImport } from './routes/play.bot'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
 import { Route as OpeningsEcoRouteImport } from './routes/openings.$eco'
+import { Route as NewsWriteRouteImport } from './routes/news.write'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as LearnTutorialIdRouteImport } from './routes/learn.$tutorialId'
 import { Route as ForumsCategoryRouteImport } from './routes/forums.$category'
@@ -259,6 +262,11 @@ const OpeningsIndexRoute = OpeningsIndexRouteImport.update({
   path: '/openings/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/news/',
+  path: '/news/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LessonsIndexRoute = LessonsIndexRouteImport.update({
   id: '/lessons/',
   path: '/lessons/',
@@ -342,6 +350,16 @@ const PlayGameIdRoute = PlayGameIdRouteImport.update({
 const OpeningsEcoRoute = OpeningsEcoRouteImport.update({
   id: '/openings/$eco',
   path: '/openings/$eco',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsWriteRoute = NewsWriteRouteImport.update({
+  id: '/news/write',
+  path: '/news/write',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/news/$slug',
+  path: '/news/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LessonsIdRoute = LessonsIdRouteImport.update({
@@ -600,6 +618,8 @@ export interface FileRoutesByFullPath {
   '/forums/$category': typeof ForumsCategoryRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
+  '/news/$slug': typeof NewsSlugRoute
+  '/news/write': typeof NewsWriteRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/play/bot': typeof PlayBotRoute
@@ -617,6 +637,7 @@ export interface FileRoutesByFullPath {
   '/forums/': typeof ForumsIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/lessons/': typeof LessonsIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
   '/play/': typeof PlayIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
@@ -690,6 +711,8 @@ export interface FileRoutesByTo {
   '/forums/$category': typeof ForumsCategoryRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
+  '/news/$slug': typeof NewsSlugRoute
+  '/news/write': typeof NewsWriteRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/play/bot': typeof PlayBotRoute
@@ -707,6 +730,7 @@ export interface FileRoutesByTo {
   '/forums': typeof ForumsIndexRoute
   '/learn': typeof LearnIndexRoute
   '/lessons': typeof LessonsIndexRoute
+  '/news': typeof NewsIndexRoute
   '/openings': typeof OpeningsIndexRoute
   '/play': typeof PlayIndexRoute
   '/puzzles': typeof PuzzlesIndexRoute
@@ -782,6 +806,8 @@ export interface FileRoutesById {
   '/forums/$category': typeof ForumsCategoryRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
+  '/news/$slug': typeof NewsSlugRoute
+  '/news/write': typeof NewsWriteRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/play/bot': typeof PlayBotRoute
@@ -799,6 +825,7 @@ export interface FileRoutesById {
   '/forums/': typeof ForumsIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/lessons/': typeof LessonsIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
   '/play/': typeof PlayIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
@@ -875,6 +902,8 @@ export interface FileRouteTypes {
     | '/forums/$category'
     | '/learn/$tutorialId'
     | '/lessons/$id'
+    | '/news/$slug'
+    | '/news/write'
     | '/openings/$eco'
     | '/play/$gameId'
     | '/play/bot'
@@ -892,6 +921,7 @@ export interface FileRouteTypes {
     | '/forums/'
     | '/learn/'
     | '/lessons/'
+    | '/news/'
     | '/openings/'
     | '/play/'
     | '/puzzles/'
@@ -965,6 +995,8 @@ export interface FileRouteTypes {
     | '/forums/$category'
     | '/learn/$tutorialId'
     | '/lessons/$id'
+    | '/news/$slug'
+    | '/news/write'
     | '/openings/$eco'
     | '/play/$gameId'
     | '/play/bot'
@@ -982,6 +1014,7 @@ export interface FileRouteTypes {
     | '/forums'
     | '/learn'
     | '/lessons'
+    | '/news'
     | '/openings'
     | '/play'
     | '/puzzles'
@@ -1056,6 +1089,8 @@ export interface FileRouteTypes {
     | '/forums/$category'
     | '/learn/$tutorialId'
     | '/lessons/$id'
+    | '/news/$slug'
+    | '/news/write'
     | '/openings/$eco'
     | '/play/$gameId'
     | '/play/bot'
@@ -1073,6 +1108,7 @@ export interface FileRouteTypes {
     | '/forums/'
     | '/learn/'
     | '/lessons/'
+    | '/news/'
     | '/openings/'
     | '/play/'
     | '/puzzles/'
@@ -1140,6 +1176,8 @@ export interface RootRouteChildren {
   ForumsCategoryRoute: typeof ForumsCategoryRoute
   LearnTutorialIdRoute: typeof LearnTutorialIdRoute
   LessonsIdRoute: typeof LessonsIdRoute
+  NewsSlugRoute: typeof NewsSlugRoute
+  NewsWriteRoute: typeof NewsWriteRoute
   OpeningsEcoRoute: typeof OpeningsEcoRoute
   PlayGameIdRoute: typeof PlayGameIdRoute
   PlayBotRoute: typeof PlayBotRoute
@@ -1156,6 +1194,7 @@ export interface RootRouteChildren {
   ForumsIndexRoute: typeof ForumsIndexRoute
   LearnIndexRoute: typeof LearnIndexRoute
   LessonsIndexRoute: typeof LessonsIndexRoute
+  NewsIndexRoute: typeof NewsIndexRoute
   OpeningsIndexRoute: typeof OpeningsIndexRoute
   PlayIndexRoute: typeof PlayIndexRoute
   PuzzlesIndexRoute: typeof PuzzlesIndexRoute
@@ -1404,6 +1443,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OpeningsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news/': {
+      id: '/news/'
+      path: '/news'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lessons/': {
       id: '/lessons/'
       path: '/lessons'
@@ -1521,6 +1567,20 @@ declare module '@tanstack/react-router' {
       path: '/openings/$eco'
       fullPath: '/openings/$eco'
       preLoaderRoute: typeof OpeningsEcoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/write': {
+      id: '/news/write'
+      path: '/news/write'
+      fullPath: '/news/write'
+      preLoaderRoute: typeof NewsWriteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/news/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lessons/$id': {
@@ -1933,6 +1993,8 @@ const rootRouteChildren: RootRouteChildren = {
   ForumsCategoryRoute: ForumsCategoryRoute,
   LearnTutorialIdRoute: LearnTutorialIdRoute,
   LessonsIdRoute: LessonsIdRoute,
+  NewsSlugRoute: NewsSlugRoute,
+  NewsWriteRoute: NewsWriteRoute,
   OpeningsEcoRoute: OpeningsEcoRoute,
   PlayGameIdRoute: PlayGameIdRoute,
   PlayBotRoute: PlayBotRoute,
@@ -1949,6 +2011,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForumsIndexRoute: ForumsIndexRoute,
   LearnIndexRoute: LearnIndexRoute,
   LessonsIndexRoute: LessonsIndexRoute,
+  NewsIndexRoute: NewsIndexRoute,
   OpeningsIndexRoute: OpeningsIndexRoute,
   PlayIndexRoute: PlayIndexRoute,
   PuzzlesIndexRoute: PuzzlesIndexRoute,

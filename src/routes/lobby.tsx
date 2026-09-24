@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { CATEGORY_LABEL, TIME_CONTROLS as TC_LIST, type TimeControlId } from "@/lib/time-controls";
+import {
+  CATEGORY_LABEL,
+  TIME_CONTROL_IDS,
+  TIME_CONTROLS as TC_LIST,
+  type TimeControlId,
+} from "@/lib/time-controls";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2, Swords, Trophy, X, Bot } from "lucide-react";
 import { GuestUpgradeBanner } from "@/components/GuestUpgradeBanner";
-import { useAuth } from "@/lib/auth";
+import { signInAsGuest, useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { findOrJoinMatch, cancelQueue } from "@/lib/matchmaking.functions";
 import { nearestBot } from "@/lib/bot-personas";
@@ -18,14 +23,25 @@ export const Route = createFileRoute("/lobby")({
       { name: "description", content: "Find a rated online chess opponent in seconds." },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { tc?: string; variant?: "chess960" } => ({
+    tc:
+      typeof s.tc === "string" && (TIME_CONTROL_IDS as readonly string[]).includes(s.tc)
+        ? s.tc
+        : undefined,
+    variant: s.variant === "chess960" ? "chess960" : undefined,
+  }),
   component: LobbyPage,
 });
 
-const TIME_CONTROLS = TC_LIST.map((t) => ({ id: t.id, label: CATEGORY_LABEL[t.category], sub: t.label }));
+const TIME_CONTROLS = TC_LIST.map((t) => ({
+  id: t.id,
+  label: CATEGORY_LABEL[t.category],
+  sub: t.label,
+}));
 
 const REGIONS = [
   { id: "africa-west-1", label: "Africa West" },
-  { id: "global",        label: "Global" },
+  { id: "global", label: "Global" },
 ] as const;
 
 // Expanding rating window: ±50 → ±100 → ±150 → ±300 every 10s
@@ -41,30 +57,40 @@ function LobbyPage() {
   const find = useServerFn(findOrJoinMatch);
   const cancel = useServerFn(cancelQueue);
   const [searching, setSearching] = useState<string | null>(null);
-  const [variant, setVariant] = useState<"standard" | "chess960">("standard");
+  const search = Route.useSearch();
+  const [variant, setVariant] = useState<"standard" | "chess960">(search.variant ?? "standard");
+  const autoStarted = useRef(false);
   const [region, setRegion] = useState<(typeof REGIONS)[number]["id"]>("africa-west-1");
   const [elapsed, setElapsed] = useState(0);
   const [showBotOffer, setShowBotOffer] = useState(false);
   const searchStartRef = useRef<number | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
-    if (!loading && !user) navigate({ to: "/login" });
-  }, [loading, user, navigate]);
+  const [guestBusy, setGuestBusy] = useState(false);
 
   // Realtime: jump into game as soon as our row appears
   useEffect(() => {
     if (!user || !searching) return;
     const channel = supabase
       .channel(`lobby:${user.id}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "games", filter: `white_id=eq.${user.id}` }, (payload) => {
-        navigate({ to: "/play/$gameId", params: { gameId: (payload.new as { id: string }).id } });
-      })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "games", filter: `black_id=eq.${user.id}` }, (payload) => {
-        navigate({ to: "/play/$gameId", params: { gameId: (payload.new as { id: string }).id } });
-      })
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "games", filter: `white_id=eq.${user.id}` },
+        (payload) => {
+          navigate({ to: "/play/$gameId", params: { gameId: (payload.new as { id: string }).id } });
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "games", filter: `black_id=eq.${user.id}` },
+        (payload) => {
+          navigate({ to: "/play/$gameId", params: { gameId: (payload.new as { id: string }).id } });
+        },
+      )
       .subscribe();
-    return () => { void supabase.removeChannel(channel); };
+    return () => {
+      void supabase.removeChannel(channel);
+    };
   }, [user, searching, navigate]);
 
   // Polling loop with expanding window, bot suggestion at 60s, auto-cancel at 120s
@@ -85,7 +111,11 @@ function LobbyPage() {
       if (el >= 60_000 && !showBotOffer) setShowBotOffer(true);
 
       if (el >= 120_000) {
-        try { await cancel({}); } catch { /* ignore */ }
+        try {
+          await cancel({});
+        } catch {
+          /* ignore */
+        }
         setSearching(null);
         toast.info("No opponent found. We've removed you from the queue — try again in a moment.");
         return;
@@ -101,9 +131,13 @@ function LobbyPage() {
         if (gameId) {
           navigate({ to: "/play/$gameId", params: { gameId } });
         }
-      } catch { /* retry next tick */ }
+      } catch {
+        /* retry next tick */
+      }
     }, 2_000);
-    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
   }, [searching, variant, find, cancel, navigate, showBotOffer]);
 
   async function handleFind(tc: string) {
@@ -113,7 +147,9 @@ function LobbyPage() {
       if (gameId) {
         navigate({ to: "/play/$gameId", params: { gameId } });
       } else {
-        toast.info(`Searching ${REGIONS.find((r) => r.id === region)?.label} for ${tc} ${variant}…`);
+        toast.info(
+          `Searching ${REGIONS.find((r) => r.id === region)?.label} for ${tc} ${variant}…`,
+        );
       }
     } catch (e) {
       setSearching(null);
@@ -121,8 +157,20 @@ function LobbyPage() {
     }
   }
 
+  // One-tap quick play from the home page: /lobby?tc=5+0 starts searching at once.
+  useEffect(() => {
+    if (!user || !search.tc || autoStarted.current) return;
+    autoStarted.current = true;
+    void handleFind(search.tc);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, search.tc]);
+
   async function handleCancel() {
-    try { await cancel({}); } catch { /* ignore */ }
+    try {
+      await cancel({});
+    } catch {
+      /* ignore */
+    }
     setSearching(null);
   }
 
@@ -157,11 +205,47 @@ function LobbyPage() {
   });
 
   if (loading || !user) {
-    return <div className="flex min-h-screen items-center justify-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
   }
 
   const win = windowAt(elapsed);
   const secs = Math.floor(elapsed / 1000);
+
+  // Signed-out visitors can jump in as a guest instead of being sent to sign in.
+  if (!loading && !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-center">
+          <h1 className="font-serif text-2xl font-bold">Play online</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Start as a guest — no sign-up. You can save your games to a free account later.
+          </p>
+          <button
+            disabled={guestBusy}
+            onClick={async () => {
+              setGuestBusy(true);
+              try {
+                await signInAsGuest();
+              } catch (e) {
+                toast.error((e as Error).message);
+                setGuestBusy(false);
+              }
+            }}
+            className="mt-5 w-full rounded-md bg-primary px-4 py-2.5 font-semibold text-primary-foreground disabled:opacity-50"
+          >
+            {guestBusy ? "Starting…" : "Play as guest"}
+          </button>
+          <Link to="/login" className="mt-3 inline-block text-sm text-primary underline">
+            I have an account
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -169,12 +253,16 @@ function LobbyPage() {
         <GuestUpgradeBanner />
         <header className="mb-8">
           <h1 className="font-serif text-4xl font-bold tracking-tight">Lobby</h1>
-          <p className="mt-1 text-muted-foreground">Pick a time control and we'll match you with a player of similar rating.</p>
+          <p className="mt-1 text-muted-foreground">
+            Pick a time control and we'll match you with a player of similar rating.
+          </p>
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
           <section>
-            <h2 className="mb-4 flex items-center gap-2 font-serif text-xl font-semibold"><Swords className="h-5 w-5 text-primary" /> Find a game</h2>
+            <h2 className="mb-4 flex items-center gap-2 font-serif text-xl font-semibold">
+              <Swords className="h-5 w-5 text-primary" /> Find a game
+            </h2>
 
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <div className="inline-flex rounded-lg border border-border bg-card p-1">
@@ -209,15 +297,19 @@ function LobbyPage() {
                 return (
                   <button
                     key={tc.id}
-                    onClick={() => isSearching ? handleCancel() : handleFind(tc.id)}
+                    onClick={() => (isSearching ? handleCancel() : handleFind(tc.id))}
                     disabled={searching !== null && !isSearching}
                     className={`group rounded-2xl border-2 p-6 text-left transition ${
-                      isSearching ? "border-primary bg-primary/5" : "border-border bg-card hover:border-primary/60 hover:shadow-md"
+                      isSearching
+                        ? "border-primary bg-primary/5"
+                        : "border-border bg-card hover:border-primary/60 hover:shadow-md"
                     } disabled:opacity-40`}
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-semibold uppercase tracking-wide text-primary">{tc.label}</p>
+                        <p className="text-sm font-semibold uppercase tracking-wide text-primary">
+                          {tc.label}
+                        </p>
                         <p className="mt-1 font-serif text-3xl font-bold">{tc.sub}</p>
                       </div>
                       {isSearching ? (
@@ -226,7 +318,9 @@ function LobbyPage() {
                           <X className="ml-1 h-3 w-3" />
                         </div>
                       ) : (
-                        <span className="text-2xl text-muted-foreground group-hover:text-primary">→</span>
+                        <span className="text-2xl text-muted-foreground group-hover:text-primary">
+                          →
+                        </span>
                       )}
                     </div>
                   </button>
@@ -239,12 +333,16 @@ function LobbyPage() {
                 <div className="rounded-xl border border-border bg-card px-4 py-3 text-sm">
                   <div className="flex items-center justify-between">
                     <span>
-                      Queued for <span className="font-semibold">{searching}</span> · {variant} · {REGIONS.find((r) => r.id === region)?.label}
+                      Queued for <span className="font-semibold">{searching}</span> · {variant} ·{" "}
+                      {REGIONS.find((r) => r.id === region)?.label}
                     </span>
-                    <span className="font-mono text-xs text-muted-foreground tabular-nums">{secs}s</span>
+                    <span className="font-mono text-xs text-muted-foreground tabular-nums">
+                      {secs}s
+                    </span>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Rating window ±{win}{secs >= 30 ? " (expanded)" : ""}. Click the card to cancel.
+                    Rating window ±{win}
+                    {secs >= 30 ? " (expanded)" : ""}. Click the card to cancel.
                   </p>
                 </div>
 
@@ -267,22 +365,38 @@ function LobbyPage() {
           </section>
 
           <aside>
-            <h2 className="mb-4 flex items-center gap-2 font-serif text-xl font-semibold"><Trophy className="h-5 w-5 text-accent" /> Top 10</h2>
+            <h2 className="mb-4 flex items-center gap-2 font-serif text-xl font-semibold">
+              <Trophy className="h-5 w-5 text-accent" /> Top 10
+            </h2>
             <div className="rounded-2xl border border-border bg-card p-2">
               {leaderboardQuery.data?.map((p, i) => (
-                <div key={p.id} className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-accent/50">
+                <div
+                  key={p.id}
+                  className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-accent/50"
+                >
                   <div className="flex items-center gap-3">
-                    <span className={`w-5 text-right text-sm font-bold ${i < 3 ? "text-accent" : "text-muted-foreground"}`}>{i + 1}</span>
+                    <span
+                      className={`w-5 text-right text-sm font-bold ${i < 3 ? "text-accent" : "text-muted-foreground"}`}
+                    >
+                      {i + 1}
+                    </span>
                     <span className="font-medium">{p.username}</span>
                   </div>
                   <span className="font-mono text-sm font-semibold text-primary">{p.rating}</span>
                 </div>
               ))}
               {leaderboardQuery.data?.length === 0 && (
-                <p className="px-3 py-4 text-sm text-muted-foreground">No ranked players yet — be the first!</p>
+                <p className="px-3 py-4 text-sm text-muted-foreground">
+                  No ranked players yet — be the first!
+                </p>
               )}
             </div>
-            <Link to="/leaderboard" className="mt-3 inline-block text-sm font-medium text-primary hover:underline">View full leaderboard →</Link>
+            <Link
+              to="/leaderboard"
+              className="mt-3 inline-block text-sm font-medium text-primary hover:underline"
+            >
+              View full leaderboard →
+            </Link>
           </aside>
         </div>
       </main>

@@ -257,6 +257,62 @@ export type Database = {
           },
         ]
       }
+      articles: {
+        Row: {
+          author_id: string | null
+          body: string
+          cover_url: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          published_at: string | null
+          slug: string
+          tags: string[]
+          title: string
+          type: string
+          updated_at: string
+          views: number
+        }
+        Insert: {
+          author_id?: string | null
+          body?: string
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published_at?: string | null
+          slug: string
+          tags?: string[]
+          title: string
+          type?: string
+          updated_at?: string
+          views?: number
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published_at?: string | null
+          slug?: string
+          tags?: string[]
+          title?: string
+          type?: string
+          updated_at?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assistant_messages: {
         Row: {
           created_at: string
@@ -3122,6 +3178,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      article_bump_views: { Args: { p_slug: string }; Returns: undefined }
       can_edit_study: {
         Args: { _board_id: string; _user_id: string }
         Returns: boolean

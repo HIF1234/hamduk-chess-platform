@@ -22,14 +22,20 @@ import { supabase } from "@/integrations/supabase/client";
 
 type Mode = "human" | "engine";
 
-export function ChessApp() {
+export function ChessApp({
+  initialMode = "human",
+  initialPersonaId,
+}: {
+  initialMode?: Mode;
+  initialPersonaId?: string;
+} = {}) {
   const game = useChessGame();
   const { requestBotMove } = useStockfish();
   const navigate = useNavigate();
   const recordBot = useServerFn(recordBotGame);
   const { user } = useAuth();
-  const [mode, setMode] = useState<Mode>("human");
-  const [personaId, setPersonaId] = useState<string>(DEFAULT_PERSONA_ID);
+  const [mode, setMode] = useState<Mode>(initialMode);
+  const [personaId, setPersonaId] = useState<string>(initialPersonaId ?? DEFAULT_PERSONA_ID);
   const [orientation, setOrientation] = useState<"white" | "black">("white");
   const [selected, setSelected] = useState<Square | null>(null);
   const [pendingPromo, setPendingPromo] = useState<{ from: Square; to: Square } | null>(null);

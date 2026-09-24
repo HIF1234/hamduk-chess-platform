@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ChessApp } from "@/components/chess/ChessApp";
+import { BOT_PERSONAS } from "@/lib/bot-personas";
 
 export const Route = createFileRoute("/play/bot")({
   head: () => ({
@@ -12,5 +13,14 @@ export const Route = createFileRoute("/play/bot")({
       },
     ],
   }),
-  component: ChessApp,
+  validateSearch: (s: Record<string, unknown>): { bot?: string } => ({
+    bot: typeof s.bot === "string" && BOT_PERSONAS.some((b) => b.id === s.bot) ? s.bot : undefined,
+  }),
+  component: BotPage,
 });
+
+function BotPage() {
+  const { bot } = Route.useSearch();
+  // key: switching bots from a link starts a fresh game.
+  return <ChessApp key={bot ?? "default"} initialMode="engine" initialPersonaId={bot} />;
+}

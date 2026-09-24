@@ -88,6 +88,15 @@ export function usePreferences(): Preferences {
   return useSyncExternalStore(subscribe, getPreferences, () => DEFAULT_PREFERENCES);
 }
 
+export const BOARD_STYLE = {
+  display: "grid",
+  gridTemplateColumns: "repeat(8, minmax(0, 1fr))",
+  overflow: "hidden",
+  width: "100%",
+  height: "100%",
+  position: "relative",
+} as const;
+
 /** Square colours for react-chessboard, following the player's board theme. */
 export function useBoardSquares() {
   const { boardTheme, showCoordinates } = usePreferences();
@@ -97,6 +106,9 @@ export function useBoardSquares() {
       lightSquareStyle: { backgroundColor: t.light },
       darkSquareStyle: { backgroundColor: t.dark },
       showNotation: showCoordinates,
+      // The library's default `repeat(8, 1fr)` can't shrink below the piece images,
+      // so boards overflowed narrow phones. minmax(0, 1fr) lets them fit any width.
+      boardStyle: BOARD_STYLE,
     };
   }, [boardTheme, showCoordinates]);
 }
