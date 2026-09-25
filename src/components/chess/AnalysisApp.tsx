@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useBoardSquares } from "@/lib/preferences";
 import { Chessboard } from "react-chessboard";
-import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useReplay } from "@/hooks/useReplay";
 import { useKeyboardNav } from "@/hooks/useKeyboardNav";
@@ -13,11 +12,37 @@ import { AiCoachPanel } from "./AiCoachPanel";
 import { TablebasePanel } from "./TablebasePanel";
 import { ExplorerPanel } from "./ExplorerPanel";
 import { downloadPgn, exportPgn } from "@/lib/pgn";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SaveAnalysisPanel } from "./SaveAnalysisPanel";
 
-export function AnalysisApp() {
+export type SavedAnalysis = {
+  id: string;
+  owner_id: string;
+  title: string;
+  notes: string | null;
+  start_fen: string;
+  headers: Record<string, string>;
+  moves: string[];
+  ply: number;
+  orientation: "white" | "black";
+  updated_at: string;
+  author: string | null;
+};
+
+export function AnalysisApp({ saved }: { saved?: SavedAnalysis } = {}) {
   const replay = useReplay();
-  const [orientation, setOrientation] = useState<"white" | "black">("white");
+  const [orientation, setOrientation] = useState<"white" | "black">(saved?.orientation ?? "white");
+
+  // Open a saved analysis where its owner left it.
+  useEffect(() => {
+    if (!saved) return;
+    replay.loadLine({
+      startFen: saved.start_fen,
+      headers: saved.headers,
+      moves: saved.moves,
+      ply: saved.ply,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saved?.id, saved?.updated_at]);
   const [pgnOpen, setPgnOpen] = useState(false);
   const [fenOpen, setFenOpen] = useState(false);
 
@@ -82,8 +107,8 @@ export function AnalysisApp() {
   );
 
   const currentPgn = useMemo(
-    () => exportPgn(replay.headers, replay.moves),
-    [replay.headers, replay.moves],
+    () => exportPgn(replay.headers, replay.moves, replay.startFen),
+    [replay.headers, replay.moves, replay.startFen],
   );
 
   const handleExport = useCallback(() => {
@@ -117,32 +142,32 @@ export function AnalysisApp() {
     [replay],
   );
 
-  return (
-    <div className="min-h-screen bg-surface font-sans text-zinc-900">
-      <nav className="h-12 border-b border-zinc-950/5 flex items-center justify-between px-6 bg-panel">
-        <div className="flex items-center gap-6">
-          <span className="text-xs font-semibold tracking-wider uppercase text-zinc-400">
-            Analysis Studio
-          </span>
-          <div className="h-4 w-px bg-zinc-950/5" />
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-700">
-            Ply {replay.ply} / {replay.moves.length}
-          </span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link
-            to="/"
-            className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900"
-          >
-            ← Back to board
-          </Link>
-          <ThemeToggle />
-        </div>
-      </nav>
+  const navBtn =
+    "flex-1 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium hover:bg-accent disabled:opacity-40";
 
-      <main className="max-w-[1440px] mx-auto px-6 md:px-12 py-8 md:py-12 flex flex-col lg:flex-row gap-8 md:gap-12 items-start">
-        <div className="flex-1 flex flex-col items-center w-full">
-          <div className="w-full max-w-[720px] space-y-4">
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <main className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-4 sm:px-6 sm:py-8 lg:flex-row">
+        <div className="flex w-full flex-1 flex-col items-center">
+          <div className="w-full max-w-[640px] space-y-4">
+            <div className="flex flex-wrap items-end justify-between gap-2">
+              <div className="min-w-0">
+                <h1 className="truncate font-serif text-2xl font-bold">
+                  {saved?.title ?? "Analysis board"}
+                </h1>
+                <p className="text-xs text-muted-foreground">
+                  {saved
+                    ? `Saved by ${saved.author ?? "a player"} · ${new Date(saved.updated_at).toLocaleDateString()}`
+                    : "Import a game or play moves on the board to explore."}{" "}
+                  · Move {replay.ply} of {replay.moves.length}
+                </p>
+              </div>
+            </div>
+            {saved?.notes && (
+              <p className="whitespace-pre-wrap rounded-lg border border-border bg-card p-3 text-sm">
+                {saved.notes}
+              </p>
+            )}
             <AnalysisToolbar
               onImportPgn={() => setPgnOpen(true)}
               onImportFen={() => setFenOpen(true)}
@@ -153,7 +178,7 @@ export function AnalysisApp() {
               hasMoves={replay.moves.length > 0}
             />
 
-            <div className="relative aspect-square w-full bg-zinc-300 ring-1 ring-black/10 rounded-sm overflow-hidden">
+            <div className="relative aspect-square w-full touch-none select-none overflow-hidden rounded-sm ring-1 ring-border">
               <Chessboard options={boardOptions} />
             </div>
 
@@ -161,7 +186,7 @@ export function AnalysisApp() {
               <button
                 onClick={replay.toStart}
                 disabled={replay.isStart}
-                className="flex-1 py-2 px-3 text-sm font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100 disabled:opacity-40 cursor-pointer"
+                className={navBtn}
                 aria-label="Jump to start"
               >
                 ⏮
@@ -169,7 +194,7 @@ export function AnalysisApp() {
               <button
                 onClick={replay.prev}
                 disabled={replay.isStart}
-                className="flex-1 py-2 px-3 text-sm font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100 disabled:opacity-40 cursor-pointer"
+                className={navBtn}
                 aria-label="Previous move"
               >
                 ◀
@@ -177,7 +202,7 @@ export function AnalysisApp() {
               <button
                 onClick={replay.next}
                 disabled={replay.isEnd}
-                className="flex-1 py-2 px-3 text-sm font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100 disabled:opacity-40 cursor-pointer"
+                className={navBtn}
                 aria-label="Next move"
               >
                 ▶
@@ -185,19 +210,27 @@ export function AnalysisApp() {
               <button
                 onClick={replay.toEnd}
                 disabled={replay.isEnd}
-                className="flex-1 py-2 px-3 text-sm font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100 disabled:opacity-40 cursor-pointer"
+                className={navBtn}
                 aria-label="Jump to end"
               >
                 ⏭
               </button>
             </div>
-            <p className="text-[11px] text-zinc-400 text-center">
-              Use ← / → to step, ↑ / ↓ to jump to start / end.
+            <p className="text-center text-[11px] text-muted-foreground">
+              Drag pieces to try ideas. Use ← / → to step, ↑ / ↓ to jump to start / end.
             </p>
           </div>
         </div>
 
-        <aside className="w-full lg:w-96 shrink-0 flex flex-col gap-4">
+        <aside className="flex w-full shrink-0 flex-col gap-4 lg:w-96">
+          <SaveAnalysisPanel
+            saved={saved}
+            startFen={replay.startFen}
+            headers={replay.headers}
+            moves={replay.moves.map((m) => m.from + m.to + (m.promotion ?? ""))}
+            ply={replay.ply}
+            orientation={orientation}
+          />
           <TablebasePanel fen={replay.fen} />
           <ExplorerPanel
             fen={replay.fen}

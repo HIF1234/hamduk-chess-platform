@@ -18,7 +18,7 @@ export function AnalysisToolbar({
   hasMoves,
 }: Props) {
   const btn =
-    "py-2 px-3 text-xs font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed";
+    "py-2 px-3 text-xs font-medium bg-card text-foreground rounded ring-1 ring-border hover:bg-accent transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed";
   return (
     <div className="flex flex-wrap gap-2">
       <button onClick={onImportPgn} className={btn}>Import PGN</button>

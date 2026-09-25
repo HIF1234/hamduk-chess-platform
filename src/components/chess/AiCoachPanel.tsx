@@ -70,10 +70,10 @@ export function AiCoachPanel({ fen, turn, pgn, hasMoves }: Props) {
     "py-2 px-3 text-sm font-medium rounded ring-1 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed";
 
   return (
-    <div className="bg-panel ring-1 ring-black/5 rounded-lg p-4 flex flex-col gap-3">
+    <div className="bg-card ring-1 ring-border rounded-lg p-4 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-medium">AI Coach</h2>
-        <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider">
+        <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
           {turn === "w" ? "White to move" : "Black to move"}
         </span>
       </div>
@@ -82,24 +82,24 @@ export function AiCoachPanel({ fen, turn, pgn, hasMoves }: Props) {
         <button
           onClick={runExplain}
           disabled={loading !== null}
-          className={btn + " bg-zinc-900 text-zinc-100 ring-zinc-900 hover:bg-zinc-800"}
+          className={btn + " bg-primary text-primary-foreground ring-primary hover:bg-primary/90"}
         >
           {loading === "explain" ? "Thinking…" : "Explain position"}
         </button>
         <button
           onClick={runRecap}
           disabled={loading !== null || !hasMoves}
-          className={btn + " bg-panel text-zinc-700 ring-black/5 hover:bg-zinc-100"}
+          className={btn + " bg-card text-foreground ring-border hover:bg-accent"}
         >
           {loading === "recap" ? "Thinking…" : "Recap game"}
         </button>
       </div>
 
-      <div className="font-mono text-[10px] text-zinc-400 break-all leading-relaxed">{fen}</div>
+      <div className="font-mono text-[10px] text-muted-foreground break-all leading-relaxed">{fen}</div>
 
       {output && (
-        <div className="prose prose-sm prose-zinc max-w-none border-t border-zinc-950/5 pt-3 text-sm leading-relaxed">
-          <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-2 not-prose">
+        <div className="prose prose-sm prose-zinc max-w-none border-t border-border pt-3 text-sm leading-relaxed">
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2 not-prose">
             {output.kind === "explain" ? "Position assessment" : "Game recap"}
           </p>
           <ReactMarkdown>{output.markdown}</ReactMarkdown>

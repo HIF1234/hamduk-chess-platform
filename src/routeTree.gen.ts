@@ -30,7 +30,6 @@ import { Route as FairPlayRouteImport } from './routes/fair-play'
 import { Route as CorrespondenceRouteImport } from './routes/correspondence'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as ApiDashboardRouteImport } from './routes/api-dashboard'
-import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -49,6 +48,7 @@ import { Route as EndgameIndexRouteImport } from './routes/endgame.index'
 import { Route as CoachesIndexRouteImport } from './routes/coaches.index'
 import { Route as ClubsIndexRouteImport } from './routes/clubs.index'
 import { Route as AssistantIndexRouteImport } from './routes/assistant.index'
+import { Route as AnalysisIndexRouteImport } from './routes/analysis.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TournamentsIdRouteImport } from './routes/tournaments.$id'
 import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
@@ -74,6 +74,7 @@ import { Route as ClubsSlugRouteImport } from './routes/clubs.$slug'
 import { Route as ChallengeIdRouteImport } from './routes/challenge.$id'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AnalysisIdRouteImport } from './routes/analysis.$id'
 import { Route as AdminTournamentsRouteImport } from './routes/admin.tournaments'
 import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
@@ -217,11 +218,6 @@ const ApiDashboardRoute = ApiDashboardRouteImport.update({
   path: '/api-dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AnalysisRoute = AnalysisRouteImport.update({
-  id: '/analysis',
-  path: '/analysis',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -310,6 +306,11 @@ const ClubsIndexRoute = ClubsIndexRouteImport.update({
 const AssistantIndexRoute = AssistantIndexRouteImport.update({
   id: '/assistant/',
   path: '/assistant/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalysisIndexRoute = AnalysisIndexRouteImport.update({
+  id: '/analysis/',
+  path: '/analysis/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -435,6 +436,11 @@ const AssistantThreadIdRoute = AssistantThreadIdRouteImport.update({
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalysisIdRoute = AnalysisIdRouteImport.update({
+  id: '/analysis/$id',
+  path: '/analysis/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminTournamentsRoute = AdminTournamentsRouteImport.update({
@@ -638,7 +644,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
-  '/analysis': typeof AnalysisRoute
   '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
   '/correspondence': typeof CorrespondenceRoute
@@ -672,6 +677,7 @@ export interface FileRoutesByFullPath {
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/tournaments': typeof AdminTournamentsRoute
+  '/analysis/$id': typeof AnalysisIdRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/challenge/$id': typeof ChallengeIdRoute
@@ -697,6 +703,7 @@ export interface FileRoutesByFullPath {
   '/tactics/$theme': typeof TacticsThemeRoute
   '/tournaments/$id': typeof TournamentsIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/analysis/': typeof AnalysisIndexRoute
   '/assistant/': typeof AssistantIndexRoute
   '/clubs/': typeof ClubsIndexRoute
   '/coaches/': typeof CoachesIndexRoute
@@ -741,7 +748,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/analysis': typeof AnalysisRoute
   '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
   '/correspondence': typeof CorrespondenceRoute
@@ -775,6 +781,7 @@ export interface FileRoutesByTo {
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/tournaments': typeof AdminTournamentsRoute
+  '/analysis/$id': typeof AnalysisIdRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/challenge/$id': typeof ChallengeIdRoute
@@ -800,6 +807,7 @@ export interface FileRoutesByTo {
   '/tactics/$theme': typeof TacticsThemeRoute
   '/tournaments/$id': typeof TournamentsIdRoute
   '/admin': typeof AdminIndexRoute
+  '/analysis': typeof AnalysisIndexRoute
   '/assistant': typeof AssistantIndexRoute
   '/clubs': typeof ClubsIndexRoute
   '/coaches': typeof CoachesIndexRoute
@@ -846,7 +854,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
-  '/analysis': typeof AnalysisRoute
   '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
   '/correspondence': typeof CorrespondenceRoute
@@ -880,6 +887,7 @@ export interface FileRoutesById {
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/tournaments': typeof AdminTournamentsRoute
+  '/analysis/$id': typeof AnalysisIdRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/challenge/$id': typeof ChallengeIdRoute
@@ -905,6 +913,7 @@ export interface FileRoutesById {
   '/tactics/$theme': typeof TacticsThemeRoute
   '/tournaments/$id': typeof TournamentsIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/analysis/': typeof AnalysisIndexRoute
   '/assistant/': typeof AssistantIndexRoute
   '/clubs/': typeof ClubsIndexRoute
   '/coaches/': typeof CoachesIndexRoute
@@ -952,7 +961,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
-    | '/analysis'
     | '/api-dashboard'
     | '/billing'
     | '/correspondence'
@@ -986,6 +994,7 @@ export interface FileRouteTypes {
     | '/admin/reports'
     | '/admin/roles'
     | '/admin/tournaments'
+    | '/analysis/$id'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/challenge/$id'
@@ -1011,6 +1020,7 @@ export interface FileRouteTypes {
     | '/tactics/$theme'
     | '/tournaments/$id'
     | '/admin/'
+    | '/analysis/'
     | '/assistant/'
     | '/clubs/'
     | '/coaches/'
@@ -1055,7 +1065,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/analysis'
     | '/api-dashboard'
     | '/billing'
     | '/correspondence'
@@ -1089,6 +1098,7 @@ export interface FileRouteTypes {
     | '/admin/reports'
     | '/admin/roles'
     | '/admin/tournaments'
+    | '/analysis/$id'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/challenge/$id'
@@ -1114,6 +1124,7 @@ export interface FileRouteTypes {
     | '/tactics/$theme'
     | '/tournaments/$id'
     | '/admin'
+    | '/analysis'
     | '/assistant'
     | '/clubs'
     | '/coaches'
@@ -1159,7 +1170,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
-    | '/analysis'
     | '/api-dashboard'
     | '/billing'
     | '/correspondence'
@@ -1193,6 +1203,7 @@ export interface FileRouteTypes {
     | '/admin/reports'
     | '/admin/roles'
     | '/admin/tournaments'
+    | '/analysis/$id'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/challenge/$id'
@@ -1218,6 +1229,7 @@ export interface FileRouteTypes {
     | '/tactics/$theme'
     | '/tournaments/$id'
     | '/admin/'
+    | '/analysis/'
     | '/assistant/'
     | '/clubs/'
     | '/coaches/'
@@ -1264,7 +1276,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
-  AnalysisRoute: typeof AnalysisRoute
   ApiDashboardRoute: typeof ApiDashboardRoute
   BillingRoute: typeof BillingRoute
   CorrespondenceRoute: typeof CorrespondenceRoute
@@ -1286,6 +1297,7 @@ export interface RootRouteChildren {
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
   TvRoute: typeof TvRoute
+  AnalysisIdRoute: typeof AnalysisIdRoute
   ApiChatRoute: typeof ApiChatRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
   ChallengeIdRoute: typeof ChallengeIdRoute
@@ -1310,6 +1322,7 @@ export interface RootRouteChildren {
   StudyStudyIdRoute: typeof StudyStudyIdRoute
   TacticsThemeRoute: typeof TacticsThemeRoute
   TournamentsIdRoute: typeof TournamentsIdRoute
+  AnalysisIndexRoute: typeof AnalysisIndexRoute
   AssistantIndexRoute: typeof AssistantIndexRoute
   ClubsIndexRoute: typeof ClubsIndexRoute
   CoachesIndexRoute: typeof CoachesIndexRoute
@@ -1492,13 +1505,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/analysis': {
-      id: '/analysis'
-      path: '/analysis'
-      fullPath: '/analysis'
-      preLoaderRoute: typeof AnalysisRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -1623,6 +1629,13 @@ declare module '@tanstack/react-router' {
       path: '/assistant'
       fullPath: '/assistant/'
       preLoaderRoute: typeof AssistantIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analysis/': {
+      id: '/analysis/'
+      path: '/analysis'
+      fullPath: '/analysis/'
+      preLoaderRoute: typeof AnalysisIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -1798,6 +1811,13 @@ declare module '@tanstack/react-router' {
       path: '/api/chat'
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analysis/$id': {
+      id: '/analysis/$id'
+      path: '/analysis/$id'
+      fullPath: '/analysis/$id'
+      preLoaderRoute: typeof AnalysisIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/tournaments': {
@@ -2165,7 +2185,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
-  AnalysisRoute: AnalysisRoute,
   ApiDashboardRoute: ApiDashboardRoute,
   BillingRoute: BillingRoute,
   CorrespondenceRoute: CorrespondenceRoute,
@@ -2187,6 +2206,7 @@ const rootRouteChildren: RootRouteChildren = {
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
   TvRoute: TvRoute,
+  AnalysisIdRoute: AnalysisIdRoute,
   ApiChatRoute: ApiChatRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,
   ChallengeIdRoute: ChallengeIdRoute,
@@ -2211,6 +2231,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudyStudyIdRoute: StudyStudyIdRoute,
   TacticsThemeRoute: TacticsThemeRoute,
   TournamentsIdRoute: TournamentsIdRoute,
+  AnalysisIndexRoute: AnalysisIndexRoute,
   AssistantIndexRoute: AssistantIndexRoute,
   ClubsIndexRoute: ClubsIndexRoute,
   CoachesIndexRoute: CoachesIndexRoute,

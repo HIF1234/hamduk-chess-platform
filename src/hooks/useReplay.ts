@@ -54,6 +54,24 @@ export function useReplay() {
 
   const reset = useCallback(() => setState(EMPTY), []);
 
+  /** Loads a saved line: start position, UCI moves and the ply to show. */
+  const loadLine = useCallback(
+    (line: { startFen: string; headers: Record<string, string>; moves: string[]; ply: number }) => {
+      const c = new Chess(line.startFen);
+      const moves: Move[] = [];
+      for (const uci of line.moves) {
+        moves.push(c.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] }));
+      }
+      setState({
+        startFen: line.startFen,
+        headers: line.headers,
+        moves,
+        ply: Math.min(line.ply, moves.length),
+      });
+    },
+    [],
+  );
+
   /** Plays a move from the current ply. If it isn't the next move of the loaded line,
    *  the rest of the line is replaced. Returns false when the move is illegal. */
   const playMove = useCallback(
@@ -89,5 +107,6 @@ export function useReplay() {
     loadFenText,
     reset,
     playMove,
+    loadLine,
   };
 }

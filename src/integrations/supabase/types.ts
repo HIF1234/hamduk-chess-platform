@@ -2591,6 +2591,56 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_analyses: {
+        Row: {
+          created_at: string
+          headers: Json
+          id: string
+          moves: string[]
+          notes: string | null
+          orientation: string
+          owner_id: string
+          ply: number
+          start_fen: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          headers?: Json
+          id?: string
+          moves?: string[]
+          notes?: string | null
+          orientation?: string
+          owner_id?: string
+          ply?: number
+          start_fen: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          headers?: Json
+          id?: string
+          moves?: string[]
+          notes?: string | null
+          orientation?: string
+          owner_id?: string
+          ply?: number
+          start_fen?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_analyses_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       study_boards: {
         Row: {
           annotations: Json
@@ -3517,6 +3567,7 @@ export type Database = {
         Args: { _club_id: string; _user_id: string }
         Returns: boolean
       }
+      is_voice_participant: { Args: { p_topic: string }; Returns: boolean }
       leaderboard: {
         Args: {
           p_country?: string

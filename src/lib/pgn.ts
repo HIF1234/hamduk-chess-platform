@@ -21,10 +21,20 @@ export function loadPgn(pgn: string): LoadedPgn {
   };
 }
 
-export function exportPgn(headers: Record<string, string>, moves: Move[]): string {
-  const chess = new Chess();
+export function exportPgn(
+  headers: Record<string, string>,
+  moves: Move[],
+  startFen?: string,
+): string {
+  const custom = startFen && startFen !== new Chess().fen() ? startFen : undefined;
+  const chess = custom ? new Chess(custom) : new Chess();
   for (const [k, v] of Object.entries(headers)) {
     if (v) chess.header(k, v);
+  }
+  // A game from a set-up position needs these headers, or it replays from the start.
+  if (custom) {
+    chess.header("SetUp", "1");
+    chess.header("FEN", custom);
   }
   for (const m of moves) {
     chess.move({ from: m.from, to: m.to, promotion: m.promotion });
