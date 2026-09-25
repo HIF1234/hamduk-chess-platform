@@ -12,12 +12,20 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { submitMove, resignGame } from "@/lib/matchmaking.functions";
 import {
-  offerDraw, respondDraw, abortGame,
-  requestTakeback, respondTakeback,
-  offerRematch, acceptRematch, checkFlag,
+  offerDraw,
+  respondDraw,
+  abortGame,
+  requestTakeback,
+  respondTakeback,
+  offerRematch,
+  acceptRematch,
+  checkFlag,
 } from "@/lib/game-actions.functions";
 import {
-  heartbeat, markDisconnected, reconnect, claimDisconnectWin,
+  heartbeat,
+  markDisconnected,
+  reconnect,
+  claimDisconnectWin,
 } from "@/lib/presence.functions";
 import { sounds } from "@/lib/chess-sounds";
 import { useGameClock, formatClock } from "@/hooks/useGameClock";
@@ -92,10 +100,17 @@ function PlayPage() {
   const [rematchPending, setRematchPending] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   // Correspondence moves are confirmed in two steps to avoid mis-clicks on slow games.
-  const [pendingMove, setPendingMove] = useState<{ from: string; to: string; promotion?: string; san: string } | null>(null);
+  const [pendingMove, setPendingMove] = useState<{
+    from: string;
+    to: string;
+    promotion?: string;
+    san: string;
+  } | null>(null);
   const premoves = usePremoves(3);
 
-  useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [loading, user, navigate]);
+  useEffect(() => {
+    if (!loading && !user) navigate({ to: "/login" });
+  }, [loading, user, navigate]);
 
   // Initial load + game realtime
   useEffect(() => {
@@ -103,9 +118,16 @@ function PlayPage() {
     async function load() {
       const { data, error } = await supabase.from("games").select("*").eq("id", gameId).single();
       if (cancelled) return;
-      if (error || !data) { toast.error("Game not found"); navigate({ to: "/lobby" }); return; }
+      if (error || !data) {
+        toast.error("Game not found");
+        navigate({ to: "/lobby" });
+        return;
+      }
       setGame(data as GameRow);
-      const { data: profs } = await supabase.from("profiles").select("id, username, rating").in("id", [data.white_id, data.black_id]);
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, username, rating")
+        .in("id", [data.white_id, data.black_id]);
       if (profs) {
         const map: Record<string, ProfileLite> = {};
         for (const p of profs) map[p.id] = p as ProfileLite;
@@ -115,34 +137,54 @@ function PlayPage() {
     void load();
     const channel = supabase
       .channel(`game:${gameId}`)
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "games", filter: `id=eq.${gameId}` }, (payload) => {
-        setGame(payload.new as GameRow);
-        sounds.move();
-      })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "game_events", filter: `game_id=eq.${gameId}` }, (payload) => {
-        const ev = payload.new as { type: string; by_user: string | null; payload: Record<string, unknown> };
-        if (ev.type === "disconnect" && ev.by_user && ev.by_user !== user?.id) {
-          setOpponentDisconnectedAt(new Date().toISOString());
-        }
-        if (ev.type === "reconnect" && ev.by_user && ev.by_user !== user?.id) {
-          setOpponentDisconnectedAt(null);
-        }
-        if (ev.type === "rematch_offer" && ev.by_user && ev.by_user !== user?.id) {
-          setRematchPending(true);
-        }
-      })
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "games", filter: `id=eq.${gameId}` },
+        (payload) => {
+          setGame(payload.new as GameRow);
+          sounds.move();
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "game_events", filter: `game_id=eq.${gameId}` },
+        (payload) => {
+          const ev = payload.new as {
+            type: string;
+            by_user: string | null;
+            payload: Record<string, unknown>;
+          };
+          if (ev.type === "disconnect" && ev.by_user && ev.by_user !== user?.id) {
+            setOpponentDisconnectedAt(new Date().toISOString());
+          }
+          if (ev.type === "reconnect" && ev.by_user && ev.by_user !== user?.id) {
+            setOpponentDisconnectedAt(null);
+          }
+          if (ev.type === "rematch_offer" && ev.by_user && ev.by_user !== user?.id) {
+            setRematchPending(true);
+          }
+        },
+      )
       .subscribe();
-    return () => { cancelled = true; void supabase.removeChannel(channel); };
+    return () => {
+      cancelled = true;
+      void supabase.removeChannel(channel);
+    };
   }, [gameId, navigate, user?.id]);
 
   // Presence heartbeat
   useEffect(() => {
     if (!user) return;
     let alive = true;
-    const tick = () => { if (alive && document.visibilityState === "visible") void beat({}); };
+    const tick = () => {
+      if (alive && document.visibilityState === "visible") void beat({});
+    };
     tick();
     const id = window.setInterval(tick, 15_000);
-    return () => { alive = false; window.clearInterval(id); };
+    return () => {
+      alive = false;
+      window.clearInterval(id);
+    };
   }, [user, beat]);
 
   // Disconnect tracking
@@ -154,7 +196,9 @@ function PlayPage() {
       if (document.visibilityState === "hidden") void disconnect({ data: { gameId } });
       else void reconnectFn({ data: { gameId } });
     };
-    const onBeforeUnload = () => { void disconnect({ data: { gameId } }); };
+    const onBeforeUnload = () => {
+      void disconnect({ data: { gameId } });
+    };
     document.addEventListener("visibilitychange", onHide);
     window.addEventListener("beforeunload", onBeforeUnload);
     return () => {
@@ -166,8 +210,12 @@ function PlayPage() {
   const chess = useMemo(() => {
     if (!game) return null;
     const c = new Chess(game.chess960_start_fen ?? undefined);
-    try { if (game.pgn) c.loadPgn(game.pgn); else c.load(game.fen); }
-    catch { c.load(game.fen); }
+    try {
+      if (game.pgn) c.loadPgn(game.pgn);
+      else c.load(game.fen);
+    } catch {
+      c.load(game.fen);
+    }
     return c;
   }, [game]);
 
@@ -193,9 +241,35 @@ function PlayPage() {
     const oppMs = myColor === "w" ? blackDisplayMs : whiteDisplayMs;
     if (oppMs <= 0 && game.ply >= 2 && !myTurn) {
       flaggedRef.current = true;
-      void flagCheck({ data: { gameId } }).catch(() => { flaggedRef.current = false; });
+      void flagCheck({ data: { gameId } }).catch(() => {
+        flaggedRef.current = false;
+      });
     }
   }, [game, myColor, whiteDisplayMs, blackDisplayMs, myTurn, gameId, flagCheck]);
+
+  // A move can race the end of the game (most often a clock running out in bullet). Show
+  // what happened and pull the final state instead of the raw server message.
+  function moveFailed(e: unknown, fallback: string) {
+    const msg = e instanceof Error ? e.message : fallback;
+    if (msg !== "Game is not active") {
+      toast.error(msg);
+      return;
+    }
+    void supabase
+      .from("games")
+      .select("*")
+      .eq("id", gameId)
+      .single()
+      .then(({ data }) => {
+        if (!data) return;
+        setGame(data as GameRow);
+        toast.info(
+          data.end_reason === "flag"
+            ? "Time ran out before that move arrived."
+            : "The game has already ended.",
+        );
+      });
+  }
 
   // Try premove after opponent moves
   useEffect(() => {
@@ -205,25 +279,38 @@ function PlayPage() {
       const uci = `${next.from}${next.to}${next.promotion ?? ""}`;
       setSubmitting(true);
       void submit({ data: { gameId, uci } })
-        .catch((e: unknown) => toast.error(e instanceof Error ? e.message : "Premove rejected"))
+        .catch((e: unknown) => moveFailed(e, "Premove rejected"))
         .finally(() => setSubmitting(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game?.fen, myTurn]);
 
   if (loading || !user || !game || !chess) {
-    return <div className="flex min-h-screen items-center justify-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
   }
 
   const orientation: "white" | "black" = isBlack ? "black" : "white";
   const opponent = isWhite ? profiles[game.black_id] : profiles[game.white_id];
   const me = profiles[user.id];
 
-  function handleDrop({ sourceSquare, targetSquare, piece }: { sourceSquare: string; targetSquare: string | null; piece: { pieceType: string } }): boolean {
+  function handleDrop({
+    sourceSquare,
+    targetSquare,
+    piece,
+  }: {
+    sourceSquare: string;
+    targetSquare: string | null;
+    piece: { pieceType: string };
+  }): boolean {
     if (!targetSquare || !game) return false;
     const from = sourceSquare as Square;
     const to = targetSquare as Square;
-    const isPromo = piece.pieceType.toLowerCase().endsWith("p") &&
+    const isPromo =
+      piece.pieceType.toLowerCase().endsWith("p") &&
       ((myColor === "w" && to[1] === "8") || (myColor === "b" && to[1] === "1"));
 
     if (!myTurn) {
@@ -236,7 +323,11 @@ function PlayPage() {
     if (submitting) return false;
     const probe = new Chess(chess!.fen());
     let legal;
-    try { legal = probe.move({ from, to, promotion: "q" }); } catch { return false; }
+    try {
+      legal = probe.move({ from, to, promotion: "q" });
+    } catch {
+      return false;
+    }
     if (!legal) return false;
     const uci = `${from}${to}${isPromo ? "q" : ""}`;
     if (game.is_correspondence) {
@@ -245,55 +336,92 @@ function PlayPage() {
     }
     setSubmitting(true);
     void submit({ data: { gameId, uci } })
-      .catch((e: unknown) => toast.error(e instanceof Error ? e.message : "Move rejected"))
+      .catch((e: unknown) => moveFailed(e, "Move rejected"))
       .finally(() => setSubmitting(false));
     return true;
   }
 
   async function handleResign() {
     if (!confirm("Resign this game?")) return;
-    try { await resign({ data: { gameId } }); } catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
+    try {
+      await resign({ data: { gameId } });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   }
   async function handleOfferDraw() {
-    try { await draw({ data: { gameId } }); toast.success("Draw offered"); } catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
+    try {
+      await draw({ data: { gameId } });
+      toast.success("Draw offered");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   }
   async function handleAbort() {
-    try { await abort({ data: { gameId } }); } catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
+    try {
+      await abort({ data: { gameId } });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   }
   async function handleRequestTakeback() {
-    try { await tbReq({ data: { gameId } }); toast.success("Takeback requested"); } catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
+    try {
+      await tbReq({ data: { gameId } });
+      toast.success("Takeback requested");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   }
   async function handleOfferRematch() {
-    try { await rematchOffer({ data: { gameId } }); toast.success("Rematch offered"); } catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
+    try {
+      await rematchOffer({ data: { gameId } });
+      toast.success("Rematch offered");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   }
   async function handleAcceptRematch() {
     try {
       const { gameId: newId } = await rematchAccept({ data: { gameId } });
       navigate({ to: "/play/$gameId", params: { gameId: newId } });
-    } catch (e) { toast.error(e instanceof Error ? e.message : "Failed"); }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   }
 
   const incomingDraw = game.draw_offer_by && game.draw_offer_by !== user.id && game.draw_offer_at;
   const outgoingDraw = game.draw_offer_by === user.id;
-  const incomingTb = game.takeback_offer_by && game.takeback_offer_by !== user.id && game.takeback_offer_at;
+  const incomingTb =
+    game.takeback_offer_by && game.takeback_offer_by !== user.id && game.takeback_offer_at;
   const outgoingTb = game.takeback_offer_by === user.id;
 
   const customArrows = premoves.queue.map((p, i) => ({
-    startSquare: p.from, endSquare: p.to,
+    startSquare: p.from,
+    endSquare: p.to,
     color: `rgba(245, 166, 35, ${0.5 - i * 0.1})`,
   }));
 
-  const statusText = game.status === "completed"
-    ? game.result === "draw"
-      ? `Draw by ${game.end_reason ?? "agreement"}`
-      : `${game.result === "white" ? profiles[game.white_id]?.username ?? "White" : profiles[game.black_id]?.username ?? "Black"} won by ${game.end_reason ?? "resignation"}`
-    : myTurn ? "Your turn" : isParticipant ? "Opponent's turn" : "Spectating";
+  const statusText =
+    game.status === "completed"
+      ? game.result === "draw"
+        ? `Draw by ${game.end_reason ?? "agreement"}`
+        : `${game.result === "white" ? (profiles[game.white_id]?.username ?? "White") : (profiles[game.black_id]?.username ?? "Black")} won by ${game.end_reason ?? "resignation"}`
+      : myTurn
+        ? "Your turn"
+        : isParticipant
+          ? "Opponent's turn"
+          : "Spectating";
 
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[1fr_320px]">
         <div>
-          <Link to="/lobby" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="h-4 w-4" /> Back to lobby</Link>
+          <Link
+            to="/lobby"
+            className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to lobby
+          </Link>
           <PlayerStrip
             profile={opponent}
             color={isWhite ? "Black" : "White"}
@@ -326,14 +454,22 @@ function PlayPage() {
         <aside className="space-y-4">
           <div className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{game.time_control} · {game.variant}</p>
-              {!game.rated && <span className="rounded bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase">Casual</span>}
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {game.time_control} · {game.variant}
+              </p>
+              {!game.rated && (
+                <span className="rounded bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase">
+                  Casual
+                </span>
+              )}
             </div>
             <p className="mt-1 font-serif text-lg font-bold">{statusText}</p>
 
             {game.is_correspondence && pendingMove && (
               <div className="my-3 flex items-center justify-between gap-2 rounded-lg border border-primary bg-primary/5 px-3 py-2 text-sm">
-                <span>Play <span className="font-mono font-bold">{pendingMove.san}</span>?</span>
+                <span>
+                  Play <span className="font-mono font-bold">{pendingMove.san}</span>?
+                </span>
                 <span className="flex gap-2">
                   <button
                     onClick={() => {
@@ -341,7 +477,7 @@ function PlayPage() {
                       setSubmitting(true);
                       setPendingMove(null);
                       void submit({ data: { gameId, uci } })
-                        .catch((e: unknown) => toast.error(e instanceof Error ? e.message : "Move rejected"))
+                        .catch((e: unknown) => moveFailed(e, "Move rejected"))
                         .finally(() => setSubmitting(false));
                     }}
                     className="rounded-md bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground"
@@ -388,13 +524,20 @@ function PlayPage() {
             {opponentDisconnectedAt && game.status === "active" && (
               <DisconnectBanner
                 disconnectedAt={opponentDisconnectedAt}
-                onClaimWin={() => { void claimWin({ data: { gameId } }); }}
+                onClaimWin={() => {
+                  void claimWin({ data: { gameId } });
+                }}
               />
             )}
             {rematchPending && game.status === "completed" && (
               <div className="my-3 flex items-center justify-between rounded-lg border border-primary bg-primary/5 px-4 py-3">
                 <p className="font-semibold">Rematch offered</p>
-                <button onClick={handleAcceptRematch} className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90">Accept</button>
+                <button
+                  onClick={handleAcceptRematch}
+                  className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  Accept
+                </button>
               </div>
             )}
             {game.status === "completed" && chess && chess.history().length > 0 && (
@@ -438,7 +581,12 @@ function PlayPage() {
               />
             </div>
             {premoves.queue.length > 0 && (
-              <p className="mt-2 text-xs text-muted-foreground">{premoves.queue.length} premove(s) queued — <button onClick={premoves.clear} className="underline hover:text-foreground">clear</button></p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {premoves.queue.length} premove(s) queued —{" "}
+                <button onClick={premoves.clear} className="underline hover:text-foreground">
+                  clear
+                </button>
+              </p>
             )}
           </div>
 
@@ -448,7 +596,9 @@ function PlayPage() {
 
       {reviewOpen && chess && game && (
         <GameReview
-          startFen={game.chess960_start_fen ?? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}
+          startFen={
+            game.chess960_start_fen ?? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+          }
           sanMoves={chess.history()}
           orientation={orientation}
           depth={14}
@@ -460,17 +610,40 @@ function PlayPage() {
   );
 }
 
-function PlayerStrip({ profile, color, active, you, clockMs }: { profile?: ProfileLite; color: string; active: boolean; you?: boolean; clockMs: number }) {
+function PlayerStrip({
+  profile,
+  color,
+  active,
+  you,
+  clockMs,
+}: {
+  profile?: ProfileLite;
+  color: string;
+  active: boolean;
+  you?: boolean;
+  clockMs: number;
+}) {
   return (
-    <div className={`flex items-center justify-between rounded-lg border px-4 py-2.5 ${active ? "border-primary bg-primary/5" : "border-border bg-card"}`}>
+    <div
+      className={`flex items-center justify-between rounded-lg border px-4 py-2.5 ${active ? "border-primary bg-primary/5" : "border-border bg-card"}`}
+    >
       <div className="flex items-center gap-3">
-        <div className={`h-2.5 w-2.5 rounded-full ${active ? "bg-primary animate-pulse" : "bg-muted-foreground/30"}`} />
+        <div
+          className={`h-2.5 w-2.5 rounded-full ${active ? "bg-primary animate-pulse" : "bg-muted-foreground/30"}`}
+        />
         <div>
-          <p className="text-sm font-semibold">{profile?.username ?? "—"} {you && <span className="ml-1 text-xs font-normal text-muted-foreground">(you)</span>}</p>
-          <p className="text-xs text-muted-foreground">{color} · {profile?.rating ?? "—"}</p>
+          <p className="text-sm font-semibold">
+            {profile?.username ?? "—"}{" "}
+            {you && <span className="ml-1 text-xs font-normal text-muted-foreground">(you)</span>}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {color} · {profile?.rating ?? "—"}
+          </p>
         </div>
       </div>
-      <div className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-lg font-bold tabular-nums ${active ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"} ${clockMs < 10_000 ? "text-destructive" : ""}`}>
+      <div
+        className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-lg font-bold tabular-nums ${active ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"} ${clockMs < 10_000 ? "text-destructive" : ""}`}
+      >
         <Clock className="h-4 w-4" />
         {formatClock(clockMs)}
       </div>
@@ -486,7 +659,9 @@ function MoveHistory({ chess }: { chess: Chess }) {
   }
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Moves</p>
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        Moves
+      </p>
       <div className="max-h-[400px] overflow-y-auto font-mono text-sm">
         {rows.length === 0 && <p className="text-muted-foreground">No moves yet.</p>}
         {rows.map((r) => (

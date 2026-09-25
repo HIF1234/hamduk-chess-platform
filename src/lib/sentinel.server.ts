@@ -15,6 +15,27 @@ const POLLS_PER_TICK = 10;
 // Very short games say nothing statistically and cost Sentinel engine time.
 const MIN_PLIES = Number(process.env.SENTINEL_MIN_PLIES ?? 20);
 const FLAG_LEVELS = new Set(["ELEVATED", "HIGH_STATISTICAL_ANOMALY"]);
+// Sentinel advises against flagging single MODERATE games; a pattern across games counts.
+const PATTERN_LEVELS = ["MODERATE", "ELEVATED", "HIGH_STATISTICAL_ANOMALY"];
+const PATTERN_WINDOW = 10;
+const PATTERN_HITS = 3;
+
+/** Sentinel can't yet delete or expire player data, so only staff and listed test accounts
+ *  are sent until SENTINEL_ALL_PLAYERS=true. */
+async function allowedPlayers(s: Db, ids: string[]) {
+  if (process.env.SENTINEL_ALL_PLAYERS === "true") return true;
+  const testNames = (process.env.SENTINEL_TEST_USERNAMES ?? "")
+    .split(",")
+    .map((n) => n.trim().toLowerCase())
+    .filter(Boolean);
+  const [{ data: staff }, { data: people }] = await Promise.all([
+    s.from("admin_roles").select("user_id").in("user_id", ids),
+    s.from("profiles").select("id, username").in("id", ids),
+  ]);
+  const ok = new Set((staff ?? []).map((r) => r.user_id));
+  for (const p of people ?? []) if (testNames.includes(p.username.toLowerCase())) ok.add(p.id);
+  return ids.every((id) => ok.has(id));
+}
 
 type Db = Awaited<typeof import("@/integrations/supabase/client.server")>["supabaseAdmin"];
 
@@ -149,7 +170,11 @@ export async function submitDueGames() {
   for (const g of games ?? []) {
     const done = () =>
       s.from("games").update({ fairplay_submitted_at: new Date().toISOString() }).eq("id", g.id);
-    if (g.is_bot_game || (g.ply ?? 0) < MIN_PLIES) {
+    if (
+      g.is_bot_game ||
+      (g.ply ?? 0) < MIN_PLIES ||
+      !(await allowedPlayers(s, [g.white_id, g.black_id]))
+    ) {
       skipped++;
       await done();
       continue;
@@ -275,6 +300,27 @@ export async function applyResult(s: Db, r: ResultPayload) {
       await s
         .from("profiles")
         .update({ flagged_for_review: true, flag_reason: reason })
+        .eq("id", check.player_id);
+    }
+  }
+
+  // Repeated MODERATE-or-worse results flag the player even when no single game did.
+  if (r.status === "complete" && r.risk_level && PATTERN_LEVELS.includes(r.risk_level)) {
+    const { data: recent } = await s
+      .from("fairplay_checks")
+      .select("risk_level")
+      .eq("player_id", check.player_id)
+      .eq("status", "complete")
+      .order("completed_at", { ascending: false })
+      .limit(PATTERN_WINDOW);
+    const hits = (recent ?? []).filter((c) => PATTERN_LEVELS.includes(c.risk_level ?? "")).length;
+    if (hits >= PATTERN_HITS) {
+      await s
+        .from("profiles")
+        .update({
+          flagged_for_review: true,
+          flag_reason: `Sentinel pattern: ${hits} of last ${recent!.length} games MODERATE or higher`,
+        })
         .eq("id", check.player_id);
     }
   }
