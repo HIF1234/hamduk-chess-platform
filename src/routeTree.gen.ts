@@ -92,6 +92,7 @@ import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$da
 import { Route as PuzzlesBattleIdRouteImport } from './routes/puzzles.battle.$id'
 import { Route as ForumsThreadThreadIdRouteImport } from './routes/forums.thread.$threadId'
 import { Route as EmbedKindTokenRouteImport } from './routes/embed.$kind.$token'
+import { Route as ApiSentinelWebhookRouteImport } from './routes/api/sentinel/webhook'
 import { Route as ApiHealthAiRouteImport } from './routes/api/health/ai'
 import { Route as ApiCronTickRouteImport } from './routes/api/cron/tick'
 import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
@@ -526,6 +527,11 @@ const EmbedKindTokenRoute = EmbedKindTokenRouteImport.update({
   path: '/embed/$kind/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSentinelWebhookRoute = ApiSentinelWebhookRouteImport.update({
+  id: '/api/sentinel/webhook',
+  path: '/api/sentinel/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiHealthAiRoute = ApiHealthAiRouteImport.update({
   id: '/api/health/ai',
   path: '/api/health/ai',
@@ -709,6 +715,7 @@ export interface FileRoutesByFullPath {
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/api/cron/tick': typeof ApiCronTickRoute
   '/api/health/ai': typeof ApiHealthAiRoute
+  '/api/sentinel/webhook': typeof ApiSentinelWebhookRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/forums/thread/$threadId': typeof ForumsThreadThreadIdRoute
   '/puzzles/battle/$id': typeof PuzzlesBattleIdRoute
@@ -811,6 +818,7 @@ export interface FileRoutesByTo {
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/api/cron/tick': typeof ApiCronTickRoute
   '/api/health/ai': typeof ApiHealthAiRoute
+  '/api/sentinel/webhook': typeof ApiSentinelWebhookRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/forums/thread/$threadId': typeof ForumsThreadThreadIdRoute
   '/puzzles/battle/$id': typeof PuzzlesBattleIdRoute
@@ -915,6 +923,7 @@ export interface FileRoutesById {
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/api/cron/tick': typeof ApiCronTickRoute
   '/api/health/ai': typeof ApiHealthAiRoute
+  '/api/sentinel/webhook': typeof ApiSentinelWebhookRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/forums/thread/$threadId': typeof ForumsThreadThreadIdRoute
   '/puzzles/battle/$id': typeof PuzzlesBattleIdRoute
@@ -1020,6 +1029,7 @@ export interface FileRouteTypes {
     | '/admin/users/$userId'
     | '/api/cron/tick'
     | '/api/health/ai'
+    | '/api/sentinel/webhook'
     | '/embed/$kind/$token'
     | '/forums/thread/$threadId'
     | '/puzzles/battle/$id'
@@ -1122,6 +1132,7 @@ export interface FileRouteTypes {
     | '/admin/users/$userId'
     | '/api/cron/tick'
     | '/api/health/ai'
+    | '/api/sentinel/webhook'
     | '/embed/$kind/$token'
     | '/forums/thread/$threadId'
     | '/puzzles/battle/$id'
@@ -1225,6 +1236,7 @@ export interface FileRouteTypes {
     | '/admin/users/$userId'
     | '/api/cron/tick'
     | '/api/health/ai'
+    | '/api/sentinel/webhook'
     | '/embed/$kind/$token'
     | '/forums/thread/$threadId'
     | '/puzzles/battle/$id'
@@ -1315,6 +1327,7 @@ export interface RootRouteChildren {
   TournamentsIndexRoute: typeof TournamentsIndexRoute
   ApiCronTickRoute: typeof ApiCronTickRoute
   ApiHealthAiRoute: typeof ApiHealthAiRoute
+  ApiSentinelWebhookRoute: typeof ApiSentinelWebhookRoute
   EmbedKindTokenRoute: typeof EmbedKindTokenRoute
   ForumsThreadThreadIdRoute: typeof ForumsThreadThreadIdRoute
   PuzzlesBattleIdRoute: typeof PuzzlesBattleIdRoute
@@ -1913,6 +1926,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmbedKindTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/sentinel/webhook': {
+      id: '/api/sentinel/webhook'
+      path: '/api/sentinel/webhook'
+      fullPath: '/api/sentinel/webhook'
+      preLoaderRoute: typeof ApiSentinelWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/health/ai': {
       id: '/api/health/ai'
       path: '/api/health/ai'
@@ -2208,6 +2228,7 @@ const rootRouteChildren: RootRouteChildren = {
   TournamentsIndexRoute: TournamentsIndexRoute,
   ApiCronTickRoute: ApiCronTickRoute,
   ApiHealthAiRoute: ApiHealthAiRoute,
+  ApiSentinelWebhookRoute: ApiSentinelWebhookRoute,
   EmbedKindTokenRoute: EmbedKindTokenRoute,
   ForumsThreadThreadIdRoute: ForumsThreadThreadIdRoute,
   PuzzlesBattleIdRoute: PuzzlesBattleIdRoute,

@@ -21,6 +21,8 @@ export const Route = createFileRoute("/api/cron/tick")({
           dailyPuzzleEmails: async () =>
             (await import("@/lib/weekly-report.server")).sendDailyPuzzleEmails(),
           guests: async () => (await import("@/lib/guests.server")).cleanupGuests(),
+          sentinelSubmit: async () => (await import("@/lib/sentinel.server")).submitDueGames(),
+          sentinelPoll: async () => (await import("@/lib/sentinel.server")).pollOpenJobs(),
         };
         const results: Record<string, unknown> = {};
         for (const [name, run] of Object.entries(jobs)) {

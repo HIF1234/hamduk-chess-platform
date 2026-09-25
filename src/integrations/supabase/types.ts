@@ -1024,6 +1024,68 @@ export type Database = {
         }
         Relationships: []
       }
+      fairplay_checks: {
+        Row: {
+          behavioral: Json | null
+          completed_at: string | null
+          error: string | null
+          game_id: string
+          id: string
+          job_id: string | null
+          last_polled_at: string | null
+          player_color: string
+          player_id: string
+          risk_level: string | null
+          risk_score: number | null
+          signals: Json | null
+          status: string
+          submitted_at: string
+          summary: string | null
+        }
+        Insert: {
+          behavioral?: Json | null
+          completed_at?: string | null
+          error?: string | null
+          game_id: string
+          id?: string
+          job_id?: string | null
+          last_polled_at?: string | null
+          player_color: string
+          player_id: string
+          risk_level?: string | null
+          risk_score?: number | null
+          signals?: Json | null
+          status?: string
+          submitted_at?: string
+          summary?: string | null
+        }
+        Update: {
+          behavioral?: Json | null
+          completed_at?: string | null
+          error?: string | null
+          game_id?: string
+          id?: string
+          job_id?: string | null
+          last_polled_at?: string | null
+          player_color?: string
+          player_id?: string
+          risk_level?: string | null
+          risk_score?: number | null
+          signals?: Json | null
+          status?: string
+          submitted_at?: string
+          summary?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fairplay_checks_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       follows: {
         Row: {
           created_at: string
@@ -1483,6 +1545,7 @@ export type Database = {
           end_reason: string | null
           ended_at: string | null
           explorer_indexed: boolean
+          fairplay_submitted_at: string | null
           fen: string
           flag_reason: string | null
           flagged_for_review: boolean
@@ -1527,6 +1590,7 @@ export type Database = {
           end_reason?: string | null
           ended_at?: string | null
           explorer_indexed?: boolean
+          fairplay_submitted_at?: string | null
           fen?: string
           flag_reason?: string | null
           flagged_for_review?: boolean
@@ -1571,6 +1635,7 @@ export type Database = {
           end_reason?: string | null
           ended_at?: string | null
           explorer_indexed?: boolean
+          fairplay_submitted_at?: string | null
           fen?: string
           flag_reason?: string | null
           flagged_for_review?: boolean
