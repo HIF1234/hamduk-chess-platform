@@ -19,7 +19,7 @@ export const fileReport = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        targetType: z.enum(["user", "game", "club_post", "message", "forum_post"]),
+        targetType: z.enum(["user", "game", "club_post", "message", "forum_post", "game_comment"]),
         targetId: z.string().uuid(),
         reason: z.enum(REPORT_REASONS.map((r) => r.id) as [string, ...string[]]),
         details: z.string().trim().max(1000).optional(),

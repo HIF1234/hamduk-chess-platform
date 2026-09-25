@@ -1,10 +1,21 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { PlayerCompare } from "@/components/PlayerCompare";
 import { ReportButton } from "@/components/ReportButton";
 import { TIME_CONTROL_IDS } from "@/lib/time-controls";
 import { AchievementsGrid } from "@/components/AchievementsGrid";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Trophy, Calendar, Flag, UserPlus, UserCheck, UserMinus, MessageSquare, Check, X } from "lucide-react";
+import {
+  Trophy,
+  Calendar,
+  Flag,
+  UserPlus,
+  UserCheck,
+  UserMinus,
+  MessageSquare,
+  Check,
+  X,
+} from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { getProfileByUsername } from "@/lib/profile.functions";
 import { getUserRatings } from "@/lib/ratings.functions";
@@ -18,12 +29,24 @@ import {
 } from "@/lib/social.functions";
 
 export const Route = createFileRoute("/profile/$username")({
+  validateSearch: (s: Record<string, unknown>): { compare?: string } => ({
+    compare:
+      typeof s.compare === "string" && /^[A-Za-z0-9_.-]{2,40}$/.test(s.compare)
+        ? s.compare
+        : undefined,
+  }),
   head: ({ params }) => ({
     meta: [
       { title: `${params.username} — Hamduk Chess` },
-      { name: "description", content: `${params.username}'s rating, stats, and recent games on Hamduk Chess.` },
+      {
+        name: "description",
+        content: `${params.username}'s rating, stats, and recent games on Hamduk Chess.`,
+      },
       { property: "og:title", content: `${params.username} — Hamduk Chess` },
-      { property: "og:description", content: `${params.username}'s rating, stats, and recent games on Hamduk Chess.` },
+      {
+        property: "og:description",
+        content: `${params.username}'s rating, stats, and recent games on Hamduk Chess.`,
+      },
     ],
   }),
   component: ProfilePage,
@@ -35,11 +58,13 @@ function ProfileError({ reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   return (
     <div className="min-h-screen bg-background">
-
       <main className="mx-auto max-w-2xl px-4 py-16 text-center">
         <h1 className="font-serif text-2xl font-bold">Could not load profile</h1>
         <button
-          onClick={() => { reset(); router.invalidate(); }}
+          onClick={() => {
+            reset();
+            router.invalidate();
+          }}
           className="mt-4 rounded bg-primary px-4 py-2 text-sm text-primary-foreground"
         >
           Retry
@@ -52,7 +77,6 @@ function ProfileError({ reset }: { error: Error; reset: () => void }) {
 function NotFound({ username }: { username: string }) {
   return (
     <div className="min-h-screen bg-background">
-
       <main className="mx-auto max-w-2xl px-4 py-16 text-center">
         <h1 className="font-serif text-2xl font-bold">Player not found</h1>
         <p className="mt-2 text-muted-foreground">No player named "{username}" on Hamduk.</p>
@@ -66,6 +90,7 @@ function NotFound({ username }: { username: string }) {
 
 function ProfilePage() {
   const { username } = Route.useParams();
+  const { compare } = Route.useSearch();
   const fetchProfile = useServerFn(getProfileByUsername);
   const { data, isLoading } = useQuery({
     queryKey: ["profile", username],
@@ -75,7 +100,6 @@ function ProfilePage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-
         <main className="mx-auto max-w-4xl px-4 py-10 text-muted-foreground">Loading…</main>
       </div>
     );
@@ -88,7 +112,6 @@ function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background">
-
       <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
         <header className="rounded-2xl border border-border bg-card p-6">
           <div className="flex flex-wrap items-start justify-between gap-6">
@@ -109,7 +132,9 @@ function ProfilePage() {
             <div className="flex items-center gap-2 rounded-xl bg-accent/30 px-4 py-3">
               <Trophy className="h-5 w-5 text-accent" />
               <div>
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">Rank #{data.rank}</p>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Rank #{data.rank}
+                </p>
                 <p className="font-mono text-2xl font-bold text-primary">{p.rating}</p>
               </div>
             </div>
@@ -129,6 +154,8 @@ function ProfilePage() {
         </header>
 
         <RatingsPanel userId={p.id} />
+
+        <PlayerCompare username={p.username} compare={compare} />
 
         <AchievementsGrid userId={p.id} />
 
@@ -152,13 +179,23 @@ function ProfilePage() {
                       <OutcomeBadge outcome={g.outcome} color={g.color} />
                     </td>
                     <td className="px-4 py-3">
-                      <Link to="/profile/$username" params={{ username: g.opponent }} className="font-medium hover:underline">
+                      <Link
+                        to="/profile/$username"
+                        params={{ username: g.opponent }}
+                        className="font-medium hover:underline"
+                      >
                         {g.opponent}
                       </Link>
-                      <span className="ml-1 text-xs text-muted-foreground">({g.opponentRating})</span>
+                      <span className="ml-1 text-xs text-muted-foreground">
+                        ({g.opponentRating})
+                      </span>
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell">{g.timeControl}</td>
-                    <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell">{Math.ceil(g.ply / 2)}</td>
+                    <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell">
+                      {g.timeControl}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell">
+                      {Math.ceil(g.ply / 2)}
+                    </td>
                     <td className="px-4 py-3 text-right text-xs text-muted-foreground">
                       {new Date(g.endedAt ?? g.createdAt).toLocaleDateString()}
                     </td>
@@ -203,12 +240,16 @@ function RatingsPanel({ userId }: { userId: string }) {
         {sorted.map((r) => {
           const provisional = r.games_played < 10;
           return (
-            <div key={`${r.time_control}-${r.variant}`} className="rounded-xl border border-border bg-card p-3">
+            <div
+              key={`${r.time_control}-${r.variant}`}
+              className="rounded-xl border border-border bg-card p-3"
+            >
               <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {r.time_control} · {r.variant}
               </p>
               <p className="mt-1 font-mono text-2xl font-bold text-primary">
-                {provisional ? "~" : ""}{r.rating}
+                {provisional ? "~" : ""}
+                {r.rating}
               </p>
               <p className="mt-0.5 text-[11px] text-muted-foreground">
                 {r.games_played} rated · {r.wins}W / {r.losses}L / {r.draws}D
@@ -222,7 +263,15 @@ function RatingsPanel({ userId }: { userId: string }) {
   );
 }
 
-function Stat({ label, value, accent }: { label: string; value: string | number; accent?: string }) {
+function Stat({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: string | number;
+  accent?: string;
+}) {
   return (
     <div className="rounded-xl border border-border bg-background/50 p-3">
       <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
@@ -231,7 +280,13 @@ function Stat({ label, value, accent }: { label: string; value: string | number;
   );
 }
 
-function OutcomeBadge({ outcome, color }: { outcome: "win" | "loss" | "draw" | "ongoing"; color: string }) {
+function OutcomeBadge({
+  outcome,
+  color,
+}: {
+  outcome: "win" | "loss" | "draw" | "ongoing";
+  color: string;
+}) {
   const styles: Record<typeof outcome, string> = {
     win: "bg-emerald-100 text-emerald-800",
     loss: "bg-rose-100 text-rose-800",
@@ -240,7 +295,9 @@ function OutcomeBadge({ outcome, color }: { outcome: "win" | "loss" | "draw" | "
   };
   const label = outcome === "ongoing" ? "Live" : outcome[0].toUpperCase() + outcome.slice(1);
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-bold ${styles[outcome]}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-bold ${styles[outcome]}`}
+    >
       {label}
       <span className="font-normal text-[10px] opacity-70">· {color === "white" ? "♔" : "♚"}</span>
     </span>
@@ -266,10 +323,22 @@ function SocialActions({ targetId, targetUsername }: { targetId: string; targetU
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["relation", targetId] });
 
-  const follow = useMutation({ mutationFn: () => followFn({ data: { userId: targetId } }), onSuccess: invalidate });
-  const unfollow = useMutation({ mutationFn: () => unfollowFn({ data: { userId: targetId } }), onSuccess: invalidate });
-  const sendReq = useMutation({ mutationFn: () => sendReqFn({ data: { userId: targetId } }), onSuccess: invalidate });
-  const remove = useMutation({ mutationFn: () => removeFn({ data: { userId: targetId } }), onSuccess: invalidate });
+  const follow = useMutation({
+    mutationFn: () => followFn({ data: { userId: targetId } }),
+    onSuccess: invalidate,
+  });
+  const unfollow = useMutation({
+    mutationFn: () => unfollowFn({ data: { userId: targetId } }),
+    onSuccess: invalidate,
+  });
+  const sendReq = useMutation({
+    mutationFn: () => sendReqFn({ data: { userId: targetId } }),
+    onSuccess: invalidate,
+  });
+  const remove = useMutation({
+    mutationFn: () => removeFn({ data: { userId: targetId } }),
+    onSuccess: invalidate,
+  });
   const accept = useMutation({
     mutationFn: () => respondFn({ data: { requestId: data!.friend!.id, accept: true } }),
     onSuccess: invalidate,
@@ -289,22 +358,34 @@ function SocialActions({ targetId, targetUsername }: { targetId: string; targetU
   return (
     <div className="mt-5 flex flex-wrap gap-2">
       {data?.isFollowing ? (
-        <button onClick={() => unfollow.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+        <button
+          onClick={() => unfollow.mutate()}
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent"
+        >
           <UserCheck className="h-4 w-4" /> Following
         </button>
       ) : (
-        <button onClick={() => follow.mutate()} className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
+        <button
+          onClick={() => follow.mutate()}
+          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+        >
           <UserPlus className="h-4 w-4" /> Follow
         </button>
       )}
 
       {isFriend && (
-        <button onClick={() => remove.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+        <button
+          onClick={() => remove.mutate()}
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent"
+        >
           <UserMinus className="h-4 w-4" /> Unfriend
         </button>
       )}
       {!f && (
-        <button onClick={() => sendReq.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+        <button
+          onClick={() => sendReq.mutate()}
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent"
+        >
           <UserPlus className="h-4 w-4" /> Add friend
         </button>
       )}
@@ -315,16 +396,26 @@ function SocialActions({ targetId, targetUsername }: { targetId: string; targetU
       )}
       {incoming && (
         <>
-          <button onClick={() => accept.mutate()} className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700">
+          <button
+            onClick={() => accept.mutate()}
+            className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700"
+          >
             <Check className="h-4 w-4" /> Accept
           </button>
-          <button onClick={() => decline.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+          <button
+            onClick={() => decline.mutate()}
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent"
+          >
             <X className="h-4 w-4" /> Decline
           </button>
         </>
       )}
 
-      <Link to="/messages" search={{ with: targetUsername }} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+      <Link
+        to="/messages"
+        search={{ with: targetUsername }}
+        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent"
+      >
         <MessageSquare className="h-4 w-4" /> Message
       </Link>
     </div>

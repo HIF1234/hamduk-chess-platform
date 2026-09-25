@@ -1309,6 +1309,84 @@ export type Database = {
           },
         ]
       }
+      game_comment_likes: {
+        Row: {
+          comment_id: string
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          user_id: string
+        }
+        Update: {
+          comment_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_comment_likes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "game_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_comment_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      game_comments: {
+        Row: {
+          content: string
+          created_at: string
+          deleted_at: string | null
+          game_id: string
+          id: string
+          likes: number
+          ply: number | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          deleted_at?: string | null
+          game_id: string
+          id?: string
+          likes?: number
+          ply?: number | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          deleted_at?: string | null
+          game_id?: string
+          id?: string
+          likes?: number
+          ply?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_comments_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       game_events: {
         Row: {
           by_user: string | null
@@ -3211,6 +3289,32 @@ export type Database = {
       is_club_member: {
         Args: { _club_id: string; _user_id: string }
         Returns: boolean
+      }
+      leaderboard: {
+        Args: {
+          p_country?: string
+          p_friends_of?: string
+          p_limit?: number
+          p_month?: boolean
+          p_offset?: number
+          p_only?: string
+          p_tcs: string[]
+          p_variant?: string
+        }
+        Returns: {
+          country: string
+          draws: number
+          games: number
+          games_month: number
+          last_active_at: string
+          losses: number
+          rank: number
+          rating: number
+          total: number
+          user_id: string
+          username: string
+          wins: number
+        }[]
       }
       puzzles_attempted_today: { Args: { p_user: string }; Returns: number }
       record_bot_game: {

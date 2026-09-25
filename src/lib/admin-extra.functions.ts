@@ -375,6 +375,20 @@ export const getReportTargets = createServerFn({ method: "POST" })
         out[key] = p
           ? { label: "Club post", content: p.content.slice(0, 400), removable: true }
           : { label: "Club post (gone)" };
+      } else if (it.type === "game_comment") {
+        const { data: c } = await s
+          .from("game_comments")
+          .select("content, game_id, deleted_at")
+          .eq("id", it.id)
+          .maybeSingle();
+        out[key] = c
+          ? {
+              label: `Game comment${c.deleted_at ? " (already deleted)" : ""}`,
+              href: `/spectate/${c.game_id}`,
+              content: c.content.slice(0, 400),
+              removable: !c.deleted_at,
+            }
+          : { label: "Game comment (gone)" };
       } else if (it.type === "message") {
         const { data: m } = await s
           .from("messages")
@@ -408,6 +422,11 @@ export const removeReportedContent = createServerFn({ method: "POST" })
         .eq("id", r.target_id);
     } else if (r.target_type === "club_post") {
       await s.from("club_posts").delete().eq("id", r.target_id);
+    } else if (r.target_type === "game_comment") {
+      await s
+        .from("game_comments")
+        .update({ deleted_at: new Date().toISOString() })
+        .eq("id", r.target_id);
     } else {
       throw new Error("Only posts can be removed from here.");
     }

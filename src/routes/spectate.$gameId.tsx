@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { GameComments } from "@/components/GameComments";
 import { ShareGame } from "@/components/ShareGame";
 import { useBoardSquares } from "@/lib/preferences";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -14,9 +15,15 @@ export const Route = createFileRoute("/spectate/$gameId")({
   head: () => ({
     meta: [
       { title: "Live Game — Hamduk Chess" },
-      { name: "description", content: "Watch this game live with engine evaluation and spectator chat." },
+      {
+        name: "description",
+        content: "Watch this game live with engine evaluation and spectator chat.",
+      },
       { property: "og:title", content: "Live Game — Hamduk Chess" },
-      { property: "og:description", content: "Watch this game live with engine evaluation and spectator chat." },
+      {
+        property: "og:description",
+        content: "Watch this game live with engine evaluation and spectator chat.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -75,10 +82,16 @@ function SpectatePage() {
     void load();
 
     const channel = supabase
-      .channel(`spectate:${gameId}`, { config: { presence: { key: user?.id ?? `guest-${Math.random()}` } } })
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "games", filter: `id=eq.${gameId}` }, (p) => {
-        setGame(p.new as GameRow);
+      .channel(`spectate:${gameId}`, {
+        config: { presence: { key: user?.id ?? `guest-${Math.random()}` } },
       })
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "games", filter: `id=eq.${gameId}` },
+        (p) => {
+          setGame(p.new as GameRow);
+        },
+      )
       .on("broadcast", { event: "chat" }, ({ payload }) => {
         const msg = payload as ChatMsg;
         setChat((prev) => [...prev.slice(-99), msg]);
@@ -111,18 +124,28 @@ function SpectatePage() {
     return c;
   }, [game]);
 
-  const { cp, mate, thinking } = useLiveEval(game?.fen ?? "", 10, !!game && game.status === "active");
+  const { cp, mate, thinking } = useLiveEval(
+    game?.fen ?? "",
+    10,
+    !!game && game.status === "active",
+  );
 
   if (notFound) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-3">
         <p className="text-muted-foreground">This game isn't available to watch.</p>
-        <Link to="/spectate" className="text-primary underline">Back to live games</Link>
+        <Link to="/spectate" className="text-primary underline">
+          Back to live games
+        </Link>
       </div>
     );
   }
   if (!game || !chess) {
-    return <div className="flex min-h-screen items-center justify-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
   }
 
   const isParticipant = !!user && (user.id === game.white_id || user.id === game.black_id);
@@ -154,19 +177,23 @@ function SpectatePage() {
     game.status === "completed"
       ? game.result === "draw"
         ? `Draw by ${game.end_reason ?? "agreement"}`
-        : `${game.result === "white" ? white?.username ?? "White" : black?.username ?? "Black"} won by ${game.end_reason ?? "resignation"}`
-      : `${chess.turn() === "w" ? white?.username ?? "White" : black?.username ?? "Black"} to move`;
+        : `${game.result === "white" ? (white?.username ?? "White") : (black?.username ?? "Black")} won by ${game.end_reason ?? "resignation"}`
+      : `${chess.turn() === "w" ? (white?.username ?? "White") : (black?.username ?? "Black")} to move`;
 
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[1fr_320px]">
         <div>
-          <Link to="/spectate" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+          <Link
+            to="/spectate"
+            className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          >
             <ArrowLeft className="h-4 w-4" /> Live games
           </Link>
           <div className="mb-2 flex items-center justify-between rounded-lg border border-border bg-card px-4 py-2 text-sm">
             <span className="font-semibold">
-              {black?.username ?? "—"} ({black?.rating ?? "—"}) vs {white?.username ?? "—"} ({white?.rating ?? "—"})
+              {black?.username ?? "—"} ({black?.rating ?? "—"}) vs {white?.username ?? "—"} (
+              {white?.rating ?? "—"})
             </span>
             <span className="flex items-center gap-1.5 text-muted-foreground">
               <Eye className="h-4 w-4" /> {viewers}
@@ -219,8 +246,14 @@ function SpectatePage() {
             </p>
           </div>
 
+          {game.status === "completed" && game.is_public && (
+            <GameComments gameId={game.id} sans={chess.history()} />
+          )}
+
           <div className="flex h-[360px] flex-col rounded-xl border border-border bg-card p-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Spectator chat</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Spectator chat
+            </p>
             <div className="flex-1 space-y-1.5 overflow-y-auto text-sm">
               {chat.length === 0 && <p className="text-muted-foreground">No messages yet.</p>}
               {chat.map((m) => (
@@ -234,7 +267,9 @@ function SpectatePage() {
               <input
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") void sendChat(); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") void sendChat();
+                }}
                 placeholder={isParticipant ? "Players can't chat here" : "Say something…"}
                 disabled={isParticipant}
                 maxLength={240}
@@ -252,9 +287,13 @@ function SpectatePage() {
           </div>
 
           <div className="rounded-xl border border-border bg-card p-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Moves</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Moves
+            </p>
             <div className="max-h-[240px] overflow-y-auto font-mono text-sm">
-              {chess.history().length === 0 && <p className="text-muted-foreground">No moves yet.</p>}
+              {chess.history().length === 0 && (
+                <p className="text-muted-foreground">No moves yet.</p>
+              )}
               {Array.from({ length: Math.ceil(chess.history().length / 2) }, (_, i) => (
                 <div key={i} className="flex gap-2 py-0.5">
                   <span className="w-6 text-right text-muted-foreground">{i + 1}.</span>
