@@ -34,7 +34,9 @@ export const listUsers = createServerFn({ method: "GET" })
         search: z.string().max(60).optional(),
         tier: z.string().optional(),
         status: z.enum(["all", "active", "banned", "guest"]).default("all"),
-        sortBy: z.enum(["created_at", "last_active_at", "rating", "games_played"]).default("created_at"),
+        sortBy: z
+          .enum(["created_at", "last_active_at", "rating", "games_played"])
+          .default("created_at"),
         page: z.number().int().min(1).default(1),
         pageSize: z.number().int().min(5).max(100).default(25),
       })
@@ -107,7 +109,9 @@ export const banUser = createServerFn({ method: "POST" })
 
 export const unbanUser = createServerFn({ method: "POST" })
   .middleware([requireAdminRole("moderator")])
-  .inputValidator((d) => z.object({ userId: z.string().uuid(), reason: z.string().max(500).optional() }).parse(d))
+  .inputValidator((d) =>
+    z.object({ userId: z.string().uuid(), reason: z.string().max(500).optional() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { logAdminAction } = await import("@/lib/admin.server");
@@ -216,7 +220,9 @@ export const grantSubscription = createServerFn({ method: "POST" })
 
 export const revokeSubscription = createServerFn({ method: "POST" })
   .middleware([requireAdminRole("admin")])
-  .inputValidator((d) => z.object({ userId: z.string().uuid(), reason: z.string().max(500).optional() }).parse(d))
+  .inputValidator((d) =>
+    z.object({ userId: z.string().uuid(), reason: z.string().max(500).optional() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { logAdminAction } = await import("@/lib/admin.server");
@@ -291,7 +297,11 @@ export const deleteUserAccount = createServerFn({ method: "POST" })
 /** super_admin only — manage the staff roster. */
 export const setAdminRole = createServerFn({ method: "POST" })
   .middleware([requireAdminRole("super_admin")])
-  .inputValidator((d) => z.object({ userId: z.string().uuid(), role: RoleEnum, reason: z.string().max(500).optional() }).parse(d))
+  .inputValidator((d) =>
+    z
+      .object({ userId: z.string().uuid(), role: RoleEnum, reason: z.string().max(500).optional() })
+      .parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { assertRate } = await import("@/lib/rate-limit.server");
     await assertRate(context.userId, "admin_role", 20, 3600);
@@ -326,7 +336,9 @@ export const setAdminRole = createServerFn({ method: "POST" })
 
 export const revokeAdminRole = createServerFn({ method: "POST" })
   .middleware([requireAdminRole("super_admin")])
-  .inputValidator((d) => z.object({ userId: z.string().uuid(), reason: z.string().max(500).optional() }).parse(d))
+  .inputValidator((d) =>
+    z.object({ userId: z.string().uuid(), reason: z.string().max(500).optional() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { logAdminAction } = await import("@/lib/admin.server");
@@ -452,7 +464,9 @@ export const listPayments = createServerFn({ method: "GET" })
 
 export const getRevenueBreakdown = createServerFn({ method: "GET" })
   .middleware([requireAdminRole("support")])
-  .inputValidator((d) => z.object({ days: z.number().int().min(7).max(365).default(30) }).parse(d ?? {}))
+  .inputValidator((d) =>
+    z.object({ days: z.number().int().min(7).max(365).default(30) }).parse(d ?? {}),
+  )
   .handler(async ({ data }) => {
     const { fetchRevenueBreakdown } = await import("@/lib/admin.server");
     return fetchRevenueBreakdown(data.days);
@@ -461,7 +475,9 @@ export const getRevenueBreakdown = createServerFn({ method: "GET" })
 /** No refund button: flag the payment for manual follow-up in Paystack instead. */
 export const flagPayment = createServerFn({ method: "POST" })
   .middleware([requireAdminRole("admin")])
-  .inputValidator((d) => z.object({ paymentId: z.string().uuid(), note: z.string().min(3).max(500) }).parse(d))
+  .inputValidator((d) =>
+    z.object({ paymentId: z.string().uuid(), note: z.string().min(3).max(500) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { logAdminAction } = await import("@/lib/admin.server");
@@ -486,7 +502,9 @@ export const flagPayment = createServerFn({ method: "POST" })
 export const listCoaches = createServerFn({ method: "GET" })
   .middleware([requireAdminRole("support")])
   .inputValidator((d) =>
-    z.object({ status: z.enum(["all", "pending", "active", "inactive"]).default("all") }).parse(d ?? {}),
+    z
+      .object({ status: z.enum(["all", "pending", "active", "inactive"]).default("all") })
+      .parse(d ?? {}),
   )
   .handler(async ({ data }) => {
     const { fetchCoaches } = await import("@/lib/admin.server");
@@ -497,7 +515,11 @@ export const setCoachActive = createServerFn({ method: "POST" })
   .middleware([requireAdminRole("admin")])
   .inputValidator((d) =>
     z
-      .object({ coachId: z.string().uuid(), active: z.boolean(), reason: z.string().max(500).optional() })
+      .object({
+        coachId: z.string().uuid(),
+        active: z.boolean(),
+        reason: z.string().max(500).optional(),
+      })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -622,4 +644,37 @@ export const listAllWebhooks = createServerFn({ method: "GET" })
   .handler(async () => {
     const { fetchAllWebhooks } = await import("@/lib/admin.server");
     return fetchAllWebhooks();
+  });
+
+/** Removes a player's authenticator so they can sign in with just their password again.
+ *  For players who lost their phone; staff should confirm identity first. */
+export const resetUserMfa = createServerFn({ method: "POST" })
+  .middleware([requireAdminRole("admin")])
+  .inputValidator((d) =>
+    z.object({ userId: z.string().uuid(), reason: z.string().min(3).max(500) }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { logAdminAction } = await import("@/lib/admin.server");
+    const { data: list, error } = await supabaseAdmin.auth.admin.mfa.listFactors({
+      userId: data.userId,
+    });
+    if (error) throw new Error(error.message);
+    for (const f of list.factors) {
+      const { error: delErr } = await supabaseAdmin.auth.admin.mfa.deleteFactor({
+        id: f.id,
+        userId: data.userId,
+      });
+      if (delErr) throw new Error(delErr.message);
+    }
+    await logAdminAction({
+      adminId: context.userId,
+      action: "user.mfa_reset",
+      targetTable: "auth.mfa_factors",
+      targetId: data.userId,
+      before: { factors: list.factors.length },
+      after: { factors: 0 },
+      reason: data.reason,
+    });
+    return { removed: list.factors.length };
   });

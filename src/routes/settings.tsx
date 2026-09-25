@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { TwoFactorSettings } from "@/components/auth/TwoFactorSettings";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -267,6 +268,12 @@ function SettingsPage() {
             </a>
           </div>
         </Section>
+
+        {!isGuest && (
+          <Section title="Two-factor sign-in">
+            <TwoFactorSettings />
+          </Section>
+        )}
 
         <Section title="Membership">
           <Row

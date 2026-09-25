@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { MfaGate } from "@/components/auth/MfaGate";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import {
   Outlet,
@@ -83,14 +84,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Hamduk Chess" },
-      { name: "description", content: "Play, learn and compete in chess. Africa-first: Nigerian bots, puzzles, tournaments, clubs and coaching." },
+      {
+        name: "description",
+        content:
+          "Play, learn and compete in chess. Africa-first: Nigerian bots, puzzles, tournaments, clubs and coaching.",
+      },
       { name: "author", content: "Hamduk Chess Club" },
       { property: "og:title", content: "Hamduk Chess" },
-      { property: "og:description", content: "Play, learn and compete in chess. Africa-first: Nigerian bots, puzzles, tournaments, clubs and coaching." },
+      {
+        property: "og:description",
+        content:
+          "Play, learn and compete in chess. Africa-first: Nigerian bots, puzzles, tournaments, clubs and coaching.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Hamduk Chess" },
-      { name: "twitter:description", content: "Play, learn and compete in chess. Africa-first: Nigerian bots, puzzles, tournaments, clubs and coaching." },
+      {
+        name: "twitter:description",
+        content:
+          "Play, learn and compete in chess. Africa-first: Nigerian bots, puzzles, tournaments, clubs and coaching.",
+      },
     ],
     links: [
       {
@@ -149,7 +162,8 @@ function AuthAwareShell() {
     // Remember an invite code from ?ref=… until the visitor has a real account.
     try {
       const ref = new URLSearchParams(window.location.search).get("ref");
-      if (ref && /^[A-Za-z2-9]{8}$/.test(ref)) localStorage.setItem("hamduk:ref", ref.toUpperCase());
+      if (ref && /^[A-Za-z2-9]{8}$/.test(ref))
+        localStorage.setItem("hamduk:ref", ref.toUpperCase());
     } catch {
       /* storage unavailable */
     }
@@ -201,6 +215,7 @@ function AuthAwareShell() {
       </div>
       <BottomNav />
       <NotificationListener />
+      <MfaGate />
       <Heartbeat />
       <Toaster position="top-right" richColors closeButton theme="system" />
     </div>

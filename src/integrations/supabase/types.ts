@@ -3460,6 +3460,7 @@ export type Database = {
           wins: number
         }[]
       }
+      mfa_ok: { Args: never; Returns: boolean }
       puzzle_battle_answer: {
         Args: {
           p_battle: string

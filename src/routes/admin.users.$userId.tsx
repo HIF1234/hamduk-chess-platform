@@ -15,32 +15,45 @@ import {
   revokeSubscription,
   setAdminRole,
   unbanUser,
+  resetUserMfa,
 } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/users/$userId")({
   head: () => ({
     meta: [
       { title: "Account detail | Hamduk Chess staff" },
-      { name: "description", content: "Full account history, moderation and subscription controls." },
+      {
+        name: "description",
+        content: "Full account history, moderation and subscription controls.",
+      },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: AdminUserDetail,
-  errorComponent: ({ error }) => <div className="p-4 text-sm text-destructive">{error.message}</div>,
-  notFoundComponent: () => <div className="p-4 text-sm text-muted-foreground">Account not found</div>,
+  errorComponent: ({ error }) => (
+    <div className="p-4 text-sm text-destructive">{error.message}</div>
+  ),
+  notFoundComponent: () => (
+    <div className="p-4 text-sm text-muted-foreground">Account not found</div>
+  ),
 });
 
 function AdminUserDetail() {
   const { userId } = Route.useParams();
   const qc = useQueryClient();
   const role = useQuery({ queryKey: ["my-admin-role"], queryFn: () => getMyAdminRole() });
-  const detail = useQuery({ queryKey: ["admin-user", userId], queryFn: () => getUserDetail({ data: { userId } }) });
+  const detail = useQuery({
+    queryKey: ["admin-user", userId],
+    queryFn: () => getUserDetail({ data: { userId } }),
+  });
 
   const [reason, setReason] = useState("");
   const [newRating, setNewRating] = useState("");
   const [tier, setTier] = useState<"free" | "plus" | "gold">("plus");
   const [confirmName, setConfirmName] = useState("");
-  const [staffRole, setStaffRole] = useState<"admin" | "moderator" | "support" | "super_admin">("moderator");
+  const [staffRole, setStaffRole] = useState<"admin" | "moderator" | "support" | "super_admin">(
+    "moderator",
+  );
 
   const isSuper = role.data?.role === "super_admin";
   const refresh = () => {
@@ -60,7 +73,9 @@ function AdminUserDetail() {
   const ban = useMutation({
     mutationFn: () => banUser({ data: { userId, reason } }),
     onSuccess: (r) => {
-      toast.success(`Account banned${r.abortedGames ? ` · ${r.abortedGames} game(s) aborted` : ""}`);
+      toast.success(
+        `Account banned${r.abortedGames ? ` · ${r.abortedGames} game(s) aborted` : ""}`,
+      );
       refresh();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -71,6 +86,14 @@ function AdminUserDetail() {
       toast.success("Ban lifted");
       refresh();
     },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const mfaReset = useMutation({
+    mutationFn: () => resetUserMfa({ data: { userId, reason } }),
+    onSuccess: (r) =>
+      toast.success(
+        r.removed ? "Two-factor sign-in removed" : "This player had no two-factor sign-in",
+      ),
     onError: (e: Error) => toast.error(e.message),
   });
   const rating = useMutation({
@@ -104,7 +127,8 @@ function AdminUserDetail() {
     onError: (e: Error) => toast.error(e.message),
   });
   const grantStaff = useMutation({
-    mutationFn: () => setAdminRole({ data: { userId, role: staffRole, reason: reason || undefined } }),
+    mutationFn: () =>
+      setAdminRole({ data: { userId, role: staffRole, reason: reason || undefined } }),
     onSuccess: () => {
       toast.success("Staff role updated");
       refresh();
@@ -126,7 +150,10 @@ function AdminUserDetail() {
 
   return (
     <div>
-      <Link to="/admin/users" className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/admin/users"
+        className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="h-4 w-4" /> Back to users
       </Link>
       <PageHeader
@@ -226,7 +253,12 @@ function AdminUserDetail() {
                 type="button"
                 onClick={() => {
                   if (!need()) return;
-                  if (!confirm(`Ban ${d.profile.username}? Active games will be aborted and sessions revoked.`)) return;
+                  if (
+                    !confirm(
+                      `Ban ${d.profile.username}? Active games will be aborted and sessions revoked.`,
+                    )
+                  )
+                    return;
                   ban.mutate();
                 }}
                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-destructive px-3 py-2 text-sm text-destructive-foreground"
@@ -281,6 +313,22 @@ function AdminUserDetail() {
             >
               Revoke subscription
             </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (!need()) return;
+                if (
+                  !confirm(
+                    "Remove this player's two-factor sign-in? Only do this after confirming who they are.",
+                  )
+                )
+                  return;
+                mfaReset.mutate();
+              }}
+              className="w-full rounded-lg border border-border px-3 py-2 text-sm"
+            >
+              Reset two-factor sign-in
+            </button>
           </div>
 
           {isSuper ? (
@@ -326,7 +374,8 @@ function AdminUserDetail() {
               <div className="mt-4 rounded-lg border border-destructive/40 p-3">
                 <p className="text-sm font-medium text-destructive">Delete account permanently</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Type <span className="font-mono">{d.profile.username}</span> to confirm. This cannot be undone.
+                  Type <span className="font-mono">{d.profile.username}</span> to confirm. This
+                  cannot be undone.
                 </p>
                 <input
                   value={confirmName}
@@ -366,7 +415,9 @@ function AdminUserDetail() {
                     {g.result ? ` · ${g.result}` : ""}
                     {g.flagged_for_review ? " · flagged" : ""}
                   </span>
-                  <span className="shrink-0 text-xs text-muted-foreground">{when(g.created_at)}</span>
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    {when(g.created_at)}
+                  </span>
                 </div>
               ))
             )}
@@ -398,12 +449,17 @@ function AdminUserDetail() {
               <EmptyState>No staff actions recorded.</EmptyState>
             ) : (
               d.audit.map((a) => (
-                <div key={a.id} className="flex items-center justify-between gap-2 border-b border-border pb-2">
+                <div
+                  key={a.id}
+                  className="flex items-center justify-between gap-2 border-b border-border pb-2"
+                >
                   <span className="truncate">
                     <span className="font-medium">{a.action}</span>
                     {a.reason ? <span className="text-muted-foreground"> — {a.reason}</span> : null}
                   </span>
-                  <span className="shrink-0 text-xs text-muted-foreground">{when(a.created_at)}</span>
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    {when(a.created_at)}
+                  </span>
                 </div>
               ))
             )}
