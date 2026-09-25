@@ -6,6 +6,7 @@ import { Chess } from "chess.js";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { User as UserIcon } from "lucide-react";
 import { useChessGame } from "@/hooks/useChessGame";
 import { useStockfish } from "@/hooks/useStockfish";
 import { sounds } from "@/lib/chess-sounds";
@@ -13,7 +14,6 @@ import { MoveList } from "./MoveList";
 import { CapturedStrip } from "./CapturedPieces";
 import { PromotionDialog } from "./PromotionDialog";
 import { GameStatusBanner } from "./GameStatusBanner";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { PersonaPicker } from "./PersonaPicker";
 import { DEFAULT_PERSONA_ID, getPersona } from "@/lib/bot-personas";
 import { recordBotGame, getMyBilling } from "@/lib/ratings.functions";
@@ -43,14 +43,20 @@ export function ChessApp({
   const recordedRef = useRef(false);
   const persona = getPersona(personaId);
   const [userTier, setUserTier] = useState<"free" | "plus" | "gold">("free");
+  const [playerColor, setPlayerColor] = useState<Color>("w");
 
   useEffect(() => {
-    if (!user) { setUserTier("free"); return; }
-    void getMyBilling({}).then((b) => setUserTier(b.tier)).catch(() => setUserTier("free"));
+    if (!user) {
+      setUserTier("free");
+      return;
+    }
+    void getMyBilling({})
+      .then((b) => setUserTier(b.tier))
+      .catch(() => setUserTier("free"));
   }, [user]);
 
-  // Engine plays as black when mode === "engine"
-  const engineColor: Color = "b";
+  // In engine mode the bot takes whichever colour the player didn't pick.
+  const engineColor: Color = playerColor === "w" ? "b" : "w";
 
   const playWithSound = useCallback(
     (from: Square, to: Square, promo?: PieceSymbol) => {
@@ -77,7 +83,8 @@ export function ChessApp({
         game.status.kind === "stalemate" ||
         game.status.kind === "draw" ||
         game.status.kind === "resigned"
-      ) sounds.end();
+      )
+        sounds.end();
       lastStatusKind.current = game.status.kind;
     }
   }, [game.status]);
@@ -114,7 +121,17 @@ export function ChessApp({
       clearTimeout(timer);
       engineThinking.current = false;
     };
-  }, [mode, game.turn, game.fen, game.gameOver, requestBotMove, playWithSound, persona, game.history.length]);
+  }, [
+    mode,
+    game.turn,
+    game.fen,
+    game.gameOver,
+    requestBotMove,
+    playWithSound,
+    persona,
+    game.history.length,
+    engineColor,
+  ]);
 
   // Record bot game once when it ends (no ELO, just bot_games counter)
   useEffect(() => {
@@ -129,12 +146,24 @@ export function ChessApp({
         variant: "standard",
         botId: persona.id,
         result,
-        playerColor: engineColor === "b" ? "white" : "black",
+        playerColor: playerColor === "w" ? "white" : "black",
         endReason: st.kind,
         ply: game.history.length,
       },
-    }).catch(() => { /* silent — bot tracking is best-effort */ });
-  }, [mode, game.gameOver, game.status, game.history.length, user, recordBot, persona.id]);
+    }).catch(() => {
+      /* silent — bot tracking is best-effort */
+    });
+  }, [
+    mode,
+    game.gameOver,
+    game.status,
+    game.history.length,
+    user,
+    recordBot,
+    persona.id,
+    playerColor,
+    engineColor,
+  ]);
 
   // Reset record flag on new game
   useEffect(() => {
@@ -159,7 +188,10 @@ export function ChessApp({
     for (const ch of ranks[rankIdx]) {
       if (/\d/.test(ch)) col += parseInt(ch);
       else {
-        if (col === fileIdx) { p = ch; break; }
+        if (col === fileIdx) {
+          p = ch;
+          break;
+        }
         col++;
       }
     }
@@ -182,7 +214,13 @@ export function ChessApp({
     return ok;
   };
 
-  const onPieceDrop = ({ sourceSquare, targetSquare }: { sourceSquare: string; targetSquare: string | null }) => {
+  const onPieceDrop = ({
+    sourceSquare,
+    targetSquare,
+  }: {
+    sourceSquare: string;
+    targetSquare: string | null;
+  }) => {
     if (!targetSquare) return false;
     return tryMove(sourceSquare as Square, targetSquare as Square);
   };
@@ -190,8 +228,14 @@ export function ChessApp({
   const onSquareClick = ({ square }: { square: string }) => {
     const sq = square as Square;
     if (selected) {
-      if (sq === selected) { setSelected(null); return; }
-      if (legalTargets.includes(sq)) { tryMove(selected, sq); return; }
+      if (sq === selected) {
+        setSelected(null);
+        return;
+      }
+      if (legalTargets.includes(sq)) {
+        tryMove(selected, sq);
+        return;
+      }
     }
     // Select only own piece
     const board = game.fen.split(" ")[0];
@@ -202,11 +246,23 @@ export function ChessApp({
     let col = 0;
     for (const ch of ranks[rankIdx]) {
       if (/\d/.test(ch)) col += parseInt(ch);
-      else { if (col === fileIdx) { p = ch; break; } col++; }
+      else {
+        if (col === fileIdx) {
+          p = ch;
+          break;
+        }
+        col++;
+      }
     }
-    if (!p) { setSelected(null); return; }
+    if (!p) {
+      setSelected(null);
+      return;
+    }
     const pieceColor: Color = p === p.toUpperCase() ? "w" : "b";
-    if (pieceColor !== game.turn) { setSelected(null); return; }
+    if (pieceColor !== game.turn) {
+      setSelected(null);
+      return;
+    }
     if (mode === "engine" && pieceColor === engineColor) return;
     setSelected(sq);
   };
@@ -217,14 +273,19 @@ export function ChessApp({
       styles[selected] = { background: "rgba(234, 179, 8, 0.35)" };
       for (const t of legalTargets) {
         styles[t] = {
-          background:
-            "radial-gradient(circle, rgba(24,24,27,0.35) 22%, transparent 24%)",
+          background: "radial-gradient(circle, rgba(24,24,27,0.35) 22%, transparent 24%)",
         };
       }
     }
     if (game.lastMove) {
-      styles[game.lastMove.from] = { ...styles[game.lastMove.from], background: "rgba(250, 204, 21, 0.25)" };
-      styles[game.lastMove.to] = { ...styles[game.lastMove.to], background: "rgba(250, 204, 21, 0.35)" };
+      styles[game.lastMove.from] = {
+        ...styles[game.lastMove.from],
+        background: "rgba(250, 204, 21, 0.25)",
+      };
+      styles[game.lastMove.to] = {
+        ...styles[game.lastMove.to],
+        background: "rgba(250, 204, 21, 0.35)",
+      };
     }
     return styles;
   }, [selected, legalTargets, game.lastMove]);
@@ -246,7 +307,17 @@ export function ChessApp({
     [game.fen, orientation, squareStyles, game.gameOver, boardSquares],
   );
 
-  const handleNewGame = () => { game.reset(); setSelected(null); setPendingPromo(null); };
+  const handleNewGame = () => {
+    game.reset();
+    setSelected(null);
+    setPendingPromo(null);
+  };
+  const chooseColor = (c: Color | "random") => {
+    const next = c === "random" ? (Math.random() < 0.5 ? "w" : "b") : c;
+    setPlayerColor(next);
+    setOrientation(next === "w" ? "white" : "black");
+    handleNewGame();
+  };
   const handleUndo = () => {
     game.undo();
     if (mode === "engine") game.undo(); // undo engine reply too
@@ -255,7 +326,7 @@ export function ChessApp({
   const handleFlip = () => setOrientation((o) => (o === "white" ? "black" : "white"));
   const handleResign = () => {
     if (game.gameOver) return;
-    game.resign(mode === "engine" ? "w" : game.turn);
+    game.resign(mode === "engine" ? playerColor : game.turn);
   };
   const handleOpenInAnalysis = () => {
     const chess = new Chess();
@@ -266,129 +337,157 @@ export function ChessApp({
     navigate({ to: "/analysis" });
   };
 
-  const turnLabel = game.gameOver
-    ? "Game over"
-    : game.turn === "w" ? "White to move" : "Black to move";
+  const vsBot = mode === "engine";
+  const botThinking = vsBot && !game.gameOver && game.turn === engineColor;
+  const top: Color = orientation === "white" ? "b" : "w";
+  const strip = (color: Color) => {
+    const isBot = vsBot && color === engineColor;
+    return (
+      <PlayerStrip
+        name={isBot ? persona.name : vsBot ? "You" : color === "w" ? "White" : "Black"}
+        sub={isBot ? `${persona.hometown} · ${persona.rating}` : color === "w" ? "White" : "Black"}
+        portrait={isBot ? persona.portrait : undefined}
+        active={game.turn === color && !game.gameOver}
+        thinking={isBot && botThinking}
+        captured={
+          <CapturedStrip
+            color={color === "w" ? "b" : "w"}
+            pieces={color === "w" ? game.captured.b : game.captured.w}
+            advantage={Math.max(0, color === "w" ? game.advantage : -game.advantage)}
+          />
+        }
+      />
+    );
+  };
+  const seg = (on: boolean) =>
+    "flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors " +
+    (on ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent");
+  const action =
+    "rounded-md border border-border bg-card px-2 py-2 text-sm font-medium hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
-    <div className="min-h-screen bg-surface font-sans text-zinc-900 selection:bg-zinc-200">
-      <nav className="h-12 border-b border-zinc-950/5 flex items-center justify-between px-6 bg-panel">
-        <div className="flex items-center gap-6">
-          <span className="text-xs font-semibold tracking-wider uppercase text-zinc-400">
-            Hamduk Chess
-          </span>
-          <div className="h-4 w-px bg-zinc-950/5" />
-          <div className="flex items-center gap-4">
-            <span className="text-xs font-medium uppercase tracking-wider text-zinc-700">{turnLabel}</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <a href="/lobby" className="text-xs font-semibold uppercase tracking-wider text-primary hover:underline">
-            Play Online
-          </a>
-          <a href="/puzzles" className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors">
-            Puzzles
-          </a>
-          <a href="/analysis" className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors">
-            Analysis
-          </a>
-          <a href="/leaderboard" className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors">
-            Leaderboard
-          </a>
-          <ThemeToggle />
-          <div className="h-4 w-px bg-zinc-950/5" />
-          <div className="flex bg-zinc-200/50 p-0.5 rounded-md">
-
-            <button
-              onClick={() => setMode("human")}
-              className={
-                "px-3 py-1 text-xs font-medium rounded cursor-pointer transition-colors " +
-                (mode === "human" ? "bg-panel shadow-sm ring-1 ring-black/5" : "text-zinc-500 hover:text-zinc-700")
-              }
-            >
-              vs Human
-            </button>
-            <button
-              onClick={() => setMode("engine")}
-              className={
-                "px-3 py-1 text-xs font-medium rounded cursor-pointer transition-colors " +
-                (mode === "engine" ? "bg-panel shadow-sm ring-1 ring-black/5" : "text-zinc-500 hover:text-zinc-700")
-              }
-            >
-              vs Engine
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-[1440px] mx-auto px-6 md:px-12 py-8 md:py-12 flex flex-col lg:flex-row gap-8 md:gap-12 items-start">
-        <div className="flex-1 flex flex-col items-center w-full">
-          <div className="w-full max-w-[720px] space-y-6">
-            <PlayerStrip
-              name={mode === "engine" ? persona.name : "Black"}
-              sub={mode === "engine" ? `${persona.hometown} · ${persona.rating}` : "Player 2"}
-              active={game.turn === "b" && !game.gameOver}
-              variant="opponent"
-              captured={<CapturedStrip color="w" pieces={game.captured.w} advantage={Math.max(0, -game.advantage)} />}
-            />
-
-            <div className="relative aspect-square w-full bg-zinc-300 ring-1 ring-black/10 rounded-sm overflow-hidden">
-              <Chessboard options={boardOptions} />
-              <GameStatusBanner status={game.status} onNewGame={handleNewGame} />
-            </div>
-
-            <PlayerStrip
-              name="You"
-              sub="White · Local"
-              active={game.turn === "w" && !game.gameOver}
-              variant="self"
-              captured={<CapturedStrip color="b" pieces={game.captured.b} advantage={Math.max(0, game.advantage)} />}
+    <div className="min-h-screen bg-background text-foreground">
+      <main className="mx-auto grid max-w-6xl items-start gap-6 px-4 py-4 sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="mx-auto w-full max-w-[640px] space-y-3">
+          {strip(top)}
+          <div className="relative aspect-square w-full touch-none select-none overflow-hidden rounded-sm ring-1 ring-border">
+            <Chessboard options={boardOptions} />
+            <GameStatusBanner
+              status={game.status}
+              onNewGame={handleNewGame}
+              you={vsBot ? playerColor : undefined}
+              opponentName={vsBot ? persona.name : undefined}
             />
           </div>
-        </div>
+          {strip(top === "w" ? "b" : "w")}
 
-        <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-6">
-          <MoveList history={game.history} />
-
-          <div className="grid grid-cols-2 gap-3">
-            <button onClick={handleNewGame} className="py-2 px-3 text-sm font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 transition-colors cursor-pointer">
-              New Game
+          <div className="grid grid-cols-4 gap-2">
+            <button
+              onClick={handleNewGame}
+              className={action.replace(
+                "bg-card",
+                "bg-primary text-primary-foreground hover:bg-primary/90",
+              )}
+            >
+              New
             </button>
-            <button onClick={handleUndo} disabled={game.history.length === 0} className="py-2 px-3 text-sm font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+            <button onClick={handleUndo} disabled={game.history.length === 0} className={action}>
               Undo
             </button>
-            <button onClick={handleFlip} className="py-2 px-3 text-sm font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100 transition-colors cursor-pointer">
+            <button onClick={handleFlip} className={action}>
               Flip
             </button>
-            <button onClick={handleResign} disabled={game.gameOver} className="py-2 px-3 text-sm font-medium bg-panel text-red-700 rounded ring-1 ring-black/5 hover:bg-red-50 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+            <button
+              onClick={handleResign}
+              disabled={game.gameOver || game.history.length === 0}
+              className={`${action} text-destructive`}
+            >
               Resign
             </button>
           </div>
+        </div>
 
-          <button
-            onClick={handleOpenInAnalysis}
-            className="py-2 px-3 text-sm font-medium bg-panel text-zinc-900 rounded ring-1 ring-black/10 hover:bg-zinc-100 transition-colors cursor-pointer"
-          >
-            Open in Analysis →
-          </button>
+        <aside className="flex w-full flex-col gap-4">
+          <div>
+            <h1 className="font-serif text-2xl font-bold">
+              {vsBot ? "Play the bots" : "Pass and play"}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {vsBot
+                ? `${persona.name}: “${persona.catchphrase}”. Bot games don't change your rating.`
+                : "Two players, one device. Flip the board after each move if you like."}
+            </p>
+          </div>
 
-          {mode === "engine" && (
-            <div className="rounded-md bg-panel ring-1 ring-black/5 p-3">
-              <PersonaPicker
-                value={personaId}
-                userTier={userTier}
-                onChange={(id) => { setPersonaId(id); game.reset(); setSelected(null); setPendingPromo(null); recordedRef.current = false; }}
-                onLockedClick={(p) => toast.info(`${p.name} is a Plus opponent — upgrade to unlock.`, { action: { label: "Upgrade", onClick: () => navigate({ to: "/billing" }) } })}
-              />
-              <p className="mt-2 text-[11px] text-zinc-500 italic leading-snug">{persona.bio}</p>
+          {vsBot && (
+            <div>
+              <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                You play
+              </p>
+              <div className="flex gap-1 rounded-lg border border-border bg-card p-0.5">
+                <button onClick={() => chooseColor("w")} className={seg(playerColor === "w")}>
+                  White
+                </button>
+                <button onClick={() => chooseColor("random")} className={seg(false)}>
+                  Random
+                </button>
+                <button onClick={() => chooseColor("b")} className={seg(playerColor === "b")}>
+                  Black
+                </button>
+              </div>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Changing colour starts a new game.
+              </p>
             </div>
           )}
 
-          <p className="text-xs text-zinc-400 leading-normal max-w-[32ch] text-pretty">
-            {mode === "engine"
-              ? `Facing ${persona.name} from ${persona.hometown}. Depth ${persona.depthMin}–${persona.depthMax}, ${Math.round(persona.blunderRate * 100)}% blunder rate. Bot games don't affect ELO.`
-              : "Hot-seat mode. Two players share the board — flip after each move if needed."}
-          </p>
+          {/* On phones the opponent picker comes first; the move list matters once a game is on. */}
+          <div className="order-4 lg:order-3">
+            <MoveList history={game.history} />
+          </div>
+
+          {vsBot && (
+            <div className="order-3 rounded-lg border border-border bg-card p-3 lg:order-4">
+              <PersonaPicker
+                value={personaId}
+                userTier={userTier}
+                onChange={(id) => {
+                  setPersonaId(id);
+                  game.reset();
+                  setSelected(null);
+                  setPendingPromo(null);
+                  recordedRef.current = false;
+                }}
+                onLockedClick={(p) =>
+                  toast.info(`${p.name} is a Plus opponent. Upgrade to unlock.`, {
+                    action: { label: "Upgrade", onClick: () => navigate({ to: "/billing" }) },
+                  })
+                }
+              />
+              <p className="mt-2 text-xs italic leading-snug text-muted-foreground">
+                {persona.bio}
+              </p>
+            </div>
+          )}
+
+          <div className="order-5 flex flex-wrap gap-2 text-sm">
+            <button
+              onClick={handleOpenInAnalysis}
+              disabled={game.history.length === 0}
+              className={action}
+            >
+              Open in analysis
+            </button>
+            <button
+              onClick={() => {
+                setMode(vsBot ? "human" : "engine");
+                handleNewGame();
+              }}
+              className={action}
+            >
+              {vsBot ? "Pass and play instead" : "Play a bot instead"}
+            </button>
+          </div>
         </aside>
       </main>
 
@@ -411,38 +510,44 @@ export function ChessApp({
 function PlayerStrip({
   name,
   sub,
+  portrait,
   active,
-  variant,
+  thinking,
   captured,
 }: {
   name: string;
   sub: string;
+  portrait?: string;
   active: boolean;
-  variant: "opponent" | "self";
+  thinking?: boolean;
   captured: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <div
-          className={
-            "size-10 rounded-sm flex items-center justify-center text-xs font-medium " +
-            (variant === "self"
-              ? "bg-zinc-900 text-zinc-100 ring-1 ring-zinc-900"
-              : "bg-zinc-200 text-zinc-500 ring-1 ring-black/5")
-          }
-        >
-          {variant === "self" ? "ME" : "OP"}
-        </div>
-        <div>
-          <p className="text-sm font-medium flex items-center gap-2">
-            {name}
-            {active && <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />}
-          </p>
-          <p className="text-[11px] text-zinc-500 uppercase tracking-tight">{sub}</p>
-        </div>
+    <div className="flex items-center gap-3">
+      <div className="size-10 shrink-0 overflow-hidden rounded-md bg-muted ring-1 ring-border">
+        {portrait ? (
+          <img
+            src={portrait}
+            alt=""
+            width={40}
+            height={40}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <span className="flex h-full items-center justify-center text-muted-foreground">
+            <UserIcon className="h-5 w-5" />
+          </span>
+        )}
       </div>
-      <div className="flex-1 mx-4 hidden sm:block">{captured}</div>
+      <div className="min-w-0">
+        <p className="flex items-center gap-2 truncate text-sm font-semibold">
+          {name}
+          {active && <span className="size-1.5 shrink-0 animate-pulse rounded-full bg-primary" />}
+          {thinking && <span className="text-xs font-normal text-muted-foreground">thinking…</span>}
+        </p>
+        <p className="truncate text-xs text-muted-foreground">{sub}</p>
+      </div>
+      <div className="ml-auto min-w-0">{captured}</div>
     </div>
   );
 }

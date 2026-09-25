@@ -17,13 +17,13 @@ export function PersonaPicker({
   const brackets = groupByBracket(BOT_PERSONAS);
   return (
     <div className="space-y-3">
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         Choose your opponent
       </p>
       <div className="max-h-80 space-y-3 overflow-y-auto pr-1">
         {brackets.map(({ label, items }) => (
           <div key={label} className="space-y-1">
-            <p className="px-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
+            <p className="px-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               {label}
             </p>
             <div className="grid grid-cols-1 gap-1.5">
@@ -50,9 +50,9 @@ export function PersonaPicker({
 function groupByBracket(list: BotPersona[]) {
   const buckets: { label: string; items: BotPersona[] }[] = [
     { label: "Beginner · 500–1000", items: [] },
-    { label: "Club · 1200–1600",     items: [] },
-    { label: "Expert · 1800–2200",   items: [] },
-    { label: "Master · 2400+",       items: [] },
+    { label: "Club · 1200–1600", items: [] },
+    { label: "Expert · 1800–2200", items: [] },
+    { label: "Master · 2400+", items: [] },
   ];
   for (const p of list) {
     if (p.rating <= 1000) buckets[0].items.push(p);
@@ -64,7 +64,10 @@ function groupByBracket(list: BotPersona[]) {
 }
 
 function PersonaRow({
-  persona, selected, locked, onClick,
+  persona,
+  selected,
+  locked,
+  onClick,
 }: {
   persona: BotPersona;
   selected: boolean;
@@ -78,16 +81,16 @@ function PersonaRow({
       className={
         "flex items-center gap-3 rounded p-2 text-left transition-colors cursor-pointer ring-1 " +
         (selected
-          ? "bg-zinc-900 text-zinc-100 ring-zinc-900"
+          ? "bg-primary text-primary-foreground ring-primary"
           : locked
-            ? "bg-panel ring-black/5 opacity-60 hover:opacity-80"
-            : "bg-panel ring-black/5 hover:bg-zinc-100")
+            ? "bg-card ring-border opacity-60 hover:opacity-80"
+            : "bg-card ring-border hover:bg-accent")
       }
     >
       <div
         className={
           "size-10 shrink-0 overflow-hidden rounded-sm ring-1 " +
-          (selected ? "ring-zinc-100" : "ring-black/10")
+          (selected ? "ring-primary-foreground" : "ring-border")
         }
       >
         <img
@@ -102,16 +105,21 @@ function PersonaRow({
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium truncate flex items-center gap-1.5">
           {persona.name}
-          {locked && <Lock className="h-3 w-3 text-zinc-400" />}
+          {locked && <Lock className="h-3 w-3 text-muted-foreground" />}
         </p>
-        <p className={"text-[11px] truncate " + (selected ? "text-zinc-400" : "text-zinc-500")}>
+        <p
+          className={
+            "text-[11px] truncate " +
+            (selected ? "text-primary-foreground/75" : "text-muted-foreground")
+          }
+        >
           {persona.hometown} · {persona.catchphrase}
         </p>
       </div>
       <span
         className={
           "font-mono text-xs font-bold tabular-nums " +
-          (selected ? "text-zinc-100" : "text-primary")
+          (selected ? "text-primary-foreground" : "text-primary")
         }
       >
         {persona.rating}

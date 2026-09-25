@@ -18,17 +18,19 @@ export function CapturedStrip({
     <div className="flex items-center gap-2 min-h-6">
       <div className="flex flex-wrap gap-0.5 text-xl leading-none">
         {sorted.length === 0 ? (
-          <span className="text-[10px] text-zinc-300 italic">no captures</span>
+          <span className="text-[10px] text-muted-foreground/60 italic">no captures</span>
         ) : (
           sorted.map((p, i) => (
-            <span key={i} className={color === "w" ? "text-zinc-400" : "text-zinc-700"}>
+            <span key={i} className={color === "w" ? "text-muted-foreground" : "text-foreground"}>
               {glyphs[p]}
             </span>
           ))
         )}
       </div>
       {advantage > 0 && (
-        <span className="text-[10px] font-medium text-zinc-500 tabular-nums">+{advantage}</span>
+        <span className="text-[10px] font-medium text-muted-foreground tabular-nums">
+          +{advantage}
+        </span>
       )}
     </div>
   );

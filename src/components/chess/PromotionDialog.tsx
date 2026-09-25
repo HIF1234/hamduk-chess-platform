@@ -19,10 +19,10 @@ export function PromotionDialog({
       onClick={onCancel}
     >
       <div
-        className="bg-panel rounded-lg ring-1 ring-black/10 p-6 shadow-xl"
+        className="bg-card rounded-lg ring-1 ring-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="text-xs font-medium uppercase tracking-widest text-zinc-400 mb-4 text-center">
+        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-4 text-center">
           Promote to
         </p>
         <div className="flex gap-2">
@@ -30,7 +30,7 @@ export function PromotionDialog({
             <button
               key={p}
               onClick={() => onPick(p)}
-              className="size-16 text-5xl bg-zinc-100 hover:bg-zinc-200 rounded ring-1 ring-black/5 flex items-center justify-center transition-colors cursor-pointer"
+              className="size-16 text-5xl bg-muted hover:bg-accent rounded ring-1 ring-border flex items-center justify-center transition-colors cursor-pointer"
             >
               {glyphs[p]}
             </button>
