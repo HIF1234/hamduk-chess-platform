@@ -145,7 +145,9 @@ export function PrivacyPage() {
                   <strong>Service providers</strong> who process data for us: Supabase (database and
                   authentication, hosted in the United Kingdom), Vercel (website hosting), Paystack
                   (payments, Nigeria), Google (AI explanations and, if you choose it, Google
-                  sign-in), and Upstash (short-lived data such as online presence and rate limits).
+                  sign-in; in our Android app, Firebase Crashlytics crash reports and Firebase
+                  Analytics usage statistics, linked to your account's random ID but not your name
+                  or email), and Upstash (short-lived data such as online presence and rate limits).
                 </li>
                 <li>
                   <strong>Coaches and clubs</strong> you choose to book or join, who see what they
