@@ -58,6 +58,7 @@ import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as PuzzlesCreateRouteImport } from './routes/puzzles.create'
 import { Route as PuzzlesIdRouteImport } from './routes/puzzles.$id'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
+import { Route as PrepUsernameRouteImport } from './routes/prep.$username'
 import { Route as PlayBotRouteImport } from './routes/play.bot'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
 import { Route as OpeningsEcoRouteImport } from './routes/openings.$eco'
@@ -353,6 +354,11 @@ const PuzzlesIdRoute = PuzzlesIdRouteImport.update({
 const ProfileUsernameRoute = ProfileUsernameRouteImport.update({
   id: '/profile/$username',
   path: '/profile/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrepUsernameRoute = PrepUsernameRouteImport.update({
+  id: '/prep/$username',
+  path: '/prep/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlayBotRoute = PlayBotRouteImport.update({
@@ -675,6 +681,7 @@ export interface FileRoutesByFullPath {
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/play/bot': typeof PlayBotRoute
+  '/prep/$username': typeof PrepUsernameRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/$id': typeof PuzzlesIdRoute
   '/puzzles/create': typeof PuzzlesCreateRoute
@@ -776,6 +783,7 @@ export interface FileRoutesByTo {
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/play/bot': typeof PlayBotRoute
+  '/prep/$username': typeof PrepUsernameRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/$id': typeof PuzzlesIdRoute
   '/puzzles/create': typeof PuzzlesCreateRoute
@@ -879,6 +887,7 @@ export interface FileRoutesById {
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/play/bot': typeof PlayBotRoute
+  '/prep/$username': typeof PrepUsernameRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/$id': typeof PuzzlesIdRoute
   '/puzzles/create': typeof PuzzlesCreateRoute
@@ -983,6 +992,7 @@ export interface FileRouteTypes {
     | '/openings/$eco'
     | '/play/$gameId'
     | '/play/bot'
+    | '/prep/$username'
     | '/profile/$username'
     | '/puzzles/$id'
     | '/puzzles/create'
@@ -1084,6 +1094,7 @@ export interface FileRouteTypes {
     | '/openings/$eco'
     | '/play/$gameId'
     | '/play/bot'
+    | '/prep/$username'
     | '/profile/$username'
     | '/puzzles/$id'
     | '/puzzles/create'
@@ -1186,6 +1197,7 @@ export interface FileRouteTypes {
     | '/openings/$eco'
     | '/play/$gameId'
     | '/play/bot'
+    | '/prep/$username'
     | '/profile/$username'
     | '/puzzles/$id'
     | '/puzzles/create'
@@ -1277,6 +1289,7 @@ export interface RootRouteChildren {
   OpeningsEcoRoute: typeof OpeningsEcoRoute
   PlayGameIdRoute: typeof PlayGameIdRoute
   PlayBotRoute: typeof PlayBotRoute
+  PrepUsernameRoute: typeof PrepUsernameRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesIdRoute: typeof PuzzlesIdRoute
   PuzzlesCreateRoute: typeof PuzzlesCreateRoute
@@ -1660,6 +1673,13 @@ declare module '@tanstack/react-router' {
       path: '/profile/$username'
       fullPath: '/profile/$username'
       preLoaderRoute: typeof ProfileUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prep/$username': {
+      id: '/prep/$username'
+      path: '/prep/$username'
+      fullPath: '/prep/$username'
+      preLoaderRoute: typeof PrepUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/play/bot': {
@@ -2162,6 +2182,7 @@ const rootRouteChildren: RootRouteChildren = {
   OpeningsEcoRoute: OpeningsEcoRoute,
   PlayGameIdRoute: PlayGameIdRoute,
   PlayBotRoute: PlayBotRoute,
+  PrepUsernameRoute: PrepUsernameRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesIdRoute: PuzzlesIdRoute,
   PuzzlesCreateRoute: PuzzlesCreateRoute,

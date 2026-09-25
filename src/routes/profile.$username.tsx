@@ -141,7 +141,14 @@ function ProfilePage() {
           </div>
 
           <SocialActions targetId={p.id} targetUsername={p.username} />
-          <div className="mt-2">
+          <div className="mt-2 flex flex-wrap items-center gap-4">
+            <Link
+              to="/prep/$username"
+              params={{ username: p.username }}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Prepare against {p.username} →
+            </Link>
             <ReportButton targetType="user" targetId={p.id} label="Report player" />
           </div>
 
