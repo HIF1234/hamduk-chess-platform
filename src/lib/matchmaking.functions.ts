@@ -11,10 +11,14 @@ const Variant = z.enum(["standard", "chess960"]);
 
 export const findOrJoinMatch = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({
-    timeControl: TimeControl,
-    variant: Variant.default("standard"),
-  }).parse(d))
+  .inputValidator((d) =>
+    z
+      .object({
+        timeControl: TimeControl,
+        variant: Variant.default("standard"),
+      })
+      .parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const startFen = data.variant === "chess960" ? chess960StartFen() : null;
@@ -39,27 +43,72 @@ export const cancelQueue = createServerFn({ method: "POST" })
 export const submitMove = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
-    z.object({
-      gameId: z.string().uuid(),
-      uci: z.string().min(4).max(5).regex(/^[a-h][1-8][a-h][1-8][qrbn]?$/),
-      elapsedMs: z.number().int().min(0).max(60 * 60 * 1000).optional(),
-    }).parse(d),
+    z
+      .object({
+        gameId: z.string().uuid(),
+        uci: z
+          .string()
+          .min(4)
+          .max(5)
+          .regex(/^[a-h][1-8][a-h][1-8][qrbn]?$/),
+        elapsedMs: z
+          .number()
+          .int()
+          .min(0)
+          .max(60 * 60 * 1000)
+          .optional(),
+        /** The ply this move will have. Makes retries safe: a repeat of a move that already
+         *  landed returns success instead of an error. Optional for older clients. */
+        ply: z.number().int().min(1).max(2000).optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const { data: game, error: gErr } = await supabaseAdmin
       .from("games")
-      .select("id, white_id, black_id, fen, pgn, ply, status, time_white_ms, time_black_ms, increment_sec, last_clock_update, initial_sec, chess960_start_fen, variant, is_correspondence, days_per_move, notify_by_email")
+      .select(
+        "id, white_id, black_id, fen, pgn, ply, status, result, time_white_ms, time_black_ms, increment_sec, last_clock_update, initial_sec, chess960_start_fen, variant, is_correspondence, days_per_move, notify_by_email",
+      )
       .eq("id", data.gameId)
       .single();
     if (gErr || !game) throw new Error("Game not found");
-    if (game.status !== "active") throw new Error("Game is not active");
     if (userId !== game.white_id && userId !== game.black_id) throw new Error("Not a participant");
+
+    // A retry of a move that already landed (e.g. the reply was lost on a bad connection).
+    // Checked before the status check: the retried move may be the one that ended the game.
+    if (data.ply !== undefined && data.ply <= game.ply) {
+      const { data: prior } = await supabaseAdmin
+        .from("moves")
+        .select("uci, san, by_user")
+        .eq("game_id", game.id)
+        .eq("ply", data.ply)
+        .maybeSingle();
+      if (prior && prior.uci === data.uci && prior.by_user === userId) {
+        return {
+          ok: true as const,
+          san: prior.san,
+          fen: game.fen,
+          status: game.status,
+          result: game.result,
+          duplicate: true as const,
+        };
+      }
+      throw new Error("Out of sync: that position has moved on. Reload the game.");
+    }
+    if (game.status !== "active") throw new Error("Game is not active");
+    if (data.ply !== undefined && data.ply !== game.ply + 1) {
+      throw new Error("Out of sync: that position has moved on. Reload the game.");
+    }
 
     const startFen = game.chess960_start_fen ?? undefined;
     const chess = new Chess(startFen);
     if (game.pgn) {
-      try { chess.loadPgn(game.pgn); } catch { chess.load(game.fen); }
+      try {
+        chess.loadPgn(game.pgn);
+      } catch {
+        chess.load(game.fen);
+      }
     } else {
       chess.load(game.fen);
     }
@@ -76,8 +125,10 @@ export const submitMove = createServerFn({ method: "POST" })
     const elapsedServer = Math.max(0, now - lastUpdate);
     const incMs = (game.increment_sec ?? 0) * 1000;
 
-    let newWhiteMs = game.time_white_ms ?? (isCorrespondence ? 0 : (game.initial_sec ?? 300) * 1000);
-    let newBlackMs = game.time_black_ms ?? (isCorrespondence ? 0 : (game.initial_sec ?? 300) * 1000);
+    let newWhiteMs =
+      game.time_white_ms ?? (isCorrespondence ? 0 : (game.initial_sec ?? 300) * 1000);
+    let newBlackMs =
+      game.time_black_ms ?? (isCorrespondence ? 0 : (game.initial_sec ?? 300) * 1000);
     const flagged = isCorrespondence
       ? false
       : expectedColor === "w"
@@ -88,20 +139,29 @@ export const submitMove = createServerFn({ method: "POST" })
       // Mover ran out of time
       const result = expectedColor === "w" ? "black" : "white";
       const winnerId = result === "white" ? game.white_id : game.black_id;
-      await supabaseAdmin.from("games").update({
-        status: "completed",
-        result,
-        winner_id: winnerId,
-        end_reason: "flag",
-        time_white_ms: expectedColor === "w" ? 0 : newWhiteMs,
-        time_black_ms: expectedColor === "b" ? 0 : newBlackMs,
-        ended_at: new Date().toISOString(),
-      }).eq("id", game.id);
+      await supabaseAdmin
+        .from("games")
+        .update({
+          status: "completed",
+          result,
+          winner_id: winnerId,
+          end_reason: "flag",
+          time_white_ms: expectedColor === "w" ? 0 : newWhiteMs,
+          time_black_ms: expectedColor === "b" ? 0 : newBlackMs,
+          ended_at: new Date().toISOString(),
+        })
+        .eq("id", game.id);
       await supabaseAdmin.from("game_events").insert({
-        game_id: game.id, type: "flag", by_user: null, payload: { loser: expectedColor },
+        game_id: game.id,
+        type: "flag",
+        by_user: null,
+        payload: { loser: expectedColor },
       });
       await supabaseAdmin.rpc("apply_elo", {
-        p_white: game.white_id, p_black: game.black_id, p_result: result, p_game_id: game.id,
+        p_white: game.white_id,
+        p_black: game.black_id,
+        p_result: result,
+        p_game_id: game.id,
       });
       {
         const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
@@ -149,9 +209,10 @@ export const submitMove = createServerFn({ method: "POST" })
       endReason = "draw";
     }
 
-    const nextDeadline = isCorrespondence && status === "active"
-      ? new Date(Date.now() + (game.days_per_move ?? 1) * 24 * 60 * 60 * 1000).toISOString()
-      : null;
+    const nextDeadline =
+      isCorrespondence && status === "active"
+        ? new Date(Date.now() + (game.days_per_move ?? 1) * 24 * 60 * 60 * 1000).toISOString()
+        : null;
 
     const baseUpdate = {
       fen: newFen,
@@ -169,15 +230,16 @@ export const submitMove = createServerFn({ method: "POST" })
       takeback_offer_by: null,
       takeback_offer_at: null,
     };
-    const update = status === "completed"
-      ? {
-          ...baseUpdate,
-          result,
-          winner_id: winnerId,
-          end_reason: endReason,
-          ended_at: new Date().toISOString(),
-        }
-      : baseUpdate;
+    const update =
+      status === "completed"
+        ? {
+            ...baseUpdate,
+            result,
+            winner_id: winnerId,
+            end_reason: endReason,
+            ended_at: new Date().toISOString(),
+          }
+        : baseUpdate;
 
     const { error: uErr } = await supabaseAdmin.from("games").update(update).eq("id", game.id);
     if (uErr) throw new Error(uErr.message);
@@ -251,27 +313,38 @@ export const submitMove = createServerFn({ method: "POST" })
               repResult = "draw";
               repReason = chess.isStalemate() ? "stalemate" : "draw";
             }
-            await supabaseAdmin.from("games").update({
-              fen: repFen,
-              pgn: chess.pgn(),
-              ply: repPly,
-              last_move_at: new Date().toISOString(),
-              last_clock_update: new Date().toISOString(),
-              status: repStatus,
-              move_deadline: repStatus === "active"
-                ? new Date(Date.now() + (game.days_per_move ?? 1) * 24 * 60 * 60 * 1000).toISOString()
-                : null,
-              ...(repStatus === "completed"
-                ? {
-                    result: repResult,
-                    winner_id: repWinner,
-                    end_reason: repReason,
-                    ended_at: new Date().toISOString(),
-                  }
-                : {}),
-            }).eq("id", game.id);
+            await supabaseAdmin
+              .from("games")
+              .update({
+                fen: repFen,
+                pgn: chess.pgn(),
+                ply: repPly,
+                last_move_at: new Date().toISOString(),
+                last_clock_update: new Date().toISOString(),
+                status: repStatus,
+                move_deadline:
+                  repStatus === "active"
+                    ? new Date(
+                        Date.now() + (game.days_per_move ?? 1) * 24 * 60 * 60 * 1000,
+                      ).toISOString()
+                    : null,
+                ...(repStatus === "completed"
+                  ? {
+                      result: repResult,
+                      winner_id: repWinner,
+                      end_reason: repReason,
+                      ended_at: new Date().toISOString(),
+                    }
+                  : {}),
+              })
+              .eq("id", game.id);
             await supabaseAdmin.from("moves").insert({
-              game_id: game.id, ply: repPly, uci: replyUci, san: rep.san, fen: repFen, by_user: oppId,
+              game_id: game.id,
+              ply: repPly,
+              uci: replyUci,
+              san: rep.san,
+              fen: repFen,
+              by_user: oppId,
             });
             await supabaseAdmin.from("game_events").insert({
               game_id: game.id,
@@ -281,13 +354,18 @@ export const submitMove = createServerFn({ method: "POST" })
             });
             if (repStatus === "completed" && repResult) {
               await supabaseAdmin.rpc("apply_elo", {
-                p_white: game.white_id, p_black: game.black_id, p_result: repResult, p_game_id: game.id,
+                p_white: game.white_id,
+                p_black: game.black_id,
+                p_result: repResult,
+                p_game_id: game.id,
               });
               const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
               await emitGameCompleted(game.id);
             }
           }
-        } catch { /* no longer legal — skip */ }
+        } catch {
+          /* no longer legal — skip */
+        }
       }
     }
 
@@ -295,7 +373,8 @@ export const submitMove = createServerFn({ method: "POST" })
       await supabaseAdmin.rpc("apply_elo", {
         p_white: game.white_id,
         p_black: game.black_id,
-        p_result: result, p_game_id: game.id,
+        p_result: result,
+        p_game_id: game.id,
       });
       {
         const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
@@ -352,13 +431,17 @@ export const resignGame = createServerFn({ method: "POST" })
     if (uErr) throw new Error(uErr.message);
 
     await supabaseAdmin.from("game_events").insert({
-      game_id: game.id, type: "resign", by_user: userId, payload: {},
+      game_id: game.id,
+      type: "resign",
+      by_user: userId,
+      payload: {},
     });
 
     await supabaseAdmin.rpc("apply_elo", {
       p_white: game.white_id,
       p_black: game.black_id,
-      p_result: result, p_game_id: game.id,
+      p_result: result,
+      p_game_id: game.id,
     });
     {
       const { emitGameCompleted } = await import("@/lib/game-webhooks.server");

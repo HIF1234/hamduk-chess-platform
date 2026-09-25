@@ -1,7 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 const bearer = [{ bearer: [] }];
-const idParam = { name: "id", in: "path", required: true, schema: { type: "string", format: "uuid" } };
+const idParam = {
+  name: "id",
+  in: "path",
+  required: true,
+  schema: { type: "string", format: "uuid" },
+};
 const ok = { "200": { description: "OK" } };
 const json = (props: Record<string, unknown>, required: string[] = []) => ({
   required: true,
@@ -24,19 +29,24 @@ const SPEC = {
     version: "1",
     description:
       "Send `Authorization: Bearer <Supabase access token>`. Errors are JSON `{ error, message }` where error is " +
-      "unauthorized or mfa_required (401), upgrade_required (402), not_found (404), limited (429), " +
+      "unauthorized or mfa_required (401), upgrade_required (402), not_found (404), stale (409), limited (429), " +
       "bad_request or rejected (400). Live game updates: subscribe with Supabase Realtime to changes on the " +
       "`games` row (filter id=eq.<game id>).",
   },
   servers: [{ url: "https://play.chess.hamduk.com.ng/api/app/v1" }],
   components: { securitySchemes: { bearer: { type: "http", scheme: "bearer" } } },
   paths: {
-    "/config": { get: { summary: "Backend details, minimum app version, time controls, bots", responses: ok } },
+    "/config": {
+      get: { summary: "Backend details, minimum app version, time controls, bots", responses: ok },
+    },
     "/me": { get: op("My account, tier, ratings and puzzle stats") },
     "/seek": {
       post: op("Join or open a matchmaking seek", {
         requestBody: json(
-          { timeControl: { type: "string", example: "5+0" }, variant: { enum: ["standard", "chess960"] } },
+          {
+            timeControl: { type: "string", example: "5+0" },
+            variant: { enum: ["standard", "chess960"] },
+          },
           ["timeControl"],
         ),
       }),
@@ -47,18 +57,38 @@ const SPEC = {
         parameters: [{ name: "limit", in: "query", schema: { type: "integer", maximum: 50 } }],
       }),
     },
-    "/games/{id}": { get: op("One game with players and the server time", { parameters: [idParam] }) },
+    "/games/{id}": {
+      get: op("One game with players and the server time", { parameters: [idParam] }),
+    },
     "/games/{id}/move": {
       post: op("Play a move", {
         parameters: [idParam],
-        requestBody: json({ uci: { type: "string", example: "e2e4" }, elapsedMs: { type: "integer" } }, ["uci"]),
+        description:
+          "Send `ply` (the number this move will have: current ply + 1) so retries are safe. Repeating a move that " +
+          "already landed returns 200 with `duplicate: true` and the current position; a move for a position that " +
+          "has moved on returns 409 `stale`, and the app should reload the game.",
+        requestBody: json(
+          {
+            uci: { type: "string", example: "e2e4" },
+            ply: { type: "integer" },
+            elapsedMs: { type: "integer" },
+          },
+          ["uci"],
+        ),
       }),
     },
     "/games/{id}/resign": { post: op("Resign", { parameters: [idParam] }) },
-    "/games/{id}/abort": { post: op("Abort before enough moves are played", { parameters: [idParam] }) },
-    "/games/{id}/flag": { post: op("End the game if a clock has run out", { parameters: [idParam] }) },
+    "/games/{id}/abort": {
+      post: op("Abort before enough moves are played", { parameters: [idParam] }),
+    },
+    "/games/{id}/flag": {
+      post: op("End the game if a clock has run out", { parameters: [idParam] }),
+    },
     "/games/{id}/draw": {
-      post: op("Offer a draw, or answer one with { accept }", { parameters: [idParam], requestBody: optionalJson(accept) }),
+      post: op("Offer a draw, or answer one with { accept }", {
+        parameters: [idParam],
+        requestBody: optionalJson(accept),
+      }),
     },
     "/games/{id}/takeback": {
       post: op("Ask for a takeback, or answer one with { accept }", {
@@ -73,7 +103,9 @@ const SPEC = {
       }),
     },
     "/puzzles/next": {
-      get: op("The next rated puzzle", { parameters: [{ name: "theme", in: "query", schema: { type: "string" } }] }),
+      get: op("The next rated puzzle", {
+        parameters: [{ name: "theme", in: "query", schema: { type: "string" } }],
+      }),
     },
     "/puzzles/daily": {
       get: op("The daily puzzle", {
@@ -100,7 +132,10 @@ const SPEC = {
               maxItems: 200,
               items: {
                 type: "object",
-                properties: { puzzleId: { type: "string", format: "uuid" }, success: { type: "boolean" } },
+                properties: {
+                  puzzleId: { type: "string", format: "uuid" },
+                  success: { type: "boolean" },
+                },
                 required: ["puzzleId", "success"],
               },
             },
@@ -132,7 +167,9 @@ const SPEC = {
     },
     "/notifications/read": {
       post: op("Mark notifications read (all when ids is omitted)", {
-        requestBody: optionalJson({ ids: { type: "array", items: { type: "string", format: "uuid" } } }),
+        requestBody: optionalJson({
+          ids: { type: "array", items: { type: "string", format: "uuid" } },
+        }),
       }),
     },
   },
@@ -141,7 +178,8 @@ const SPEC = {
 export const Route = createFileRoute("/api/app/v1/openapi.json")({
   server: {
     handlers: {
-      GET: async () => Response.json(SPEC, { headers: { "cache-control": "public, max-age=3600" } }),
+      GET: async () =>
+        Response.json(SPEC, { headers: { "cache-control": "public, max-age=3600" } }),
     },
   },
 });
