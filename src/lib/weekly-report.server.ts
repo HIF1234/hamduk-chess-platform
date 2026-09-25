@@ -36,7 +36,7 @@ async function buildReport(s: Db, userId: string, since: Date, until: Date): Pro
       "white_id, black_id, winner_id, result, rated, time_control, white_rating_delta, black_rating_delta, white_rating_before, black_rating_before",
     )
     .or(`white_id.eq.${userId},black_id.eq.${userId}`)
-    .eq("status", "finished")
+    .eq("status", "completed")
     .gte("ended_at", since.toISOString())
     .lt("ended_at", until.toISOString())
     .limit(1000);

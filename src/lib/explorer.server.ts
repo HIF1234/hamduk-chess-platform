@@ -14,7 +14,7 @@ export async function indexExplorerGames() {
   const { data: games, error } = await s
     .from("games")
     .select("id, pgn, result, variant, is_bot_game, white_rating_before, black_rating_before")
-    .eq("status", "finished")
+    .eq("status", "completed")
     .eq("explorer_indexed", false)
     .order("ended_at")
     .limit(BATCH);

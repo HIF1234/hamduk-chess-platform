@@ -64,7 +64,7 @@ export async function computeWeaknessReport(userId: string): Promise<WeaknessRep
     .from("games")
     .select("id, white_id, black_id, result, winner_id, ply, status, created_at")
     .or(`white_id.eq.${userId},black_id.eq.${userId}`)
-    .eq("status", "finished")
+    .eq("status", "completed")
     .order("created_at", { ascending: false })
     .limit(50);
   if (gamesError) throw new Error(gamesError.message);
