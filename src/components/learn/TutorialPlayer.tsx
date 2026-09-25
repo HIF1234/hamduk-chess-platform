@@ -51,7 +51,7 @@ export function TutorialPlayer({ tutorial, initialStep = 0, onStepChange, onComp
     }
   }, [selected, fen]);
 
-  const hintSquare = hintOn && isMove ? step.hint ?? step.answer.slice(0, 2) : null;
+  const hintSquare = hintOn && isMove ? (step.hint ?? step.answer.slice(0, 2)) : null;
 
   const squareStyles = useMemo(() => {
     const s: Record<string, React.CSSProperties> = {};
@@ -98,7 +98,13 @@ export function TutorialPlayer({ tutorial, initialStep = 0, onStepChange, onComp
     }
   };
 
-  const handleDrop = ({ sourceSquare, targetSquare }: { sourceSquare: string; targetSquare: string | null }) => {
+  const handleDrop = ({
+    sourceSquare,
+    targetSquare,
+  }: {
+    sourceSquare: string;
+    targetSquare: string | null;
+  }) => {
     if (!targetSquare) return false;
     return attemptMove(sourceSquare as Square, targetSquare as Square);
   };
@@ -159,7 +165,7 @@ export function TutorialPlayer({ tutorial, initialStep = 0, onStepChange, onComp
     <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_360px] gap-6">
       <div className="space-y-3">
         <div
-          className={`relative aspect-square w-full max-w-[560px] mx-auto bg-zinc-300 ring-1 ring-black/10 rounded-sm overflow-hidden touch-none select-none transition-shadow ${
+          className={`relative aspect-square w-full max-w-[560px] mx-auto bg-muted ring-1 ring-border rounded-sm overflow-hidden touch-none select-none transition-shadow ${
             wrong ? "ring-2 ring-red-500 shadow-[0_0_0_4px_rgba(239,68,68,0.25)]" : ""
           }`}
         >
@@ -175,13 +181,13 @@ export function TutorialPlayer({ tutorial, initialStep = 0, onStepChange, onComp
           <button
             onClick={goPrev}
             disabled={index === 0}
-            className="px-3 py-1.5 text-xs font-medium rounded ring-1 ring-black/10 bg-panel hover:bg-zinc-100 disabled:opacity-40"
+            className="px-3 py-1.5 text-xs font-medium rounded ring-1 ring-border bg-card hover:bg-accent disabled:opacity-40"
           >
             Back
           </button>
           <button
             onClick={resetStep}
-            className="px-3 py-1.5 text-xs font-medium rounded ring-1 ring-black/10 bg-panel hover:bg-zinc-100 inline-flex items-center gap-1"
+            className="px-3 py-1.5 text-xs font-medium rounded ring-1 ring-border bg-card hover:bg-accent inline-flex items-center gap-1"
           >
             <RotateCcw className="h-3.5 w-3.5" /> Reset
           </button>
@@ -213,7 +219,7 @@ export function TutorialPlayer({ tutorial, initialStep = 0, onStepChange, onComp
             </span>
             <span>{progressPct}%</span>
           </div>
-          <div className="mt-1 h-1.5 rounded-full bg-zinc-200 overflow-hidden">
+          <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
             <div
               className="h-full bg-primary transition-all"
               style={{ width: `${progressPct}%` }}
@@ -225,13 +231,11 @@ export function TutorialPlayer({ tutorial, initialStep = 0, onStepChange, onComp
           <h2 className="font-serif text-xl font-semibold text-foreground">{step.title}</h2>
           <p className="mt-2 text-sm leading-relaxed text-foreground/80">{step.body}</p>
           {isMove && !solved && (
-            <p className="mt-3 text-xs uppercase tracking-wider text-amber-700">
+            <p className="mt-3 text-xs uppercase tracking-wider text-gold">
               Your move — {playerColor === "w" ? "White" : "Black"} to play
             </p>
           )}
-          {wrong && (
-            <p className="mt-2 text-xs text-red-600">Not quite — try another move.</p>
-          )}
+          {wrong && <p className="mt-2 text-xs text-red-600">Not quite — try another move.</p>}
         </div>
 
         {finished && (

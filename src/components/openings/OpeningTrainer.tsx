@@ -8,11 +8,7 @@ import { Lightbulb, RotateCcw, CheckCircle2, ChevronLeft, Flag } from "lucide-re
 
 type Props = {
   opening: OpeningLine;
-  onSessionComplete: (result: {
-    correct: number;
-    attempts: number;
-    masteredDepth: number;
-  }) => void;
+  onSessionComplete: (result: { correct: number; attempts: number; masteredDepth: number }) => void;
 };
 
 // Trainer mechanic:
@@ -74,7 +70,17 @@ export function OpeningTrainer({ opening, onSessionComplete }: Props) {
       }
     }, 550);
     return () => clearTimeout(timer);
-  }, [ply, isUserTurn, currentMove, fen, opening.moves.length, done, finish, session.correct, session.attempts]);
+  }, [
+    ply,
+    isUserTurn,
+    currentMove,
+    fen,
+    opening.moves.length,
+    done,
+    finish,
+    session.correct,
+    session.attempts,
+  ]);
 
   const legalTargets = useMemo<Set<string>>(() => {
     if (!selected || !isUserTurn || done) return new Set();
@@ -138,7 +144,13 @@ export function OpeningTrainer({ opening, onSessionComplete }: Props) {
     }
   };
 
-  const handleDrop = ({ sourceSquare, targetSquare }: { sourceSquare: string; targetSquare: string | null }) => {
+  const handleDrop = ({
+    sourceSquare,
+    targetSquare,
+  }: {
+    sourceSquare: string;
+    targetSquare: string | null;
+  }) => {
     if (!targetSquare) return false;
     return attemptMove(sourceSquare as Square, targetSquare as Square);
   };
@@ -190,13 +202,14 @@ export function OpeningTrainer({ opening, onSessionComplete }: Props) {
   };
 
   const progressPct = Math.round((ply / opening.moves.length) * 100);
-  const accuracy = session.attempts > 0 ? Math.round((session.correct / session.attempts) * 100) : 100;
+  const accuracy =
+    session.attempts > 0 ? Math.round((session.correct / session.attempts) * 100) : 100;
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_360px]">
       <div className="space-y-3">
         <div
-          className={`relative mx-auto aspect-square w-full max-w-[560px] overflow-hidden rounded-sm bg-zinc-300 ring-1 ring-black/10 transition-shadow ${
+          className={`relative mx-auto aspect-square w-full max-w-[560px] overflow-hidden rounded-sm bg-muted ring-1 ring-border transition-shadow ${
             wrong ? "ring-2 ring-red-500 shadow-[0_0_0_4px_rgba(239,68,68,0.25)]" : ""
           }`}
         >
@@ -211,7 +224,7 @@ export function OpeningTrainer({ opening, onSessionComplete }: Props) {
         <div className="mx-auto flex max-w-[560px] items-center gap-3">
           <button
             onClick={restart}
-            className="inline-flex items-center gap-1 rounded bg-panel px-3 py-1.5 text-xs font-medium ring-1 ring-black/10 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="inline-flex items-center gap-1 rounded bg-card px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-accent dark:hover:bg-primary/90"
           >
             <RotateCcw className="h-3.5 w-3.5" /> Restart
           </button>
@@ -227,7 +240,7 @@ export function OpeningTrainer({ opening, onSessionComplete }: Props) {
           {!done && (
             <button
               onClick={giveUp}
-              className="inline-flex items-center gap-1 rounded bg-panel px-3 py-1.5 text-xs font-medium ring-1 ring-black/10 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="inline-flex items-center gap-1 rounded bg-card px-3 py-1.5 text-xs font-medium ring-1 ring-border hover:bg-accent dark:hover:bg-primary/90"
             >
               <Flag className="h-3.5 w-3.5" /> End session
             </button>
@@ -238,11 +251,16 @@ export function OpeningTrainer({ opening, onSessionComplete }: Props) {
       <aside className="space-y-4">
         <div>
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Move {Math.min(ply + 1, opening.moves.length)} of {opening.moves.length}</span>
+            <span>
+              Move {Math.min(ply + 1, opening.moves.length)} of {opening.moves.length}
+            </span>
             <span>{progressPct}%</span>
           </div>
-          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
-            <div className="h-full bg-primary transition-all" style={{ width: `${progressPct}%` }} />
+          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-muted dark:bg-zinc-800">
+            <div
+              className="h-full bg-primary transition-all"
+              style={{ width: `${progressPct}%` }}
+            />
           </div>
         </div>
 
@@ -258,7 +276,7 @@ export function OpeningTrainer({ opening, onSessionComplete }: Props) {
           <h2 className="mt-1 font-serif text-xl font-semibold text-foreground">{opening.name}</h2>
           <p className="mt-2 text-sm leading-relaxed text-foreground/80">{opening.description}</p>
           {isUserTurn && !done && (
-            <p className="mt-3 text-xs uppercase tracking-wider text-amber-700 dark:text-amber-400">
+            <p className="mt-3 text-xs uppercase tracking-wider text-gold dark:text-amber-400">
               Your move — {opening.color === "white" ? "White" : "Black"} to play
             </p>
           )}

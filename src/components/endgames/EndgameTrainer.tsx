@@ -231,7 +231,7 @@ export function EndgameTrainer({ endgame, onFinished }: Props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_360px] gap-6">
       <div className="space-y-3">
-        <div className="relative aspect-square w-full max-w-[560px] mx-auto bg-zinc-300 ring-1 ring-black/10 rounded-sm overflow-hidden touch-none select-none">
+        <div className="relative aspect-square w-full max-w-[560px] mx-auto bg-muted ring-1 ring-border rounded-sm overflow-hidden touch-none select-none">
           <Chessboard options={options} />
           {thinking && (
             <div className="absolute bottom-3 right-3 rounded-full bg-black/70 text-white text-xs px-3 py-1">
@@ -253,7 +253,7 @@ export function EndgameTrainer({ endgame, onFinished }: Props) {
         <div className="mx-auto max-w-[560px] flex items-center gap-3">
           <button
             onClick={resetPosition}
-            className="px-3 py-1.5 text-xs font-medium rounded ring-1 ring-black/10 bg-panel hover:bg-zinc-100 inline-flex items-center gap-1"
+            className="px-3 py-1.5 text-xs font-medium rounded ring-1 ring-border bg-card hover:bg-accent inline-flex items-center gap-1"
           >
             <RotateCcw className="h-3.5 w-3.5" /> Restart
           </button>
@@ -296,7 +296,7 @@ export function EndgameTrainer({ endgame, onFinished }: Props) {
               {moveCount} / {endgame.goal.maxMoves}
             </span>
           </div>
-          <div className="mt-1 h-1.5 rounded-full bg-zinc-200 overflow-hidden">
+          <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
             <div
               className="h-full bg-primary transition-all"
               style={{
@@ -314,7 +314,8 @@ export function EndgameTrainer({ endgame, onFinished }: Props) {
           <div className="rounded-lg border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-900">
             <p className="font-semibold">Well done!</p>
             <p className="mt-1 text-emerald-800/80">
-              Solved in {moveCount} move{moveCount === 1 ? "" : "s"}. Restart to try to improve, or pick another endgame.
+              Solved in {moveCount} move{moveCount === 1 ? "" : "s"}. Restart to try to improve, or
+              pick another endgame.
             </p>
           </div>
         )}

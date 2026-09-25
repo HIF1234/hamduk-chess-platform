@@ -5,7 +5,6 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { PuzzleBoard } from "./PuzzleBoard";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { PUZZLES, PUZZLE_THEMES, type Puzzle, type PuzzleTheme } from "@/lib/puzzles-data";
 import { loadProgress, recordAttempt, type PuzzleProgress } from "@/lib/puzzle-storage";
 import {
@@ -122,33 +121,6 @@ export function PuzzleHub() {
 
   return (
     <div className="min-h-screen bg-background font-sans text-foreground">
-      <nav className="h-12 border-b border-border flex items-center justify-between px-6 bg-card">
-        <div className="flex items-center gap-6">
-          <Link
-            to="/"
-            className="text-xs font-semibold tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Hamduk Chess
-          </Link>
-          <div className="h-4 w-px bg-muted" />
-          <span className="text-xs font-medium uppercase tracking-wider text-foreground">
-            Puzzles
-          </span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link
-            to="/analysis"
-            className="text-xs font-medium text-muted-foreground hover:text-foreground"
-          >
-            Analysis
-          </Link>
-          <Link to="/" className="text-xs font-medium text-muted-foreground hover:text-foreground">
-            Play
-          </Link>
-          <ThemeToggle />
-        </div>
-      </nav>
-
       <main className="max-w-[1280px] mx-auto px-6 md:px-12 py-8 md:py-12 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 md:gap-12 items-start">
         <section>
           <header className="mb-6">

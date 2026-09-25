@@ -3,7 +3,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PuzzleBoard } from "@/components/puzzles/PuzzleBoard";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 import {
   getStormStream,
@@ -18,7 +17,10 @@ export const Route = createFileRoute("/puzzles/storm")({
   head: () => ({
     meta: [
       { title: "Puzzle Storm — Hamduk Chess" },
-      { name: "description", content: "Three minutes. Solve as many tactics as you can. Plus & Gold only." },
+      {
+        name: "description",
+        content: "Three minutes. Solve as many tactics as you can. Plus & Gold only.",
+      },
       { property: "og:title", content: "Puzzle Storm — Hamduk Chess" },
       { property: "og:description", content: "Three-minute tactical rush against the clock." },
     ],
@@ -91,7 +93,10 @@ function StormPage() {
   useEffect(() => {
     if (phase !== "running") return;
     const tick = setInterval(() => {
-      const remaining = Math.max(0, DURATION - Math.floor((Date.now() - startedAtRef.current) / 1000));
+      const remaining = Math.max(
+        0,
+        DURATION - Math.floor((Date.now() - startedAtRef.current) / 1000),
+      );
       setTimeLeft(remaining);
       if (remaining <= 0) {
         clearInterval(tick);
@@ -160,22 +165,12 @@ function StormPage() {
   }, [timeLeft]);
 
   return (
-    <div className="min-h-screen bg-surface font-sans text-zinc-900">
-      <nav className="h-12 border-b border-zinc-950/5 flex items-center justify-between px-6 bg-panel">
-        <div className="flex items-center gap-6">
-          <Link to="/" className="text-xs font-semibold tracking-wider uppercase text-zinc-400 hover:text-zinc-700">
-            Hamduk Chess
-          </Link>
-          <div className="h-4 w-px bg-zinc-950/5" />
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-700">Puzzle Storm</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link to="/puzzles" className="text-xs font-medium text-zinc-500 hover:text-zinc-900">
-            ← All puzzles
-          </Link>
-          <ThemeToggle />
-        </div>
-      </nav>
+    <div className="min-h-screen bg-background font-sans text-foreground">
+      <div className="px-4 pt-4 sm:px-6">
+        <Link to="/puzzles" className="text-sm text-muted-foreground hover:text-foreground">
+          ← All puzzles
+        </Link>
+      </div>
 
       <main className="max-w-[1280px] mx-auto px-6 md:px-12 py-8 md:py-12 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 md:gap-12 items-start">
         <section>
@@ -187,8 +182,9 @@ function StormPage() {
               >
                 Puzzle Storm
               </h1>
-              <p className="text-sm text-zinc-500 mt-2 max-w-prose">
-                Three minutes. Solve as many tactics as you can. +1 per solve, no penalty for misses — just keep moving.
+              <p className="text-sm text-muted-foreground mt-2 max-w-prose">
+                Three minutes. Solve as many tactics as you can. +1 per solve, no penalty for misses
+                — just keep moving.
               </p>
             </div>
             {phase === "running" && (
@@ -201,11 +197,11 @@ function StormPage() {
           </header>
 
           {signedIn === false && (
-            <div className="rounded-md bg-panel ring-1 ring-black/5 p-8 text-center">
-              <p className="text-sm text-zinc-600">Sign in to play Puzzle Storm.</p>
+            <div className="rounded-md bg-card ring-1 ring-border p-8 text-center">
+              <p className="text-sm text-muted-foreground">Sign in to play Puzzle Storm.</p>
               <button
                 onClick={() => navigate({ to: "/login" })}
-                className="mt-4 px-5 py-2 text-sm font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer"
+                className="mt-4 px-5 py-2 text-sm font-medium bg-primary text-primary-foreground rounded ring-1 ring-primary hover:bg-primary/90 cursor-pointer"
               >
                 Sign in
               </button>
@@ -213,17 +209,23 @@ function StormPage() {
           )}
 
           {signedIn === true && tier === "free" && (
-            <div className="rounded-md bg-gradient-to-br from-amber-50 to-amber-100/40 ring-1 ring-amber-300/40 p-8 text-center">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-700">Plus & Gold</p>
-              <h2 className="text-2xl font-serif font-bold mt-1" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+            <div className="rounded-md bg-gold/10 ring-1 ring-gold/40 p-8 text-center">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-gold">
+                Plus & Gold
+              </p>
+              <h2
+                className="text-2xl font-serif font-bold mt-1"
+                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              >
                 Unlock Puzzle Storm
               </h2>
-              <p className="text-sm text-zinc-600 mt-2 max-w-sm mx-auto">
-                Three-minute tactical rush, daily and all-time leaderboards. Available on Plus and Gold.
+              <p className="text-sm text-muted-foreground mt-2 max-w-sm mx-auto">
+                Three-minute tactical rush, daily and all-time leaderboards. Available on Plus and
+                Gold.
               </p>
               <Link
                 to="/billing"
-                className="inline-block mt-4 px-5 py-2 text-sm font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer"
+                className="inline-block mt-4 px-5 py-2 text-sm font-medium bg-primary text-primary-foreground rounded ring-1 ring-primary hover:bg-primary/90 cursor-pointer"
               >
                 See plans
               </Link>
@@ -231,37 +233,47 @@ function StormPage() {
           )}
 
           {canPlay && phase === "idle" && (
-            <div className="rounded-md bg-panel ring-1 ring-black/5 p-8 text-center">
-              <p className="text-sm text-zinc-600 mb-4">Ready when you are.</p>
+            <div className="rounded-md bg-card ring-1 ring-border p-8 text-center">
+              <p className="text-sm text-muted-foreground mb-4">Ready when you are.</p>
               <button
                 onClick={start}
-                className="px-6 py-3 text-sm font-semibold bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer"
+                className="px-6 py-3 text-sm font-semibold bg-primary text-primary-foreground rounded ring-1 ring-primary hover:bg-primary/90 cursor-pointer"
               >
                 Start 3-minute storm
               </button>
               {mine && mine.best > 0 && (
-                <p className="text-xs text-zinc-500 mt-4">
-                  Your best: <span className="font-semibold text-zinc-800">{mine.best}</span> · {mine.runs} runs
+                <p className="text-xs text-muted-foreground mt-4">
+                  Your best: <span className="font-semibold text-foreground">{mine.best}</span> ·{" "}
+                  {mine.runs} runs
                 </p>
               )}
             </div>
           )}
 
           {canPlay && phase === "running" && current && (
-            <PuzzleBoard key={current.id + ":" + idx} puzzle={current as Puzzle} onComplete={handleComplete} />
+            <PuzzleBoard
+              key={current.id + ":" + idx}
+              puzzle={current as Puzzle}
+              onComplete={handleComplete}
+            />
           )}
 
           {canPlay && phase === "ended" && (
-            <div className="rounded-md bg-panel ring-1 ring-black/5 p-8 text-center space-y-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Time's up</p>
-              <p className="text-6xl font-bold" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+            <div className="rounded-md bg-card ring-1 ring-border p-8 text-center space-y-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Time's up
+              </p>
+              <p
+                className="text-6xl font-bold"
+                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              >
                 {score}
               </p>
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-muted-foreground">
                 {mistakes} miss{mistakes === 1 ? "" : "es"}
               </p>
               {submitted && (
-                <div className="text-xs text-zinc-600 space-y-1 pt-2">
+                <div className="text-xs text-muted-foreground space-y-1 pt-2">
                   {submitted.rank.daily && (
                     <p>
                       Daily rank: <span className="font-semibold">#{submitted.rank.daily}</span>
@@ -269,7 +281,8 @@ function StormPage() {
                   )}
                   {submitted.rank.allTime && (
                     <p>
-                      All-time rank: <span className="font-semibold">#{submitted.rank.allTime}</span>
+                      All-time rank:{" "}
+                      <span className="font-semibold">#{submitted.rank.allTime}</span>
                     </p>
                   )}
                   <p>
@@ -279,7 +292,7 @@ function StormPage() {
               )}
               <button
                 onClick={start}
-                className="mt-2 px-5 py-2 text-sm font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer"
+                className="mt-2 px-5 py-2 text-sm font-medium bg-primary text-primary-foreground rounded ring-1 ring-primary hover:bg-primary/90 cursor-pointer"
               >
                 Run it back
               </button>
@@ -288,44 +301,44 @@ function StormPage() {
         </section>
 
         <aside className="space-y-4">
-          <div className="rounded-md bg-panel ring-1 ring-black/5 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-3">
+          <div className="rounded-md bg-card ring-1 ring-border p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
               Daily leaderboard
             </p>
             {(!leaderboard || leaderboard.length === 0) && (
-              <p className="text-xs text-zinc-500">No runs yet today. Be first.</p>
+              <p className="text-xs text-muted-foreground">No runs yet today. Be first.</p>
             )}
             <ol className="space-y-1.5">
               {(leaderboard ?? []).map((row, i) => (
                 <li key={row.user_id} className="flex items-center justify-between text-xs">
                   <span className="flex items-center gap-2">
-                    <span className="text-zinc-400 w-5 text-right">{i + 1}</span>
+                    <span className="text-muted-foreground w-5 text-right">{i + 1}</span>
                     <Link
                       to="/profile/$username"
                       params={{ username: row.username }}
-                      className="text-zinc-800 hover:underline"
+                      className="text-foreground hover:underline"
                     >
                       {row.username}
                     </Link>
                   </span>
-                  <span className="font-semibold text-zinc-900 tabular-nums">{row.score}</span>
+                  <span className="font-semibold text-foreground tabular-nums">{row.score}</span>
                 </li>
               ))}
             </ol>
           </div>
 
           {canPlay && mine && mine.recent.length > 0 && (
-            <div className="rounded-md bg-panel ring-1 ring-black/5 p-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-3">
+            <div className="rounded-md bg-card ring-1 ring-border p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
                 Your recent runs
               </p>
               <ul className="space-y-1.5">
                 {mine.recent.slice(0, 5).map((r, i) => (
                   <li key={i} className="flex items-center justify-between text-xs">
-                    <span className="text-zinc-500">
+                    <span className="text-muted-foreground">
                       {new Date(r.played_at).toLocaleDateString()}
                     </span>
-                    <span className="font-semibold text-zinc-900 tabular-nums">{r.score}</span>
+                    <span className="font-semibold text-foreground tabular-nums">{r.score}</span>
                   </li>
                 ))}
               </ul>
@@ -337,12 +350,22 @@ function StormPage() {
   );
 }
 
-function Stat({ label, value, highlight }: { label: string; value: string | number; highlight?: boolean }) {
+function Stat({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string | number;
+  highlight?: boolean;
+}) {
   return (
     <div
       className={
         "px-3 py-1.5 rounded ring-1 text-center min-w-[64px] " +
-        (highlight ? "bg-red-50 ring-red-300/60 text-red-700" : "bg-panel ring-black/5 text-zinc-800")
+        (highlight
+          ? "bg-red-50 ring-red-300/60 text-red-700"
+          : "bg-card ring-border text-foreground")
       }
     >
       <p className="text-[10px] uppercase tracking-wider opacity-70">{label}</p>

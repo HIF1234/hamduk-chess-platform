@@ -131,7 +131,7 @@ export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="relative aspect-square w-full max-w-[560px] mx-auto bg-zinc-300 ring-1 ring-black/10 rounded-sm overflow-hidden touch-none select-none">
+      <div className="relative aspect-square w-full max-w-[560px] mx-auto bg-muted ring-1 ring-border rounded-sm overflow-hidden touch-none select-none">
         <Chessboard options={options} />
         {status === "solved" && (
           <div className="absolute inset-0 flex items-center justify-center bg-emerald-900/60 backdrop-blur-sm pointer-events-none">
@@ -152,7 +152,7 @@ export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
       </div>
 
       <div className="flex items-center justify-between gap-3 max-w-[560px] mx-auto">
-        <div className="text-xs text-zinc-500 uppercase tracking-wider">
+        <div className="text-xs text-muted-foreground uppercase tracking-wider">
           {playerColor === "w" ? "White" : "Black"} to play · {puzzle.themes.join(" · ")} ·{" "}
           {puzzle.rating}
         </div>
@@ -160,7 +160,7 @@ export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
           <button
             onClick={showHint}
             disabled={status !== "playing"}
-            className="px-3 py-1.5 text-xs font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100 disabled:opacity-40 cursor-pointer"
+            className="px-3 py-1.5 text-xs font-medium bg-card text-foreground rounded ring-1 ring-border hover:bg-accent disabled:opacity-40 cursor-pointer"
           >
             Hint
           </button>
@@ -170,7 +170,7 @@ export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
               played.current = [];
               reset();
             }}
-            className="px-3 py-1.5 text-xs font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100 cursor-pointer"
+            className="px-3 py-1.5 text-xs font-medium bg-card text-foreground rounded ring-1 ring-border hover:bg-accent cursor-pointer"
           >
             Reset
           </button>

@@ -297,8 +297,8 @@ function OutcomeBadge({
   const styles: Record<typeof outcome, string> = {
     win: "bg-emerald-100 text-emerald-800",
     loss: "bg-rose-100 text-rose-800",
-    draw: "bg-zinc-200 text-zinc-800",
-    ongoing: "bg-amber-100 text-amber-800",
+    draw: "bg-muted text-foreground",
+    ongoing: "bg-gold/15 text-gold",
   };
   const label = outcome === "ongoing" ? "Live" : outcome[0].toUpperCase() + outcome.slice(1);
   return (

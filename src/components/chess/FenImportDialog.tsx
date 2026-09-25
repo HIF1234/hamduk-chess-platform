@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 type Props = {
@@ -32,18 +38,18 @@ export function FenImportDialog({ open, onOpenChange, onLoad }: Props) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-          className="w-full rounded-md border border-zinc-300 bg-white p-3 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-zinc-900"
+          className="w-full rounded-md border border-border bg-background p-3 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <DialogFooter>
           <button
             onClick={() => onOpenChange(false)}
-            className="py-2 px-3 text-sm font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100"
+            className="py-2 px-3 text-sm font-medium bg-card text-foreground rounded ring-1 ring-border hover:bg-accent"
           >
             Cancel
           </button>
           <button
             onClick={submit}
-            className="py-2 px-3 text-sm font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800"
+            className="py-2 px-3 text-sm font-medium bg-primary text-primary-foreground rounded ring-1 ring-primary hover:bg-primary/90"
           >
             Load FEN
           </button>
