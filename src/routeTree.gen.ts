@@ -130,6 +130,9 @@ import { Route as ApiAppV1GamesIdRematchRouteImport } from './routes/api/app/v1/
 import { Route as ApiAppV1GamesIdMoveRouteImport } from './routes/api/app/v1/games.$id.move'
 import { Route as ApiAppV1GamesIdFlagRouteImport } from './routes/api/app/v1/games.$id.flag'
 import { Route as ApiAppV1GamesIdDrawRouteImport } from './routes/api/app/v1/games.$id.draw'
+import { Route as ApiAppV1GamesIdClaimRouteImport } from './routes/api/app/v1/games.$id.claim'
+import { Route as ApiAppV1GamesIdBackRouteImport } from './routes/api/app/v1/games.$id.back'
+import { Route as ApiAppV1GamesIdAwayRouteImport } from './routes/api/app/v1/games.$id.away'
 import { Route as ApiAppV1GamesIdAbortRouteImport } from './routes/api/app/v1/games.$id.abort'
 import { Route as ApiPublicV1ClassesSessionIdStudentsRouteImport } from './routes/api/public/v1/classes.session.$id.students'
 import { Route as ApiPublicV1ClassesSessionIdSetPositionRouteImport } from './routes/api/public/v1/classes.session.$id.set-position'
@@ -751,6 +754,21 @@ const ApiAppV1GamesIdDrawRoute = ApiAppV1GamesIdDrawRouteImport.update({
   path: '/draw',
   getParentRoute: () => ApiAppV1GamesIdRoute,
 } as any)
+const ApiAppV1GamesIdClaimRoute = ApiAppV1GamesIdClaimRouteImport.update({
+  id: '/claim',
+  path: '/claim',
+  getParentRoute: () => ApiAppV1GamesIdRoute,
+} as any)
+const ApiAppV1GamesIdBackRoute = ApiAppV1GamesIdBackRouteImport.update({
+  id: '/back',
+  path: '/back',
+  getParentRoute: () => ApiAppV1GamesIdRoute,
+} as any)
+const ApiAppV1GamesIdAwayRoute = ApiAppV1GamesIdAwayRouteImport.update({
+  id: '/away',
+  path: '/away',
+  getParentRoute: () => ApiAppV1GamesIdRoute,
+} as any)
 const ApiAppV1GamesIdAbortRoute = ApiAppV1GamesIdAbortRouteImport.update({
   id: '/abort',
   path: '/abort',
@@ -881,6 +899,9 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/games/': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications/': typeof ApiAppV1NotificationsIndexRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
+  '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
+  '/api/app/v1/games/$id/back': typeof ApiAppV1GamesIdBackRoute
+  '/api/app/v1/games/$id/claim': typeof ApiAppV1GamesIdClaimRoute
   '/api/app/v1/games/$id/draw': typeof ApiAppV1GamesIdDrawRoute
   '/api/app/v1/games/$id/flag': typeof ApiAppV1GamesIdFlagRoute
   '/api/app/v1/games/$id/move': typeof ApiAppV1GamesIdMoveRoute
@@ -1006,6 +1027,9 @@ export interface FileRoutesByTo {
   '/api/app/v1/games': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications': typeof ApiAppV1NotificationsIndexRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
+  '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
+  '/api/app/v1/games/$id/back': typeof ApiAppV1GamesIdBackRoute
+  '/api/app/v1/games/$id/claim': typeof ApiAppV1GamesIdClaimRoute
   '/api/app/v1/games/$id/draw': typeof ApiAppV1GamesIdDrawRoute
   '/api/app/v1/games/$id/flag': typeof ApiAppV1GamesIdFlagRoute
   '/api/app/v1/games/$id/move': typeof ApiAppV1GamesIdMoveRoute
@@ -1133,6 +1157,9 @@ export interface FileRoutesById {
   '/api/app/v1/games/': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications/': typeof ApiAppV1NotificationsIndexRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
+  '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
+  '/api/app/v1/games/$id/back': typeof ApiAppV1GamesIdBackRoute
+  '/api/app/v1/games/$id/claim': typeof ApiAppV1GamesIdClaimRoute
   '/api/app/v1/games/$id/draw': typeof ApiAppV1GamesIdDrawRoute
   '/api/app/v1/games/$id/flag': typeof ApiAppV1GamesIdFlagRoute
   '/api/app/v1/games/$id/move': typeof ApiAppV1GamesIdMoveRoute
@@ -1261,6 +1288,9 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/'
     | '/api/app/v1/notifications/'
     | '/api/app/v1/games/$id/abort'
+    | '/api/app/v1/games/$id/away'
+    | '/api/app/v1/games/$id/back'
+    | '/api/app/v1/games/$id/claim'
     | '/api/app/v1/games/$id/draw'
     | '/api/app/v1/games/$id/flag'
     | '/api/app/v1/games/$id/move'
@@ -1386,6 +1416,9 @@ export interface FileRouteTypes {
     | '/api/app/v1/games'
     | '/api/app/v1/notifications'
     | '/api/app/v1/games/$id/abort'
+    | '/api/app/v1/games/$id/away'
+    | '/api/app/v1/games/$id/back'
+    | '/api/app/v1/games/$id/claim'
     | '/api/app/v1/games/$id/draw'
     | '/api/app/v1/games/$id/flag'
     | '/api/app/v1/games/$id/move'
@@ -1512,6 +1545,9 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/'
     | '/api/app/v1/notifications/'
     | '/api/app/v1/games/$id/abort'
+    | '/api/app/v1/games/$id/away'
+    | '/api/app/v1/games/$id/back'
+    | '/api/app/v1/games/$id/claim'
     | '/api/app/v1/games/$id/draw'
     | '/api/app/v1/games/$id/flag'
     | '/api/app/v1/games/$id/move'
@@ -2474,6 +2510,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1GamesIdDrawRouteImport
       parentRoute: typeof ApiAppV1GamesIdRoute
     }
+    '/api/app/v1/games/$id/claim': {
+      id: '/api/app/v1/games/$id/claim'
+      path: '/claim'
+      fullPath: '/api/app/v1/games/$id/claim'
+      preLoaderRoute: typeof ApiAppV1GamesIdClaimRouteImport
+      parentRoute: typeof ApiAppV1GamesIdRoute
+    }
+    '/api/app/v1/games/$id/back': {
+      id: '/api/app/v1/games/$id/back'
+      path: '/back'
+      fullPath: '/api/app/v1/games/$id/back'
+      preLoaderRoute: typeof ApiAppV1GamesIdBackRouteImport
+      parentRoute: typeof ApiAppV1GamesIdRoute
+    }
+    '/api/app/v1/games/$id/away': {
+      id: '/api/app/v1/games/$id/away'
+      path: '/away'
+      fullPath: '/api/app/v1/games/$id/away'
+      preLoaderRoute: typeof ApiAppV1GamesIdAwayRouteImport
+      parentRoute: typeof ApiAppV1GamesIdRoute
+    }
     '/api/app/v1/games/$id/abort': {
       id: '/api/app/v1/games/$id/abort'
       path: '/abort'
@@ -2568,6 +2625,9 @@ const ApiPublicV1WebhooksRouteWithChildren =
 
 interface ApiAppV1GamesIdRouteChildren {
   ApiAppV1GamesIdAbortRoute: typeof ApiAppV1GamesIdAbortRoute
+  ApiAppV1GamesIdAwayRoute: typeof ApiAppV1GamesIdAwayRoute
+  ApiAppV1GamesIdBackRoute: typeof ApiAppV1GamesIdBackRoute
+  ApiAppV1GamesIdClaimRoute: typeof ApiAppV1GamesIdClaimRoute
   ApiAppV1GamesIdDrawRoute: typeof ApiAppV1GamesIdDrawRoute
   ApiAppV1GamesIdFlagRoute: typeof ApiAppV1GamesIdFlagRoute
   ApiAppV1GamesIdMoveRoute: typeof ApiAppV1GamesIdMoveRoute
@@ -2578,6 +2638,9 @@ interface ApiAppV1GamesIdRouteChildren {
 
 const ApiAppV1GamesIdRouteChildren: ApiAppV1GamesIdRouteChildren = {
   ApiAppV1GamesIdAbortRoute: ApiAppV1GamesIdAbortRoute,
+  ApiAppV1GamesIdAwayRoute: ApiAppV1GamesIdAwayRoute,
+  ApiAppV1GamesIdBackRoute: ApiAppV1GamesIdBackRoute,
+  ApiAppV1GamesIdClaimRoute: ApiAppV1GamesIdClaimRoute,
   ApiAppV1GamesIdDrawRoute: ApiAppV1GamesIdDrawRoute,
   ApiAppV1GamesIdFlagRoute: ApiAppV1GamesIdFlagRoute,
   ApiAppV1GamesIdMoveRoute: ApiAppV1GamesIdMoveRoute,

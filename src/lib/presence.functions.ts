@@ -28,6 +28,9 @@ export const onlineCount = createServerFn({ method: "GET" })
     return { count: total };
   });
 
+/** How long a player may be away before the opponent can claim the game. */
+export const DISCONNECT_GRACE_MS = 30_000;
+
 async function assertGameParticipant(gameId: string, userId: string) {
   const { data: game, error } = await supabaseAdmin
     .from("games")
@@ -44,7 +47,8 @@ export const markDisconnected = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     await assertGameParticipant(data.gameId, userId);
-    await redis.set(`game:${data.gameId}:disconnect:${userId}`, Date.now(), { ex: 30 });
+    // Kept well past the grace period so a genuine abandonment can still be claimed.
+    await redis.set(`game:${data.gameId}:disconnect:${userId}`, Date.now(), { ex: 600 });
     await supabaseAdmin.from("game_events").insert({
       game_id: data.gameId,
       type: "disconnect",
@@ -85,9 +89,15 @@ export const claimDisconnectWin = createServerFn({ method: "POST" })
     if (userId !== game.white_id && userId !== game.black_id) throw new Error("Not a participant");
     const opponentId = userId === game.white_id ? game.black_id : game.white_id;
 
-    // Opponent must still be marked disconnected
-    const disc = await redis.get(`game:${data.gameId}:disconnect:${opponentId}`);
+    // Opponent must still be marked disconnected, and for longer than the grace period.
+    // Enforced here, not just in the client's countdown: a brief network blip or switching
+    // apps for a moment must never lose a game.
+    const disc = await redis.get<number>(`game:${data.gameId}:disconnect:${opponentId}`);
     if (!disc) return { ended: false, reason: "opponent_reconnected" };
+    const away = Date.now() - Number(disc);
+    if (away < DISCONNECT_GRACE_MS) {
+      return { ended: false, reason: "grace", remainingMs: DISCONNECT_GRACE_MS - away };
+    }
 
     if (game.ply < 10) {
       // Abort, no rating change
