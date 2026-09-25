@@ -75,6 +75,11 @@ function FairPlay() {
                 combined with fast, steady move times — raise an automatic flag.
               </p>
               <p>
+                During live games your browser also notes when the game tab loses focus, when you
+                copy or paste, and how quickly you start each move. Switching tabs isn't cheating on
+                its own; these signals only add context when a game is already being reviewed.
+              </p>
+              <p>
                 <strong>A flag is never a ban.</strong> Every flagged account is reviewed by a
                 person on our moderation team, who looks at many games before deciding anything.
               </p>

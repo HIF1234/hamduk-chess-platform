@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useFairPlaySignals } from "@/hooks/useFairPlaySignals";
 import { VoiceChat } from "@/components/game/VoiceChat";
 import { ReportButton } from "@/components/ReportButton";
 import { ShareGame } from "@/components/ShareGame";
@@ -226,6 +227,12 @@ function PlayPage() {
   const isParticipant = isWhite || isBlack;
   const myColor: "w" | "b" | null = isWhite ? "w" : isBlack ? "b" : null;
   const myTurn = myColor !== null && myColor === turn && game?.status === "active";
+  const signals = useFairPlaySignals({
+    gameId,
+    active: isParticipant && !!game && !game.is_correspondence && game.status === "active",
+    ply: game?.ply ?? 0,
+    myTurn,
+  });
 
   const { whiteDisplayMs, blackDisplayMs } = useGameClock({
     whiteMs: game?.time_white_ms ?? 0,
@@ -279,6 +286,7 @@ function PlayPage() {
     if (next) {
       const uci = `${next.from}${next.to}${next.promotion ?? ""}`;
       setSubmitting(true);
+      signals.onMoveMade(game.ply + 1);
       void submit({ data: { gameId, uci } })
         .catch((e: unknown) => moveFailed(e, "Premove rejected"))
         .finally(() => setSubmitting(false));
@@ -336,6 +344,7 @@ function PlayPage() {
       return false;
     }
     setSubmitting(true);
+    signals.onMoveMade(game.ply + 1);
     void submit({ data: { gameId, uci } })
       .catch((e: unknown) => moveFailed(e, "Move rejected"))
       .finally(() => setSubmitting(false));
@@ -429,7 +438,10 @@ function PlayPage() {
             active={!myTurn && game.status === "active"}
             clockMs={isWhite ? blackDisplayMs : whiteDisplayMs}
           />
-          <div className="my-2 aspect-square w-full max-w-[640px]">
+          <div
+            className="my-2 aspect-square w-full max-w-[640px]"
+            onPointerDown={signals.onBoardPointerDown}
+          >
             <Chessboard
               options={{
                 ...boardSquares,

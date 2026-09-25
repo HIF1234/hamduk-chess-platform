@@ -1426,6 +1426,48 @@ export type Database = {
           },
         ]
       }
+      game_client_signals: {
+        Row: {
+          game_id: string
+          page_events: Json
+          per_move: Json
+          updated_at: string
+          user_id: string
+          window_events: Json
+        }
+        Insert: {
+          game_id: string
+          page_events?: Json
+          per_move?: Json
+          updated_at?: string
+          user_id: string
+          window_events?: Json
+        }
+        Update: {
+          game_id?: string
+          page_events?: Json
+          per_move?: Json
+          updated_at?: string
+          user_id?: string
+          window_events?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_client_signals_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_client_signals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       game_comment_likes: {
         Row: {
           comment_id: string
@@ -3509,6 +3551,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      append_client_signals: {
+        Args: {
+          p_game: string
+          p_moves: Json
+          p_page: Json
+          p_user: string
+          p_window: Json
+        }
+        Returns: undefined
+      }
       apply_elo: {
         Args: {
           p_black: string

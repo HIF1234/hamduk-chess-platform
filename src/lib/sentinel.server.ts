@@ -148,6 +148,46 @@ export function buildPgn(input: {
   return c.pgn();
 }
 
+type SignalRow = { window_events: unknown; page_events: unknown; per_move: unknown };
+
+/** The browser signals Sentinel reads, for one player: tab blurs, copy/paste, and a summary
+ *  per move (time spent from server timings, plus drag and reaction time from the browser). */
+function clientSignals(
+  color: "white" | "black",
+  row: SignalRow | undefined,
+  tele: { ply: number; elapsed_ms: number }[],
+  start960: string | null,
+) {
+  // White moves on odd plies from the standard start; a set-up start with Black to move flips it.
+  const firstPlyIsWhite = !start960 || start960.split(" ")[1] === "w";
+  const mine = (ply: number) => (ply % 2 === 1) === (firstPlyIsWhite === (color === "white"));
+  const extra = new Map(
+    (
+      (row?.per_move ?? []) as {
+        ply: number;
+        drag_duration_ms?: number;
+        reaction_time_ms?: number;
+      }[]
+    ).map((m) => [m.ply, m]),
+  );
+  const perMove = tele
+    .filter((t) => mine(t.ply))
+    .sort((a, b) => a.ply - b.ply)
+    .map((t) => {
+      const e = extra.get(t.ply);
+      return {
+        time_spent_seconds: t.elapsed_ms / 1000,
+        ...(e?.drag_duration_ms !== undefined ? { drag_duration_ms: e.drag_duration_ms } : {}),
+        ...(e?.reaction_time_ms !== undefined ? { reaction_time_ms: e.reaction_time_ms } : {}),
+      };
+    });
+  return {
+    window_events: (row?.window_events ?? []) as unknown[],
+    page_events: (row?.page_events ?? []) as unknown[],
+    ...(perMove.length ? { per_move_summary: perMove } : {}),
+  };
+}
+
 /** Submits newly completed games. Called by the cron tick. */
 export async function submitDueGames() {
   if (!config()) return { skipped: "not configured" };
@@ -161,6 +201,8 @@ export async function submitDueGames() {
     )
     .eq("status", "completed")
     .is("fairplay_submitted_at", null)
+    // Give the players' browsers time to send their last batch of signals.
+    .lt("ended_at", new Date(Date.now() - 30_000).toISOString())
     .order("ended_at")
     .limit(GAMES_PER_TICK);
   if (error) throw error;
@@ -179,10 +221,14 @@ export async function submitDueGames() {
       await done();
       continue;
     }
-    const [{ data: people }, { data: moves }, { data: tele }] = await Promise.all([
+    const [{ data: people }, { data: moves }, { data: tele }, { data: sigs }] = await Promise.all([
       s.from("profiles").select("id, username, rating").in("id", [g.white_id, g.black_id]),
       s.from("moves").select("ply, uci").eq("game_id", g.id).order("ply"),
       s.from("move_telemetry").select("ply, elapsed_ms").eq("game_id", g.id),
+      s
+        .from("game_client_signals")
+        .select("user_id, window_events, page_events, per_move")
+        .eq("game_id", g.id),
     ]);
     const who = new Map((people ?? []).map((p) => [p.id, p]));
     const white = {
@@ -222,6 +268,12 @@ export async function submitDueGames() {
           player_color: color,
           official_elo: elo ?? undefined,
           pgn,
+          ...clientSignals(
+            color,
+            (sigs ?? []).find((x) => x.user_id === id),
+            tele ?? [],
+            g.variant === "chess960" && g.chess960_start_fen ? g.chess960_start_fen : null,
+          ),
         }),
       });
       if (res.status === 429) {

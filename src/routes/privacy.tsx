@@ -66,10 +66,19 @@ export function PrivacyPage() {
                   browser type, and errors) kept by our hosting providers to keep the Service secure
                   and working, and online/offline presence while you play.
                 </li>
+                <li>
+                  <strong>Fair-play signals</strong> — during live games against other players, your
+                  browser records when the game tab loses focus and for how long, when you copy,
+                  paste or cut, and how long you take to start and make each move. We don't record
+                  what you do in other tabs or apps, and we use these signals only to detect
+                  cheating.
+                </li>
               </ul>
               <p>
                 Voice input in Coach Verbal Review is turned into text by your own browser's speech
-                recognition; we receive only the text, never audio recordings.
+                recognition; we receive only the text, never audio recordings. In-game voice chat
+                goes directly between the two players' devices; it doesn't pass through our servers
+                and we don't record it.
               </p>
             </>
           ),
