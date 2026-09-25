@@ -3707,6 +3707,16 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      puzzle_pack: {
+        Args: { p_limit: number; p_max: number; p_min: number; p_user: string }
+        Returns: {
+          fen: string
+          id: string
+          rating: number
+          solution: string[]
+          themes: string[]
+        }[]
+      }
       puzzles_attempted_today: { Args: { p_user: string }; Returns: number }
       record_bot_game: {
         Args: { p_time_control: string; p_variant?: string }
