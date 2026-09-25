@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { CATEGORY_LABEL, idsIn, type TimeControlCategory } from "@/lib/time-controls";
 import { flag } from "@/lib/flags";
+import { AdSlot } from "@/components/ads/AdSlot";
 
 export const Route = createFileRoute("/leaderboard")({
   head: () => ({
@@ -304,6 +305,7 @@ function LeaderboardPage() {
             </button>
           </div>
         )}
+        <AdSlot className="mt-8" />
       </main>
     </div>
   );

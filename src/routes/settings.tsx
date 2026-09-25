@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { THIRD_PARTY_ADS, readAdConsent, writeAdConsent } from "@/lib/ads";
 import { TwoFactorSettings } from "@/components/auth/TwoFactorSettings";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -297,6 +298,12 @@ function SettingsPage() {
           </Row>
         </Section>
 
+        {THIRD_PARTY_ADS && (
+          <Section title="Advertising">
+            <AdConsentRow />
+          </Section>
+        )}
+
         <Section title="Privacy">
           <p className="text-sm text-muted-foreground">
             Read our{" "}
@@ -513,3 +520,22 @@ const COUNTRIES: [string, string][] = [
   ["IN", "India"],
   ["AE", "United Arab Emirates"],
 ];
+
+function AdConsentRow() {
+  const [granted, setGranted] = useState(false);
+  useEffect(() => setGranted(readAdConsent() === "granted"), []);
+  return (
+    <Row
+      label="Ad partner cookies"
+      hint="Free accounts only. Off means you'll see our own promotions instead."
+    >
+      <Toggle
+        checked={granted}
+        onChange={(v) => {
+          writeAdConsent(v ? "granted" : "denied");
+          setGranted(v);
+        }}
+      />
+    </Row>
+  );
+}

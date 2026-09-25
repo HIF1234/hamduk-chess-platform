@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -120,25 +121,28 @@ export function PuzzleHub() {
   const displayLast = serverStats?.last_solved_date ?? localProgress.lastSolveDate;
 
   return (
-    <div className="min-h-screen bg-surface font-sans text-zinc-900">
-      <nav className="h-12 border-b border-zinc-950/5 flex items-center justify-between px-6 bg-panel">
+    <div className="min-h-screen bg-background font-sans text-foreground">
+      <nav className="h-12 border-b border-border flex items-center justify-between px-6 bg-card">
         <div className="flex items-center gap-6">
           <Link
             to="/"
-            className="text-xs font-semibold tracking-wider uppercase text-zinc-400 hover:text-zinc-700 transition-colors"
+            className="text-xs font-semibold tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors"
           >
             Hamduk Chess
           </Link>
-          <div className="h-4 w-px bg-zinc-950/5" />
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-700">
+          <div className="h-4 w-px bg-muted" />
+          <span className="text-xs font-medium uppercase tracking-wider text-foreground">
             Puzzles
           </span>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/analysis" className="text-xs font-medium text-zinc-500 hover:text-zinc-900">
+          <Link
+            to="/analysis"
+            className="text-xs font-medium text-muted-foreground hover:text-foreground"
+          >
             Analysis
           </Link>
-          <Link to="/" className="text-xs font-medium text-zinc-500 hover:text-zinc-900">
+          <Link to="/" className="text-xs font-medium text-muted-foreground hover:text-foreground">
             Play
           </Link>
           <ThemeToggle />
@@ -154,14 +158,14 @@ export function PuzzleHub() {
             >
               Sharpen your tactics
             </h1>
-            <p className="text-sm text-zinc-500 mt-2 max-w-prose">
+            <p className="text-sm text-muted-foreground mt-2 max-w-prose">
               Solve hand-picked tactical puzzles. Build a streak, climb the rating ladder, master
               themes.
               {signedIn === false && " Sign in to save your rating and progress."}
             </p>
           </header>
 
-          <div className="flex gap-1 p-1 bg-zinc-200/60 rounded-md w-fit mb-6">
+          <div className="flex gap-1 p-1 bg-muted rounded-md w-fit mb-6">
             {(["daily", "rated", "themes"] as Tab[]).map((t) => (
               <button
                 key={t}
@@ -169,8 +173,8 @@ export function PuzzleHub() {
                 className={
                   "px-4 py-1.5 text-xs font-medium uppercase tracking-wider rounded cursor-pointer transition-colors " +
                   (tab === t
-                    ? "bg-panel shadow-sm ring-1 ring-black/5 text-zinc-900"
-                    : "text-zinc-500 hover:text-zinc-800")
+                    ? "bg-card shadow-sm ring-1 ring-border text-foreground"
+                    : "text-muted-foreground hover:text-foreground")
                 }
               >
                 {t === "daily" ? "Daily" : t === "rated" ? "Rated ladder" : "Themes"}
@@ -187,8 +191,8 @@ export function PuzzleHub() {
                   className={
                     "px-3 py-1 text-xs font-medium rounded-full ring-1 cursor-pointer transition-colors " +
                     (theme === th
-                      ? "bg-zinc-900 text-zinc-100 ring-zinc-900"
-                      : "bg-panel text-zinc-700 ring-black/10 hover:bg-zinc-100")
+                      ? "bg-primary text-primary-foreground ring-primary"
+                      : "bg-card text-foreground ring-border hover:bg-accent")
                   }
                 >
                   {th}
@@ -198,18 +202,18 @@ export function PuzzleHub() {
           )}
 
           {tab === "themes" && !theme ? (
-            <div className="rounded-md bg-panel ring-1 ring-black/5 p-12 text-center text-sm text-zinc-500">
+            <div className="rounded-md bg-card ring-1 ring-border p-12 text-center text-sm text-muted-foreground">
               Pick a theme above to start solving.
             </div>
           ) : !puzzle ? (
-            <div className="rounded-md bg-panel ring-1 ring-black/5 p-12 text-center text-sm text-zinc-500">
+            <div className="rounded-md bg-card ring-1 ring-border p-12 text-center text-sm text-muted-foreground">
               Loading…
             </div>
           ) : (
             <>
               <PuzzleBoard puzzle={puzzle} onComplete={handleComplete} />
               {lastDelta !== null && (
-                <p className="text-center text-xs text-zinc-500 mt-3">
+                <p className="text-center text-xs text-muted-foreground mt-3">
                   {lastDelta >= 0 ? "+" : ""}
                   {lastDelta} rating
                 </p>
@@ -220,7 +224,7 @@ export function PuzzleHub() {
                     setLastDelta(null);
                     void loadNext();
                   }}
-                  className="px-5 py-2 text-sm font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer transition-colors"
+                  className="px-5 py-2 text-sm font-medium bg-primary text-primary-foreground rounded ring-1 ring-primary hover:bg-primary/90 cursor-pointer transition-colors"
                 >
                   Next puzzle →
                 </button>
@@ -233,72 +237,74 @@ export function PuzzleHub() {
           <StatCard label="Puzzle rating" value={displayRating} hint={`${displaySolved} solved`} />
           <StatCard
             label="Streak"
-            value={`${displayStreak}d`}
+            value={`${displayStreak} ${displayStreak === 1 ? "day" : "days"}`}
             hint={displayLast ? `Last: ${displayLast}` : "Solve one today"}
             highlight
           />
 
-          <div className="rounded-md bg-panel ring-1 ring-black/5 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-3">
+          <div className="rounded-md bg-card ring-1 ring-border p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
               Daily puzzle
             </p>
-            <p className="text-xs text-zinc-600 leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               Everyone gets the same puzzle each day. Solve it to keep your streak alive.
             </p>
             <Link
               to="/puzzles/daily/$date"
               params={{ date: todayISO() }}
-              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer transition-colors"
+              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-primary text-primary-foreground rounded ring-1 ring-primary hover:bg-primary/90 cursor-pointer transition-colors"
             >
               Open today's puzzle
             </Link>
           </div>
 
-          <div className="rounded-md bg-gradient-to-br from-amber-50 to-amber-100/40 ring-1 ring-amber-300/40 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-700 mb-2">
+          <div className="rounded-md bg-gold/10 ring-1 ring-gold/40 p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-gold mb-2">
               Puzzle Storm · Plus
             </p>
-            <p className="text-xs text-zinc-700 leading-relaxed">
+            <p className="text-xs text-foreground leading-relaxed">
               Three minutes. Solve as many tactics as you can. Climb the daily leaderboard.
             </p>
             <Link
               to="/puzzles/storm"
-              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer transition-colors"
+              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-primary text-primary-foreground rounded ring-1 ring-primary hover:bg-primary/90 cursor-pointer transition-colors"
             >
               Enter the storm →
             </Link>
           </div>
 
-          <div className="rounded-md bg-panel ring-1 ring-black/5 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-2">
+          <div className="rounded-md bg-card ring-1 ring-border p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
               Puzzle Battle
             </p>
-            <p className="text-xs text-zinc-700 leading-relaxed">
+            <p className="text-xs text-foreground leading-relaxed">
               Race another player through the same puzzles. First to five wins.
             </p>
             <Link
               to="/puzzles/battle"
-              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer transition-colors"
+              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-primary text-primary-foreground rounded ring-1 ring-primary hover:bg-primary/90 cursor-pointer transition-colors"
             >
               Find an opponent →
             </Link>
           </div>
 
-          <div className="rounded-md bg-panel ring-1 ring-black/5 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-2">
+          <div className="rounded-md bg-card ring-1 ring-border p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
               Puzzle creator · Plus
             </p>
-            <p className="text-xs text-zinc-700 leading-relaxed">
+            <p className="text-xs text-foreground leading-relaxed">
               Found a great tactic in your game? Turn it into a puzzle for everyone, credited to
               you.
             </p>
             <Link
               to="/puzzles/create"
-              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer transition-colors"
+              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-primary text-primary-foreground rounded ring-1 ring-primary hover:bg-primary/90 cursor-pointer transition-colors"
             >
               Create a puzzle →
             </Link>
           </div>
+
+          <AdSlot />
         </aside>
       </main>
     </div>
@@ -319,20 +325,19 @@ function StatCard({
   return (
     <div
       className={
-        "rounded-md p-4 ring-1 " +
-        (highlight
-          ? "bg-gradient-to-br from-amber-50 to-amber-100/40 ring-amber-300/40"
-          : "bg-panel ring-black/5")
+        "rounded-md p-4 ring-1 " + (highlight ? "bg-gold/10 ring-gold/40" : "bg-card ring-border")
       }
     >
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">{label}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
       <p
         className="text-3xl font-bold mt-1"
         style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
       >
         {value}
       </p>
-      {hint && <p className="text-xs text-zinc-500 mt-1">{hint}</p>}
+      {hint && <p className="text-xs text-muted-foreground mt-1">{hint}</p>}
     </div>
   );
 }

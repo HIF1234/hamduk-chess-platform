@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { AdConsentBanner } from "@/components/ads/AdConsentBanner";
 import { MfaGate } from "@/components/auth/MfaGate";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import {
@@ -216,6 +217,7 @@ function AuthAwareShell() {
       <BottomNav />
       <NotificationListener />
       <MfaGate />
+      <AdConsentBanner />
       <Heartbeat />
       <Toaster position="top-right" richColors closeButton theme="system" />
     </div>

@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
@@ -86,6 +87,7 @@ function ArticlePage() {
         <div className="mt-8 border-t border-border pt-6">
           <ShareLinks text={a.title} path={`/news/${slug}`} />
         </div>
+        <AdSlot className="mt-8" />
       </article>
     </div>
   );

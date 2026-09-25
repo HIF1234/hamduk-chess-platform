@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { useBoardSquares } from "@/lib/preferences";
 import { Chessboard } from "react-chessboard";
 import { type Square, type PieceSymbol, type Color } from "chess.js";
@@ -552,6 +553,7 @@ export function ChessApp({
             </div>
           )}
 
+          <AdSlot className="order-6" />
           <div className="order-5 flex flex-wrap gap-2 text-sm">
             <button
               onClick={handleOpenInAnalysis}

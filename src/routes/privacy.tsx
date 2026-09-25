@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { THIRD_PARTY_ADS } from "@/lib/ads";
 import { LEGAL, LegalPage, Mail } from "@/components/LegalPage";
 
 export const Route = createFileRoute("/privacy")({
@@ -28,8 +29,10 @@ export function PrivacyPage() {
             Act 2023 (NDPA) and the rules of the Nigeria Data Protection Commission.
           </p>
           <p>
-            In short: we collect what we need to run a chess platform, we don't sell your data, and
-            we don't use advertising trackers.
+            In short: we collect what we need to run a chess platform and we don't sell your data.{" "}
+            {THIRD_PARTY_ADS
+              ? "Free accounts may see ads from Google; advertising cookies are only used if you agree."
+              : "We don't use advertising trackers."}
           </p>
         </>
       }
@@ -226,12 +229,40 @@ export function PrivacyPage() {
             <>
               <p>
                 We use your browser's local storage to keep you signed in and to remember settings
-                such as your theme and puzzle progress. We don't use advertising or cross-site
-                tracking cookies.
+                such as your theme and puzzle progress.{" "}
+                {THIRD_PARTY_ADS
+                  ? "Advertising cookies are described in the Advertising section below."
+                  : "We don't use advertising or cross-site tracking cookies."}
               </p>
             </>
           ),
         },
+        ...(THIRD_PARTY_ADS
+          ? [
+              {
+                id: "advertising",
+                heading: "Advertising",
+                body: (
+                  <>
+                    <p>
+                      Free accounts and visitors who aren't signed in may see ads served by Google
+                      AdSense. Hamduk Plus and Gold members see no ads.
+                    </p>
+                    <p>
+                      Google only sets advertising cookies, or uses similar technology to show and
+                      measure ads, if you choose "Accept" in our cookie banner. If you choose
+                      "Essential only" you'll see our own promotions instead, and no advertising
+                      cookies are used. You can change your choice at any time in Settings.
+                    </p>
+                    <p>
+                      We don't share your chess games, messages or account details with advertisers.
+                      Google's use of data is described at policies.google.com/technologies/ads.
+                    </p>
+                  </>
+                ),
+              },
+            ]
+          : []),
         {
           id: "security",
           heading: "Security",
