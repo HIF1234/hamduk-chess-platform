@@ -2212,6 +2212,8 @@ export type Database = {
           fen: string
           id: string
           rating: number
+          review_note: string | null
+          reviewed_at: string | null
           solution: string[]
           source: string | null
           themes: string[]
@@ -2225,6 +2227,8 @@ export type Database = {
           fen: string
           id?: string
           rating?: number
+          review_note?: string | null
+          reviewed_at?: string | null
           solution: string[]
           source?: string | null
           themes?: string[]
@@ -2238,6 +2242,8 @@ export type Database = {
           fen?: string
           id?: string
           rating?: number
+          review_note?: string | null
+          reviewed_at?: string | null
           solution?: string[]
           source?: string | null
           themes?: string[]

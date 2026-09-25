@@ -35,12 +35,16 @@ export const getPuzzleById = createServerFn({ method: "GET" })
     const admin = await getAdmin();
     const { data: row, error } = await admin
       .from("puzzles")
-      .select("id,fen,solution,themes,rating")
+      .select("id,fen,solution,themes,rating,source,creator_id")
       .eq("id", data.puzzleId)
       .eq("approved", true)
       .maybeSingle();
     if (error) throw error;
-    return row as ServerPuzzle | null;
+    if (!row) return null;
+    const { data: creator } = row.creator_id
+      ? await admin.from("profiles").select("username").eq("id", row.creator_id).maybeSingle()
+      : { data: null };
+    return { ...(row as ServerPuzzle), source: row.source, creator: creator?.username ?? null };
   });
 
 /** Public — deterministic daily puzzle for a date (auto-assigned on first request). */
@@ -52,6 +56,7 @@ export const getDailyPuzzle = createServerFn({ method: "GET" })
       .from("puzzles")
       .select("id,fen,solution,themes,rating")
       .eq("daily_date", data.date)
+      .eq("approved", true)
       .maybeSingle();
     if (existing.data) return existing.data as ServerPuzzle;
 

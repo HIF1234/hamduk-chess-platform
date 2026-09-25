@@ -10,6 +10,7 @@ import { AnalysisToolbar } from "./AnalysisToolbar";
 import { PgnImportDialog } from "./PgnImportDialog";
 import { FenImportDialog } from "./FenImportDialog";
 import { AiCoachPanel } from "./AiCoachPanel";
+import { TablebasePanel } from "./TablebasePanel";
 import { downloadPgn, exportPgn } from "@/lib/pgn";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -188,6 +189,7 @@ export function AnalysisApp() {
         </div>
 
         <aside className="w-full lg:w-96 shrink-0 flex flex-col gap-4">
+          <TablebasePanel fen={replay.fen} />
           <ReplayMoveList moves={replay.moves} ply={replay.ply} onSelect={replay.setPly} />
           <AiCoachPanel
             fen={replay.fen}

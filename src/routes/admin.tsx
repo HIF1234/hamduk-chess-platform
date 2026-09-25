@@ -14,6 +14,7 @@ import {
   Trophy,
   Users,
   Megaphone,
+  Puzzle,
   MessagesSquare,
   TrendingUp,
 } from "lucide-react";
@@ -46,6 +47,7 @@ const NAV = [
   { to: "/admin/reports", label: "Reports", icon: Flag },
   { to: "/admin/growth", label: "Growth", icon: TrendingUp },
   { to: "/admin/community", label: "Community & news", icon: MessagesSquare },
+  { to: "/admin/puzzles", label: "Puzzle review", icon: Puzzle },
   { to: "/admin/announcements", label: "Announcements", icon: Megaphone },
   { to: "/admin/audit-log", label: "Audit log", icon: ScrollText },
 ];

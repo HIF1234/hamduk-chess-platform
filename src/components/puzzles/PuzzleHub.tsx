@@ -123,15 +123,24 @@ export function PuzzleHub() {
     <div className="min-h-screen bg-surface font-sans text-zinc-900">
       <nav className="h-12 border-b border-zinc-950/5 flex items-center justify-between px-6 bg-panel">
         <div className="flex items-center gap-6">
-          <Link to="/" className="text-xs font-semibold tracking-wider uppercase text-zinc-400 hover:text-zinc-700 transition-colors">
+          <Link
+            to="/"
+            className="text-xs font-semibold tracking-wider uppercase text-zinc-400 hover:text-zinc-700 transition-colors"
+          >
             Hamduk Chess
           </Link>
           <div className="h-4 w-px bg-zinc-950/5" />
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-700">Puzzles</span>
+          <span className="text-xs font-medium uppercase tracking-wider text-zinc-700">
+            Puzzles
+          </span>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/analysis" className="text-xs font-medium text-zinc-500 hover:text-zinc-900">Analysis</Link>
-          <Link to="/" className="text-xs font-medium text-zinc-500 hover:text-zinc-900">Play</Link>
+          <Link to="/analysis" className="text-xs font-medium text-zinc-500 hover:text-zinc-900">
+            Analysis
+          </Link>
+          <Link to="/" className="text-xs font-medium text-zinc-500 hover:text-zinc-900">
+            Play
+          </Link>
           <ThemeToggle />
         </div>
       </nav>
@@ -139,11 +148,15 @@ export function PuzzleHub() {
       <main className="max-w-[1280px] mx-auto px-6 md:px-12 py-8 md:py-12 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 md:gap-12 items-start">
         <section>
           <header className="mb-6">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+            <h1
+              className="text-4xl md:text-5xl font-serif font-bold tracking-tight"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            >
               Sharpen your tactics
             </h1>
             <p className="text-sm text-zinc-500 mt-2 max-w-prose">
-              Solve hand-picked tactical puzzles. Build a streak, climb the rating ladder, master themes.
+              Solve hand-picked tactical puzzles. Build a streak, climb the rating ladder, master
+              themes.
               {signedIn === false && " Sign in to save your rating and progress."}
             </p>
           </header>
@@ -155,7 +168,9 @@ export function PuzzleHub() {
                 onClick={() => setTab(t)}
                 className={
                   "px-4 py-1.5 text-xs font-medium uppercase tracking-wider rounded cursor-pointer transition-colors " +
-                  (tab === t ? "bg-panel shadow-sm ring-1 ring-black/5 text-zinc-900" : "text-zinc-500 hover:text-zinc-800")
+                  (tab === t
+                    ? "bg-panel shadow-sm ring-1 ring-black/5 text-zinc-900"
+                    : "text-zinc-500 hover:text-zinc-800")
                 }
               >
                 {t === "daily" ? "Daily" : t === "rated" ? "Rated ladder" : "Themes"}
@@ -195,7 +210,8 @@ export function PuzzleHub() {
               <PuzzleBoard puzzle={puzzle} onComplete={handleComplete} />
               {lastDelta !== null && (
                 <p className="text-center text-xs text-zinc-500 mt-3">
-                  {lastDelta >= 0 ? "+" : ""}{lastDelta} rating
+                  {lastDelta >= 0 ? "+" : ""}
+                  {lastDelta} rating
                 </p>
               )}
               <div className="flex justify-center mt-6">
@@ -223,7 +239,9 @@ export function PuzzleHub() {
           />
 
           <div className="rounded-md bg-panel ring-1 ring-black/5 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-3">Daily puzzle</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-3">
+              Daily puzzle
+            </p>
             <p className="text-xs text-zinc-600 leading-relaxed">
               Everyone gets the same puzzle each day. Solve it to keep your streak alive.
             </p>
@@ -237,7 +255,9 @@ export function PuzzleHub() {
           </div>
 
           <div className="rounded-md bg-gradient-to-br from-amber-50 to-amber-100/40 ring-1 ring-amber-300/40 p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-700 mb-2">Puzzle Storm · Plus</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-700 mb-2">
+              Puzzle Storm · Plus
+            </p>
             <p className="text-xs text-zinc-700 leading-relaxed">
               Three minutes. Solve as many tactics as you can. Climb the daily leaderboard.
             </p>
@@ -248,18 +268,46 @@ export function PuzzleHub() {
               Enter the storm →
             </Link>
           </div>
+
+          <div className="rounded-md bg-panel ring-1 ring-black/5 p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-2">
+              Puzzle creator · Plus
+            </p>
+            <p className="text-xs text-zinc-700 leading-relaxed">
+              Found a great tactic in your game? Turn it into a puzzle for everyone, credited to
+              you.
+            </p>
+            <Link
+              to="/puzzles/create"
+              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer transition-colors"
+            >
+              Create a puzzle →
+            </Link>
+          </div>
         </aside>
       </main>
     </div>
   );
 }
 
-function StatCard({ label, value, hint, highlight }: { label: string; value: string | number; hint?: string; highlight?: boolean }) {
+function StatCard({
+  label,
+  value,
+  hint,
+  highlight,
+}: {
+  label: string;
+  value: string | number;
+  hint?: string;
+  highlight?: boolean;
+}) {
   return (
     <div
       className={
         "rounded-md p-4 ring-1 " +
-        (highlight ? "bg-gradient-to-br from-amber-50 to-amber-100/40 ring-amber-300/40" : "bg-panel ring-black/5")
+        (highlight
+          ? "bg-gradient-to-br from-amber-50 to-amber-100/40 ring-amber-300/40"
+          : "bg-panel ring-black/5")
       }
     >
       <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">{label}</p>

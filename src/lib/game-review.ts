@@ -100,6 +100,36 @@ export class ReviewAnalyzer {
     });
   }
 
+  /** The engine's top `n` moves for `fen` (cp from White's POV, best first). Only call
+   *  when no analysis is in flight. Used to check a puzzle has a single solution. */
+  topMoves(fen: string, depth: number, n = 2): Promise<{ uci: string; cp: number }[]> {
+    return new Promise((resolve) => {
+      const lines = new Map<number, { uci: string; cp: number }>();
+      const stm = fen.split(" ")[1] === "w" ? 1 : -1;
+      this.pending = (line: string) => {
+        const pv = line.match(/multipv (\d+) .*score (cp|mate) (-?\d+).* pv (\S+)/);
+        if (pv) {
+          const raw = parseInt(pv[3], 10);
+          const cp = pv[2] === "mate" ? Math.sign(raw) * (100000 - Math.abs(raw)) : raw;
+          lines.set(parseInt(pv[1], 10), { uci: pv[4], cp: cp * stm });
+        }
+        if (line.startsWith("bestmove")) {
+          this.pending = null;
+          this.worker.postMessage("setoption name MultiPV value 1");
+          resolve([...lines.entries()].sort((x, y) => x[0] - y[0]).map(([, v]) => v).slice(0, n));
+        }
+      };
+      this.worker.onmessage = (e: MessageEvent) => {
+        const line = typeof e.data === "string" ? e.data : "";
+        if (this.pending) this.pending(line);
+      };
+      this.worker.postMessage("ucinewgame");
+      this.worker.postMessage(`setoption name MultiPV value ${n}`);
+      this.worker.postMessage(`position fen ${fen}`);
+      this.worker.postMessage(`go depth ${depth}`);
+    });
+  }
+
   /** Evaluates the position after playing `uci` from `fen`. Returns cp from White's POV,
    *  or null if the move is illegal. Only call when no analysis is in flight. */
   async evaluateAfter(fen: string, uci: string, depth: number): Promise<number | null> {

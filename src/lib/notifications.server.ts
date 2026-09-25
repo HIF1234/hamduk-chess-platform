@@ -16,7 +16,8 @@ export type NotificationType =
   | "membership_expired"
   | "forum_reply"
   | "announcement"
-  | "game_comment";
+  | "game_comment"
+  | "puzzle_review";
 
 export async function notify(
   userId: string,

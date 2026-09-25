@@ -55,6 +55,8 @@ import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
 import { Route as StudyStudyIdRouteImport } from './routes/study.$studyId'
 import { Route as SpectateGameIdRouteImport } from './routes/spectate.$gameId'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
+import { Route as PuzzlesCreateRouteImport } from './routes/puzzles.create'
+import { Route as PuzzlesIdRouteImport } from './routes/puzzles.$id'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayBotRouteImport } from './routes/play.bot'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
@@ -74,6 +76,7 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminTournamentsRouteImport } from './routes/admin.tournaments'
 import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
+import { Route as AdminPuzzlesRouteImport } from './routes/admin.puzzles'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminOrgsRouteImport } from './routes/admin.orgs'
 import { Route as AdminGrowthRouteImport } from './routes/admin.growth'
@@ -335,6 +338,16 @@ const PuzzlesStormRoute = PuzzlesStormRouteImport.update({
   path: '/puzzles/storm',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PuzzlesCreateRoute = PuzzlesCreateRouteImport.update({
+  id: '/puzzles/create',
+  path: '/puzzles/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PuzzlesIdRoute = PuzzlesIdRouteImport.update({
+  id: '/puzzles/$id',
+  path: '/puzzles/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileUsernameRoute = ProfileUsernameRouteImport.update({
   id: '/profile/$username',
   path: '/profile/$username',
@@ -428,6 +441,11 @@ const AdminRolesRoute = AdminRolesRouteImport.update({
 const AdminReportsRoute = AdminReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPuzzlesRoute = AdminPuzzlesRouteImport.update({
+  id: '/puzzles',
+  path: '/puzzles',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
@@ -626,6 +644,7 @@ export interface FileRoutesByFullPath {
   '/admin/growth': typeof AdminGrowthRoute
   '/admin/orgs': typeof AdminOrgsRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/puzzles': typeof AdminPuzzlesRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/tournaments': typeof AdminTournamentsRoute
@@ -645,6 +664,8 @@ export interface FileRoutesByFullPath {
   '/play/$gameId': typeof PlayGameIdRoute
   '/play/bot': typeof PlayBotRoute
   '/profile/$username': typeof ProfileUsernameRoute
+  '/puzzles/$id': typeof PuzzlesIdRoute
+  '/puzzles/create': typeof PuzzlesCreateRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/spectate/$gameId': typeof SpectateGameIdRoute
   '/study/$studyId': typeof StudyStudyIdRoute
@@ -722,6 +743,7 @@ export interface FileRoutesByTo {
   '/admin/growth': typeof AdminGrowthRoute
   '/admin/orgs': typeof AdminOrgsRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/puzzles': typeof AdminPuzzlesRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/tournaments': typeof AdminTournamentsRoute
@@ -741,6 +763,8 @@ export interface FileRoutesByTo {
   '/play/$gameId': typeof PlayGameIdRoute
   '/play/bot': typeof PlayBotRoute
   '/profile/$username': typeof ProfileUsernameRoute
+  '/puzzles/$id': typeof PuzzlesIdRoute
+  '/puzzles/create': typeof PuzzlesCreateRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/spectate/$gameId': typeof SpectateGameIdRoute
   '/study/$studyId': typeof StudyStudyIdRoute
@@ -820,6 +844,7 @@ export interface FileRoutesById {
   '/admin/growth': typeof AdminGrowthRoute
   '/admin/orgs': typeof AdminOrgsRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/puzzles': typeof AdminPuzzlesRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/tournaments': typeof AdminTournamentsRoute
@@ -839,6 +864,8 @@ export interface FileRoutesById {
   '/play/$gameId': typeof PlayGameIdRoute
   '/play/bot': typeof PlayBotRoute
   '/profile/$username': typeof ProfileUsernameRoute
+  '/puzzles/$id': typeof PuzzlesIdRoute
+  '/puzzles/create': typeof PuzzlesCreateRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/spectate/$gameId': typeof SpectateGameIdRoute
   '/study/$studyId': typeof StudyStudyIdRoute
@@ -919,6 +946,7 @@ export interface FileRouteTypes {
     | '/admin/growth'
     | '/admin/orgs'
     | '/admin/payments'
+    | '/admin/puzzles'
     | '/admin/reports'
     | '/admin/roles'
     | '/admin/tournaments'
@@ -938,6 +966,8 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/play/bot'
     | '/profile/$username'
+    | '/puzzles/$id'
+    | '/puzzles/create'
     | '/puzzles/storm'
     | '/spectate/$gameId'
     | '/study/$studyId'
@@ -1015,6 +1045,7 @@ export interface FileRouteTypes {
     | '/admin/growth'
     | '/admin/orgs'
     | '/admin/payments'
+    | '/admin/puzzles'
     | '/admin/reports'
     | '/admin/roles'
     | '/admin/tournaments'
@@ -1034,6 +1065,8 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/play/bot'
     | '/profile/$username'
+    | '/puzzles/$id'
+    | '/puzzles/create'
     | '/puzzles/storm'
     | '/spectate/$gameId'
     | '/study/$studyId'
@@ -1112,6 +1145,7 @@ export interface FileRouteTypes {
     | '/admin/growth'
     | '/admin/orgs'
     | '/admin/payments'
+    | '/admin/puzzles'
     | '/admin/reports'
     | '/admin/roles'
     | '/admin/tournaments'
@@ -1131,6 +1165,8 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/play/bot'
     | '/profile/$username'
+    | '/puzzles/$id'
+    | '/puzzles/create'
     | '/puzzles/storm'
     | '/spectate/$gameId'
     | '/study/$studyId'
@@ -1218,6 +1254,8 @@ export interface RootRouteChildren {
   PlayGameIdRoute: typeof PlayGameIdRoute
   PlayBotRoute: typeof PlayBotRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
+  PuzzlesIdRoute: typeof PuzzlesIdRoute
+  PuzzlesCreateRoute: typeof PuzzlesCreateRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
   SpectateGameIdRoute: typeof SpectateGameIdRoute
   StudyStudyIdRoute: typeof StudyStudyIdRoute
@@ -1577,6 +1615,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PuzzlesStormRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/puzzles/create': {
+      id: '/puzzles/create'
+      path: '/puzzles/create'
+      fullPath: '/puzzles/create'
+      preLoaderRoute: typeof PuzzlesCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/puzzles/$id': {
+      id: '/puzzles/$id'
+      path: '/puzzles/$id'
+      fullPath: '/puzzles/$id'
+      preLoaderRoute: typeof PuzzlesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile/$username': {
       id: '/profile/$username'
       path: '/profile/$username'
@@ -1708,6 +1760,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/admin/reports'
       preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/puzzles': {
+      id: '/admin/puzzles'
+      path: '/puzzles'
+      fullPath: '/admin/puzzles'
+      preLoaderRoute: typeof AdminPuzzlesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/payments': {
@@ -1932,6 +1991,7 @@ interface AdminRouteChildren {
   AdminGrowthRoute: typeof AdminGrowthRoute
   AdminOrgsRoute: typeof AdminOrgsRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
+  AdminPuzzlesRoute: typeof AdminPuzzlesRoute
   AdminReportsRoute: typeof AdminReportsRoute
   AdminRolesRoute: typeof AdminRolesRoute
   AdminTournamentsRoute: typeof AdminTournamentsRoute
@@ -1949,6 +2009,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminGrowthRoute: AdminGrowthRoute,
   AdminOrgsRoute: AdminOrgsRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
+  AdminPuzzlesRoute: AdminPuzzlesRoute,
   AdminReportsRoute: AdminReportsRoute,
   AdminRolesRoute: AdminRolesRoute,
   AdminTournamentsRoute: AdminTournamentsRoute,
@@ -2062,6 +2123,8 @@ const rootRouteChildren: RootRouteChildren = {
   PlayGameIdRoute: PlayGameIdRoute,
   PlayBotRoute: PlayBotRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
+  PuzzlesIdRoute: PuzzlesIdRoute,
+  PuzzlesCreateRoute: PuzzlesCreateRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
   SpectateGameIdRoute: SpectateGameIdRoute,
   StudyStudyIdRoute: StudyStudyIdRoute,
