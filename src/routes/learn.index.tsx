@@ -9,7 +9,7 @@ import { CheckCircle2, GraduationCap, Clock } from "lucide-react";
 export const Route = createFileRoute("/learn/")({
   head: () => ({
     meta: [
-      { title: "Learn Chess — Interactive Learn chess | Hamduk Chess" },
+      { title: "Learn Chess — Interactive Lessons | Hamduk Chess" },
       {
         name: "description",
         content:
