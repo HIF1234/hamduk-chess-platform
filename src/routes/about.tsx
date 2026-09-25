@@ -94,6 +94,70 @@ function About() {
             Contact us
           </Link>
         </div>
+
+        <section id="open-source" className="mt-14 max-w-2xl">
+          <h2 className="font-serif text-2xl font-semibold">Open-source software</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Hamduk Chess is built with the help of open-source software and open data. Thank you to
+            everyone who makes them.
+          </p>
+          <ul className="mt-4 space-y-3 text-sm">
+            <li>
+              <strong>Stockfish</strong>, the chess engine behind our bots, analysis and game
+              review, runs in your browser as a separate program through{" "}
+              <a className="text-primary underline" href="https://github.com/niklasf/stockfish.js">
+                stockfish.js
+              </a>{" "}
+              (version 10.0.2), unmodified. It is free software under the{" "}
+              <a
+                className="text-primary underline"
+                href="https://www.gnu.org/licenses/gpl-3.0.html"
+              >
+                GNU General Public License v3
+              </a>
+              . Its complete source code is available at{" "}
+              <a
+                className="text-primary underline"
+                href="https://github.com/niklasf/stockfish.js/tree/v10.0.2"
+              >
+                github.com/niklasf/stockfish.js
+              </a>{" "}
+              and{" "}
+              <a
+                className="text-primary underline"
+                href="https://github.com/official-stockfish/Stockfish"
+              >
+                github.com/official-stockfish/Stockfish
+              </a>
+              .
+            </li>
+            <li>
+              Puzzles and opening names come from the{" "}
+              <a className="text-primary underline" href="https://database.lichess.org/#puzzles">
+                Lichess puzzle database
+              </a>{" "}
+              and{" "}
+              <a
+                className="text-primary underline"
+                href="https://github.com/lichess-org/chess-openings"
+              >
+                lichess-org/chess-openings
+              </a>
+              , both released into the public domain (CC0). Endgame tablebase and masters opening
+              data are provided by Lichess's public services.
+            </li>
+            <li>
+              Chess pieces by Colin M.L. Burnett, via{" "}
+              <a
+                className="text-primary underline"
+                href="https://github.com/Clariity/react-chessboard"
+              >
+                react-chessboard
+              </a>{" "}
+              (MIT).
+            </li>
+          </ul>
+        </section>
       </main>
     </div>
   );
