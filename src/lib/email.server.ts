@@ -7,6 +7,8 @@ export async function sendEmail(
   subject: string,
   text: string,
   cta?: { label: string; path: string },
+  /** Trusted HTML for the body, used instead of `text` in the HTML part. */
+  bodyHtml?: string,
 ) {
   const key = process.env.RESEND_API_KEY;
   if (!key) return false;
@@ -14,7 +16,7 @@ export async function sendEmail(
   const link = cta ? `${SITE}${cta.path}` : SITE;
   const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#1a1a1a">
   <h2 style="color:#1a6b3a;margin:0 0 12px">Hamduk Chess</h2>
-  <p style="font-size:15px;line-height:1.5">${escapeHtml(text).replace(/\n/g, "<br>")}</p>
+  ${bodyHtml ?? `<p style="font-size:15px;line-height:1.5">${escapeHtml(text).replace(/\n/g, "<br>")}</p>`}
   ${cta ? `<p><a href="${link}" style="display:inline-block;background:#1a6b3a;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:bold">${escapeHtml(cta.label)}</a></p>` : ""}
   <p style="font-size:12px;color:#777;margin-top:24px">You can change email settings at ${SITE}/settings</p>
 </div>`;
@@ -32,7 +34,7 @@ export async function sendEmail(
   }
 }
 
-function escapeHtml(s: string) {
+export function escapeHtml(s: string) {
   return s.replace(
     /[&<>"']/g,
     (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!,

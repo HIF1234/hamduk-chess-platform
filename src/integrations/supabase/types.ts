@@ -2042,6 +2042,7 @@ export type Database = {
           banned_reason: string | null
           country: string | null
           created_at: string
+          daily_puzzle_emailed_on: string | null
           draws: number
           email_notify_moves: boolean
           flag_reason: string | null
@@ -2066,6 +2067,7 @@ export type Database = {
           vacation_days_used: number
           vacation_until: string | null
           vacation_year: number | null
+          weekly_report_sent_at: string | null
           wins: number
         }
         Insert: {
@@ -2074,6 +2076,7 @@ export type Database = {
           banned_reason?: string | null
           country?: string | null
           created_at?: string
+          daily_puzzle_emailed_on?: string | null
           draws?: number
           email_notify_moves?: boolean
           flag_reason?: string | null
@@ -2098,6 +2101,7 @@ export type Database = {
           vacation_days_used?: number
           vacation_until?: string | null
           vacation_year?: number | null
+          weekly_report_sent_at?: string | null
           wins?: number
         }
         Update: {
@@ -2106,6 +2110,7 @@ export type Database = {
           banned_reason?: string | null
           country?: string | null
           created_at?: string
+          daily_puzzle_emailed_on?: string | null
           draws?: number
           email_notify_moves?: boolean
           flag_reason?: string | null
@@ -2130,6 +2135,7 @@ export type Database = {
           vacation_days_used?: number
           vacation_until?: string | null
           vacation_year?: number | null
+          weekly_report_sent_at?: string | null
           wins?: number
         }
         Relationships: [
@@ -3412,6 +3418,14 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["admin_role_enum"]
       }
+      daily_puzzle_email_candidates: {
+        Args: { p_limit: number; p_today: string }
+        Returns: {
+          email: string
+          id: string
+          username: string
+        }[]
+      }
       explorer_add: { Args: { p_rows: Json }; Returns: undefined }
       find_or_join_match: {
         Args: {
@@ -3529,6 +3543,14 @@ export type Database = {
       submit_puzzle_attempt: {
         Args: { p_puzzle_id: string; p_success: boolean }
         Returns: Json
+      }
+      weekly_report_candidates: {
+        Args: { p_limit: number; p_week_start: string }
+        Returns: {
+          email: string
+          id: string
+          username: string
+        }[]
       }
     }
     Enums: {

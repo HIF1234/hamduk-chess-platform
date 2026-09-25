@@ -51,30 +51,8 @@ export const getPuzzleById = createServerFn({ method: "GET" })
 export const getDailyPuzzle = createServerFn({ method: "GET" })
   .inputValidator((i: unknown) => DailySchema.parse(i))
   .handler(async ({ data }) => {
-    const admin = await getAdmin();
-    const existing = await admin
-      .from("puzzles")
-      .select("id,fen,solution,themes,rating")
-      .eq("daily_date", data.date)
-      .eq("approved", true)
-      .maybeSingle();
-    if (existing.data) return existing.data as ServerPuzzle;
-
-    // Pick a deterministic puzzle for this date based on date hash, then claim it.
-    const seed = [...data.date].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
-    const pool = await admin
-      .from("puzzles")
-      .select("id,fen,solution,themes,rating")
-      .eq("approved", true)
-      .is("daily_date", null)
-      .gte("rating", 900)
-      .lte("rating", 1600)
-      .limit(50);
-    if (pool.error) throw pool.error;
-    if (!pool.data || pool.data.length === 0) return null;
-    const pick = pool.data[seed % pool.data.length];
-    await admin.from("puzzles").update({ daily_date: data.date }).eq("id", pick.id);
-    return pick as ServerPuzzle;
+    const { ensureDailyPuzzle } = await import("@/lib/daily-puzzle.server");
+    return ensureDailyPuzzle(data.date);
   });
 
 /** Authed — next puzzle for this user (Leitner-first, then unseen near rating). */

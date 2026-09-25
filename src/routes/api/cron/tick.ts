@@ -16,6 +16,10 @@ export const Route = createFileRoute("/api/cron/tick")({
           webhooks: async () => (await import("@/lib/webhooks.server")).retryDueDeliveries(),
           memberships: async () => (await import("@/lib/paystack.server")).expireSubscriptions(),
           explorer: async () => (await import("@/lib/explorer.server")).indexExplorerGames(),
+          weeklyReports: async () =>
+            (await import("@/lib/weekly-report.server")).sendWeeklyReports(),
+          dailyPuzzleEmails: async () =>
+            (await import("@/lib/weekly-report.server")).sendDailyPuzzleEmails(),
         };
         const results: Record<string, unknown> = {};
         for (const [name, run] of Object.entries(jobs)) {
