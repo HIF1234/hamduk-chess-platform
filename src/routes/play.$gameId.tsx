@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { VoiceChat } from "@/components/game/VoiceChat";
 import { ReportButton } from "@/components/ReportButton";
 import { ShareGame } from "@/components/ShareGame";
 import { useBoardSquares } from "@/lib/preferences";
@@ -76,7 +77,7 @@ export const Route = createFileRoute("/play/$gameId")({
 function PlayPage() {
   const boardSquares = useBoardSquares();
   const { gameId } = Route.useParams();
-  const { user, loading } = useAuth();
+  const { user, loading, isGuest } = useAuth();
   const navigate = useNavigate();
   const submit = useServerFn(submitMove);
   const resign = useServerFn(resignGame);
@@ -589,6 +590,10 @@ function PlayPage() {
               </p>
             )}
           </div>
+
+          {isParticipant && !isGuest && !game.is_correspondence && opponent && (
+            <VoiceChat gameId={gameId} myId={user.id} opponentName={opponent.username} />
+          )}
 
           <MoveHistory chess={chess} />
         </aside>
