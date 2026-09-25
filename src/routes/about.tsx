@@ -105,7 +105,7 @@ function About() {
             <li>
               <strong>Stockfish</strong>, the chess engine behind our bots, analysis and game
               review, runs in your browser as a separate program through{" "}
-              <a className="text-primary underline" href="https://github.com/niklasf/stockfish.js">
+              <a className="text-primary underline" href="https://github.com/lichess-org/stockfish.js">
                 stockfish.js
               </a>{" "}
               (version 10.0.2), unmodified. It is free software under the{" "}
@@ -118,9 +118,9 @@ function About() {
               . Its complete source code is available at{" "}
               <a
                 className="text-primary underline"
-                href="https://github.com/niklasf/stockfish.js/tree/v10.0.2"
+                href="https://github.com/lichess-org/stockfish.js/tree/e105072e84cf8ee5dd5219e2c5be29c3b8bf8a5a"
               >
-                github.com/niklasf/stockfish.js
+                github.com/lichess-org/stockfish.js (the exact version we use)
               </a>{" "}
               and{" "}
               <a
