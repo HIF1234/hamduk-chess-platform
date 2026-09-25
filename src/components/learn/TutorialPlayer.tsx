@@ -76,7 +76,7 @@ export function TutorialPlayer({ tutorial, initialStep = 0, onStepChange, onComp
     const aFrom = answer.slice(0, 2);
     const aTo = answer.slice(2, 4);
     const aPromo = answer[4];
-    const match = from === aFrom && to === aTo && (aPromo ? promotion === aPromo : true);
+    const match = from === aFrom && to === aTo && (!aPromo || !promotion || promotion === aPromo);
 
     if (!match) {
       setWrong(true);
