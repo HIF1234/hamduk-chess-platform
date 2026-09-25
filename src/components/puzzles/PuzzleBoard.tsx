@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useBoardSquares } from "@/lib/preferences";
 import { Chessboard } from "react-chessboard";
 import { Chess, type Square } from "chess.js";
@@ -8,26 +8,31 @@ import { sounds } from "@/lib/chess-sounds";
 
 type Props = {
   puzzle: Puzzle;
-  onComplete?: (success: boolean) => void;
+  /** `moves` is what the solver played, in UCI. */
+  onComplete?: (success: boolean, moves: string[]) => void;
+  /** Hides Hint and Reset, for timed modes where a retry would be unfair. */
+  hideHint?: boolean;
 };
 
-export function PuzzleBoard({ puzzle, onComplete }: Props) {
+export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
   const { fen, status, tryMove, hint, showHint, reset, playerColor } = usePuzzleSolver(puzzle);
   const [notified, setNotified] = useState<string | null>(null);
   const [selected, setSelected] = useState<Square | null>(null);
+  const played = useRef<string[]>([]);
 
   // Reset selection when puzzle changes
   useEffect(() => {
     setSelected(null);
+    played.current = [];
   }, [puzzle.id]);
 
   // Fire onComplete once per puzzle resolution
   if (status === "solved" && notified !== puzzle.id + "solved") {
     sounds.end();
-    onComplete?.(true);
+    onComplete?.(true, played.current);
     setNotified(puzzle.id + "solved");
   } else if (status === "failed" && notified !== puzzle.id + "failed") {
-    onComplete?.(false);
+    onComplete?.(false, played.current);
     setNotified(puzzle.id + "failed");
   }
 
@@ -52,24 +57,33 @@ export function PuzzleBoard({ puzzle, onComplete }: Props) {
     }
     for (const t of legalTargets) {
       s[t] = {
-        background:
-          "radial-gradient(circle, rgba(20,20,20,0.35) 22%, transparent 25%)",
+        background: "radial-gradient(circle, rgba(20,20,20,0.35) 22%, transparent 25%)",
       };
     }
     if (hint) {
-      s[hint] = { background: "rgba(245, 166, 35, 0.65)", boxShadow: "inset 0 0 0 3px rgba(245,166,35,0.9)" };
+      s[hint] = {
+        background: "rgba(245, 166, 35, 0.65)",
+        boxShadow: "inset 0 0 0 3px rgba(245,166,35,0.9)",
+      };
     }
     return s;
   }, [selected, legalTargets, hint]);
 
   const attemptMove = (from: Square, to: Square) => {
+    if (status === "playing") played.current = [...played.current, `${from}${to}`];
     const ok = tryMove(from, to);
     if (ok) sounds.move();
     setSelected(null);
     return ok;
   };
 
-  const handleDrop = ({ sourceSquare, targetSquare }: { sourceSquare: string; targetSquare: string | null }) => {
+  const handleDrop = ({
+    sourceSquare,
+    targetSquare,
+  }: {
+    sourceSquare: string;
+    targetSquare: string | null;
+  }) => {
     if (!targetSquare) return false;
     return attemptMove(sourceSquare as Square, targetSquare as Square);
   };
@@ -139,9 +153,10 @@ export function PuzzleBoard({ puzzle, onComplete }: Props) {
 
       <div className="flex items-center justify-between gap-3 max-w-[560px] mx-auto">
         <div className="text-xs text-zinc-500 uppercase tracking-wider">
-          {playerColor === "w" ? "White" : "Black"} to play · {puzzle.themes.join(" · ")} · {puzzle.rating}
+          {playerColor === "w" ? "White" : "Black"} to play · {puzzle.themes.join(" · ")} ·{" "}
+          {puzzle.rating}
         </div>
-        <div className="flex gap-2">
+        <div className={`flex gap-2 ${hideHint ? "hidden" : ""}`}>
           <button
             onClick={showHint}
             disabled={status !== "playing"}
@@ -152,6 +167,7 @@ export function PuzzleBoard({ puzzle, onComplete }: Props) {
           <button
             onClick={() => {
               setSelected(null);
+              played.current = [];
               reset();
             }}
             className="px-3 py-1.5 text-xs font-medium bg-panel text-zinc-700 rounded ring-1 ring-black/5 hover:bg-zinc-100 cursor-pointer"

@@ -271,6 +271,21 @@ export function PuzzleHub() {
 
           <div className="rounded-md bg-panel ring-1 ring-black/5 p-4">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-2">
+              Puzzle Battle
+            </p>
+            <p className="text-xs text-zinc-700 leading-relaxed">
+              Race another player through the same puzzles. First to five wins.
+            </p>
+            <Link
+              to="/puzzles/battle"
+              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer transition-colors"
+            >
+              Find an opponent →
+            </Link>
+          </div>
+
+          <div className="rounded-md bg-panel ring-1 ring-black/5 p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-2">
               Puzzle creator · Plus
             </p>
             <p className="text-xs text-zinc-700 leading-relaxed">

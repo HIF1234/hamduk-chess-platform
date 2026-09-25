@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       achievements: {
@@ -2123,6 +2148,85 @@ export type Database = {
           },
         ]
       }
+      puzzle_battles: {
+        Row: {
+          a_index: number
+          a_rating: number
+          a_score: number
+          b_index: number
+          b_score: number
+          created_at: string
+          ends_at: string | null
+          finished_at: string | null
+          id: string
+          is_private: boolean
+          player_a: string
+          player_b: string | null
+          puzzle_ids: string[]
+          started_at: string | null
+          status: string
+          winner: string | null
+        }
+        Insert: {
+          a_index?: number
+          a_rating?: number
+          a_score?: number
+          b_index?: number
+          b_score?: number
+          created_at?: string
+          ends_at?: string | null
+          finished_at?: string | null
+          id?: string
+          is_private?: boolean
+          player_a: string
+          player_b?: string | null
+          puzzle_ids: string[]
+          started_at?: string | null
+          status?: string
+          winner?: string | null
+        }
+        Update: {
+          a_index?: number
+          a_rating?: number
+          a_score?: number
+          b_index?: number
+          b_score?: number
+          created_at?: string
+          ends_at?: string | null
+          finished_at?: string | null
+          id?: string
+          is_private?: boolean
+          player_a?: string
+          player_b?: string | null
+          puzzle_ids?: string[]
+          started_at?: string | null
+          status?: string
+          winner?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "puzzle_battles_player_a_fkey"
+            columns: ["player_a"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "puzzle_battles_player_b_fkey"
+            columns: ["player_b"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "puzzle_battles_winner_fkey"
+            columns: ["winner"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       puzzle_ratings: {
         Row: {
           attempts: number
@@ -3322,6 +3426,66 @@ export type Database = {
           wins: number
         }[]
       }
+      puzzle_battle_answer: {
+        Args: {
+          p_battle: string
+          p_correct: boolean
+          p_index: number
+          p_user: string
+        }
+        Returns: {
+          a_index: number
+          a_rating: number
+          a_score: number
+          b_index: number
+          b_score: number
+          created_at: string
+          ends_at: string | null
+          finished_at: string | null
+          id: string
+          is_private: boolean
+          player_a: string
+          player_b: string | null
+          puzzle_ids: string[]
+          started_at: string | null
+          status: string
+          winner: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "puzzle_battles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      puzzle_battle_pick: { Args: { p_rating: number }; Returns: string[] }
+      puzzle_battle_settle: {
+        Args: { p_battle: string }
+        Returns: {
+          a_index: number
+          a_rating: number
+          a_score: number
+          b_index: number
+          b_score: number
+          created_at: string
+          ends_at: string | null
+          finished_at: string | null
+          id: string
+          is_private: boolean
+          player_a: string
+          player_b: string | null
+          puzzle_ids: string[]
+          started_at: string | null
+          status: string
+          winner: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "puzzle_battles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       puzzles_attempted_today: { Args: { p_user: string }; Returns: number }
       record_bot_game: {
         Args: { p_time_control: string; p_variant?: string }
@@ -3463,6 +3627,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       admin_role_enum: ["super_admin", "admin", "moderator", "support"],

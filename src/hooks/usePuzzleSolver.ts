@@ -31,7 +31,9 @@ export function usePuzzleSolver(puzzle: Puzzle) {
       const expTo = expected.slice(2, 4);
       const expPromo = expected[4];
 
-      const matches = from === expFrom && to === expTo && (expPromo ? promotion === expPromo : true);
+      // The board auto-queens and passes no promotion, so an unspecified promotion takes the expected piece.
+      const matches =
+        from === expFrom && to === expTo && (!expPromo || !promotion || promotion === expPromo);
       if (!matches) {
         // Still try to make the move to show feedback
         try {

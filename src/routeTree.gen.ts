@@ -85,8 +85,10 @@ import { Route as AdminCommunityRouteImport } from './routes/admin.community'
 import { Route as AdminCoachesRouteImport } from './routes/admin.coaches'
 import { Route as AdminAuditLogRouteImport } from './routes/admin.audit-log'
 import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
+import { Route as PuzzlesBattleIndexRouteImport } from './routes/puzzles.battle.index'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
+import { Route as PuzzlesBattleIdRouteImport } from './routes/puzzles.battle.$id'
 import { Route as ForumsThreadThreadIdRouteImport } from './routes/forums.thread.$threadId'
 import { Route as EmbedKindTokenRouteImport } from './routes/embed.$kind.$token'
 import { Route as ApiHealthAiRouteImport } from './routes/api/health/ai'
@@ -488,6 +490,11 @@ const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
   path: '/announcements',
   getParentRoute: () => AdminRoute,
 } as any)
+const PuzzlesBattleIndexRoute = PuzzlesBattleIndexRouteImport.update({
+  id: '/puzzles/battle/',
+  path: '/puzzles/battle/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
   id: '/users/',
   path: '/users/',
@@ -496,6 +503,11 @@ const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
 const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
   id: '/puzzles/daily/$date',
   path: '/puzzles/daily/$date',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PuzzlesBattleIdRoute = PuzzlesBattleIdRouteImport.update({
+  id: '/puzzles/battle/$id',
+  path: '/puzzles/battle/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForumsThreadThreadIdRoute = ForumsThreadThreadIdRouteImport.update({
@@ -692,8 +704,10 @@ export interface FileRoutesByFullPath {
   '/api/health/ai': typeof ApiHealthAiRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/forums/thread/$threadId': typeof ForumsThreadThreadIdRoute
+  '/puzzles/battle/$id': typeof PuzzlesBattleIdRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
+  '/puzzles/battle/': typeof PuzzlesBattleIndexRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
@@ -791,8 +805,10 @@ export interface FileRoutesByTo {
   '/api/health/ai': typeof ApiHealthAiRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/forums/thread/$threadId': typeof ForumsThreadThreadIdRoute
+  '/puzzles/battle/$id': typeof PuzzlesBattleIdRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users': typeof AdminUsersIndexRoute
+  '/puzzles/battle': typeof PuzzlesBattleIndexRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
@@ -892,8 +908,10 @@ export interface FileRoutesById {
   '/api/health/ai': typeof ApiHealthAiRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/forums/thread/$threadId': typeof ForumsThreadThreadIdRoute
+  '/puzzles/battle/$id': typeof PuzzlesBattleIdRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
+  '/puzzles/battle/': typeof PuzzlesBattleIndexRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
@@ -994,8 +1012,10 @@ export interface FileRouteTypes {
     | '/api/health/ai'
     | '/embed/$kind/$token'
     | '/forums/thread/$threadId'
+    | '/puzzles/battle/$id'
     | '/puzzles/daily/$date'
     | '/admin/users/'
+    | '/puzzles/battle/'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
@@ -1093,8 +1113,10 @@ export interface FileRouteTypes {
     | '/api/health/ai'
     | '/embed/$kind/$token'
     | '/forums/thread/$threadId'
+    | '/puzzles/battle/$id'
     | '/puzzles/daily/$date'
     | '/admin/users'
+    | '/puzzles/battle'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
@@ -1193,8 +1215,10 @@ export interface FileRouteTypes {
     | '/api/health/ai'
     | '/embed/$kind/$token'
     | '/forums/thread/$threadId'
+    | '/puzzles/battle/$id'
     | '/puzzles/daily/$date'
     | '/admin/users/'
+    | '/puzzles/battle/'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
@@ -1280,7 +1304,9 @@ export interface RootRouteChildren {
   ApiHealthAiRoute: typeof ApiHealthAiRoute
   EmbedKindTokenRoute: typeof EmbedKindTokenRoute
   ForumsThreadThreadIdRoute: typeof ForumsThreadThreadIdRoute
+  PuzzlesBattleIdRoute: typeof PuzzlesBattleIdRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
+  PuzzlesBattleIndexRoute: typeof PuzzlesBattleIndexRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
   ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRouteWithChildren
   ApiPublicV1WebhooksRoute: typeof ApiPublicV1WebhooksRouteWithChildren
@@ -1825,6 +1851,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnnouncementsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/puzzles/battle/': {
+      id: '/puzzles/battle/'
+      path: '/puzzles/battle'
+      fullPath: '/puzzles/battle/'
+      preLoaderRoute: typeof PuzzlesBattleIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/users/': {
       id: '/admin/users/'
       path: '/users'
@@ -1837,6 +1870,13 @@ declare module '@tanstack/react-router' {
       path: '/puzzles/daily/$date'
       fullPath: '/puzzles/daily/$date'
       preLoaderRoute: typeof PuzzlesDailyDateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/puzzles/battle/$id': {
+      id: '/puzzles/battle/$id'
+      path: '/puzzles/battle/$id'
+      fullPath: '/puzzles/battle/$id'
+      preLoaderRoute: typeof PuzzlesBattleIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forums/thread/$threadId': {
@@ -2149,7 +2189,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHealthAiRoute: ApiHealthAiRoute,
   EmbedKindTokenRoute: EmbedKindTokenRoute,
   ForumsThreadThreadIdRoute: ForumsThreadThreadIdRoute,
+  PuzzlesBattleIdRoute: PuzzlesBattleIdRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
+  PuzzlesBattleIndexRoute: PuzzlesBattleIndexRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
   ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRouteWithChildren,
   ApiPublicV1WebhooksRoute: ApiPublicV1WebhooksRouteWithChildren,
