@@ -22,6 +22,14 @@ import { supabase } from "@/integrations/supabase/client";
 
 type Mode = "human" | "engine";
 
+// Blindfold mode draws every piece as nothing; the squares and highlights stay.
+const BLANK_PIECES = Object.fromEntries(
+  ["wP", "wN", "wB", "wR", "wQ", "wK", "bP", "bN", "bB", "bR", "bQ", "bK"].map((k) => [
+    k,
+    () => <></>,
+  ]),
+);
+
 export function ChessApp({
   initialMode = "human",
   initialPersonaId,
@@ -44,6 +52,9 @@ export function ChessApp({
   const persona = getPersona(personaId);
   const [userTier, setUserTier] = useState<"free" | "plus" | "gold">("free");
   const [playerColor, setPlayerColor] = useState<Color>("w");
+  const [blindfold, setBlindfold] = useState(false);
+  const [peek, setPeek] = useState(false);
+  const [typed, setTyped] = useState("");
 
   useEffect(() => {
     if (!user) {
@@ -300,12 +311,28 @@ export function ChessApp({
       squareStyles,
       ...boardSquares,
       animationDurationInMs: 180,
-      allowDragging: !game.gameOver,
+      allowDragging: !game.gameOver && !blindfold,
       id: "main-board",
+      ...(blindfold && !peek ? { pieces: BLANK_PIECES } : {}),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [game.fen, orientation, squareStyles, game.gameOver, boardSquares],
+    [game.fen, orientation, squareStyles, game.gameOver, boardSquares, blindfold, peek],
   );
+
+  /** Plays a move typed in algebraic notation (e4, Nf3, O-O, exd5, e8=Q). */
+  const submitTyped = () => {
+    const text = typed.trim();
+    if (!text) return;
+    if (mode === "engine" && game.turn === engineColor) return;
+    let move;
+    try {
+      move = new Chess(game.fen).move(text);
+    } catch {
+      toast.error(`"${text}" isn't a legal move here.`);
+      return;
+    }
+    if (playWithSound(move.from, move.to, move.promotion)) setTyped("");
+  };
 
   const handleNewGame = () => {
     game.reset();
@@ -405,6 +432,46 @@ export function ChessApp({
               Resign
             </button>
           </div>
+
+          {blindfold && (
+            <div className="space-y-2 rounded-lg border border-border bg-card p-3">
+              <p className="text-sm text-muted-foreground">
+                {game.history.length
+                  ? `Last move: ${Math.ceil(game.history.length / 2)}${game.history.length % 2 ? "." : "..."} ${game.history[game.history.length - 1].san}`
+                  : "Type your move, or tap the from and to squares."}
+              </p>
+              <form
+                className="flex gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  submitTyped();
+                }}
+              >
+                <input
+                  value={typed}
+                  onChange={(e) => setTyped(e.target.value)}
+                  placeholder="e.g. Nf3"
+                  autoCapitalize="off"
+                  autoComplete="off"
+                  spellCheck={false}
+                  disabled={game.gameOver}
+                  className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-2 font-mono text-sm"
+                />
+                <button type="submit" className={action}>
+                  Play
+                </button>
+                <button
+                  type="button"
+                  onPointerDown={() => setPeek(true)}
+                  onPointerUp={() => setPeek(false)}
+                  onPointerLeave={() => setPeek(false)}
+                  className={action}
+                >
+                  Peek
+                </button>
+              </form>
+            </div>
+          )}
         </div>
 
         <aside className="flex w-full flex-col gap-4">
@@ -440,6 +507,21 @@ export function ChessApp({
               </p>
             </div>
           )}
+
+          <label className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2 text-sm">
+            <span>
+              <span className="font-medium">Blindfold</span>
+              <span className="block text-xs text-muted-foreground">
+                Hide the pieces and play from memory. Hold Peek to look.
+              </span>
+            </span>
+            <input
+              type="checkbox"
+              checked={blindfold}
+              onChange={(e) => setBlindfold(e.target.checked)}
+              className="h-5 w-5 accent-[var(--primary)]"
+            />
+          </label>
 
           {/* On phones the opponent picker comes first; the move list matters once a game is on. */}
           <div className="order-4 lg:order-3">
