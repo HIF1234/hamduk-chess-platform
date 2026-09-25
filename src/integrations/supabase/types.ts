@@ -3439,6 +3439,10 @@ export type Database = {
       }
       forum_bump_views: { Args: { p_thread: string }; Returns: undefined }
       free_daily_puzzle_limit: { Args: never; Returns: number }
+      guest_cleanup_prepare: {
+        Args: { p_limit: number; p_placeholder: string }
+        Returns: string[]
+      }
       is_admin: { Args: { min_role?: string }; Returns: boolean }
       is_club_admin: {
         Args: { _club_id: string; _user_id: string }

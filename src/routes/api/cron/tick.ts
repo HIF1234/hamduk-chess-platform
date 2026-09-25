@@ -20,6 +20,7 @@ export const Route = createFileRoute("/api/cron/tick")({
             (await import("@/lib/weekly-report.server")).sendWeeklyReports(),
           dailyPuzzleEmails: async () =>
             (await import("@/lib/weekly-report.server")).sendDailyPuzzleEmails(),
+          guests: async () => (await import("@/lib/guests.server")).cleanupGuests(),
         };
         const results: Record<string, unknown> = {};
         for (const [name, run] of Object.entries(jobs)) {
