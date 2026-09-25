@@ -994,6 +994,36 @@ export type Database = {
           },
         ]
       }
+      explorer_moves: {
+        Row: {
+          black: number
+          draws: number
+          position: string
+          rating_sum: number
+          san: string
+          uci: string
+          white: number
+        }
+        Insert: {
+          black?: number
+          draws?: number
+          position: string
+          rating_sum?: number
+          san: string
+          uci: string
+          white?: number
+        }
+        Update: {
+          black?: number
+          draws?: number
+          position?: string
+          rating_sum?: number
+          san?: string
+          uci?: string
+          white?: number
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
@@ -1452,6 +1482,7 @@ export type Database = {
           draw_offer_by: string | null
           end_reason: string | null
           ended_at: string | null
+          explorer_indexed: boolean
           fen: string
           flag_reason: string | null
           flagged_for_review: boolean
@@ -1495,6 +1526,7 @@ export type Database = {
           draw_offer_by?: string | null
           end_reason?: string | null
           ended_at?: string | null
+          explorer_indexed?: boolean
           fen?: string
           flag_reason?: string | null
           flagged_for_review?: boolean
@@ -1538,6 +1570,7 @@ export type Database = {
           draw_offer_by?: string | null
           end_reason?: string | null
           ended_at?: string | null
+          explorer_indexed?: boolean
           fen?: string
           flag_reason?: string | null
           flagged_for_review?: boolean
@@ -3379,6 +3412,7 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["admin_role_enum"]
       }
+      explorer_add: { Args: { p_rows: Json }; Returns: undefined }
       find_or_join_match: {
         Args: {
           p_rating_window?: number

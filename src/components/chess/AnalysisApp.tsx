@@ -11,6 +11,7 @@ import { PgnImportDialog } from "./PgnImportDialog";
 import { FenImportDialog } from "./FenImportDialog";
 import { AiCoachPanel } from "./AiCoachPanel";
 import { TablebasePanel } from "./TablebasePanel";
+import { ExplorerPanel } from "./ExplorerPanel";
 import { downloadPgn, exportPgn } from "@/lib/pgn";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -66,9 +67,17 @@ export function AnalysisApp() {
       squareStyles,
       ...boardSquares,
       animationDurationInMs: 180,
-      allowDragging: false,
+      allowDragging: true,
+      onPieceDrop: ({
+        sourceSquare,
+        targetSquare,
+      }: {
+        sourceSquare: string;
+        targetSquare: string | null;
+      }) => !!targetSquare && replay.playMove(sourceSquare, targetSquare),
       id: "analysis-board",
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [replay.fen, orientation, squareStyles, boardSquares],
   );
 
@@ -190,6 +199,10 @@ export function AnalysisApp() {
 
         <aside className="w-full lg:w-96 shrink-0 flex flex-col gap-4">
           <TablebasePanel fen={replay.fen} />
+          <ExplorerPanel
+            fen={replay.fen}
+            onPlay={(uci) => replay.playMove(uci.slice(0, 2), uci.slice(2, 4), uci[4])}
+          />
           <ReplayMoveList moves={replay.moves} ply={replay.ply} onSelect={replay.setPly} />
           <AiCoachPanel
             fen={replay.fen}

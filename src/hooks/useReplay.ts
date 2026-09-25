@@ -54,6 +54,26 @@ export function useReplay() {
 
   const reset = useCallback(() => setState(EMPTY), []);
 
+  /** Plays a move from the current ply. If it isn't the next move of the loaded line,
+   *  the rest of the line is replaced. Returns false when the move is illegal. */
+  const playMove = useCallback(
+    (from: string, to: string, promotion?: string): boolean => {
+      let played: Move;
+      try {
+        played = new Chess(fen).move({ from, to, promotion: promotion ?? "q" });
+      } catch {
+        return false;
+      }
+      setState((s) => {
+        const nextMove = s.moves[s.ply];
+        if (nextMove && nextMove.san === played.san) return { ...s, ply: s.ply + 1 };
+        return { ...s, moves: [...s.moves.slice(0, s.ply), played], ply: s.ply + 1 };
+      });
+      return true;
+    },
+    [fen],
+  );
+
   return {
     ...state,
     fen,
@@ -68,5 +88,6 @@ export function useReplay() {
     loadPgnText,
     loadFenText,
     reset,
+    playMove,
   };
 }
