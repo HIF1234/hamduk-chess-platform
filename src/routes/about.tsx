@@ -105,7 +105,10 @@ function About() {
             <li>
               <strong>Stockfish</strong>, the chess engine behind our bots, analysis and game
               review, runs in your browser as a separate program through{" "}
-              <a className="text-primary underline" href="https://github.com/lichess-org/stockfish.js">
+              <a
+                className="text-primary underline"
+                href="https://github.com/lichess-org/stockfish.js"
+              >
                 stockfish.js
               </a>{" "}
               (version 10.0.2), unmodified. It is free software under the{" "}
@@ -128,6 +131,22 @@ function About() {
                 href="https://github.com/official-stockfish/Stockfish"
               >
                 github.com/official-stockfish/Stockfish
+              </a>
+              .
+            </li>
+            <li>
+              Our <strong>Android app</strong> runs <strong>Stockfish 11</strong>, unmodified, as a
+              separate program on your phone for its offline bots, under the same GNU General Public
+              License v3. The complete source code of that version and the script we build it with:{" "}
+              <a
+                className="text-primary underline"
+                href="/opensource/stockfish-sf_11-source.tar.gz"
+              >
+                source (tar.gz)
+              </a>{" "}
+              and{" "}
+              <a className="text-primary underline" href="/opensource/stockfish-android-build.sh">
+                build script
               </a>
               .
             </li>
