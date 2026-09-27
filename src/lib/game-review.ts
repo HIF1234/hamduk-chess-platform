@@ -186,7 +186,8 @@ export class ReviewAnalyzer {
       // cpLoss from mover's POV
       const sign = p.color === "w" ? 1 : -1;
       const cpLoss = Math.max(0, (evalBefore - evalAfter) * sign);
-      const wasBook = i < 12 && cpLoss < 25; // rough "book" heuristic for first 6 moves each side
+      // Rough "book" heuristic for the first 6 moves each side; a checkmate is never book.
+      const wasBook = i < 12 && cpLoss < 25 && !p.san.endsWith("#");
       moves.push({
         ply: i + 1,
         san: p.san,
