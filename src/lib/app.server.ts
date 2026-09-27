@@ -160,3 +160,24 @@ export async function markNotificationsRead(ctx: AppContext, input: unknown) {
   if (error) throw error;
   return { ok: true };
 }
+
+/** An open challenge link, with who sent it, for the app's accept screen. */
+export async function getChallengeForApp(ctx: AppContext, input: unknown) {
+  const data = z.object({ id: z.string().uuid() }).parse(input);
+  const s = await admin();
+  const { data: ch } = await s
+    .from("game_challenges")
+    .select(
+      "id, creator_id, time_control, variant, creator_color, rated, game_id, accepted_by, expires_at",
+    )
+    .eq("id", data.id)
+    .maybeSingle();
+  if (!ch) throw new Error("Challenge not found");
+  const who = await names([ch.creator_id]);
+  return {
+    ...ch,
+    creator: who.get(ch.creator_id) ?? null,
+    mine: ch.creator_id === ctx.userId,
+    expired: !ch.game_id && new Date(ch.expires_at) < new Date(),
+  };
+}

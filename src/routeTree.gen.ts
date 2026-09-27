@@ -107,6 +107,7 @@ import { Route as ApiAppV1ConfigRouteImport } from './routes/api/app/v1/config'
 import { Route as ApiAppV1BotGamesRouteImport } from './routes/api/app/v1/bot-games'
 import { Route as ApiAppV1NotificationsIndexRouteImport } from './routes/api/app/v1/notifications.index'
 import { Route as ApiAppV1GamesIndexRouteImport } from './routes/api/app/v1/games.index'
+import { Route as ApiAppV1ChallengesIndexRouteImport } from './routes/api/app/v1/challenges.index'
 import { Route as ApiPublicV1WebhooksRetrySweepRouteImport } from './routes/api/public/v1/webhooks.retry-sweep'
 import { Route as ApiPublicV1WebhooksIdRouteImport } from './routes/api/public/v1/webhooks.$id'
 import { Route as ApiPublicV1TournamentsSweepRouteImport } from './routes/api/public/v1/tournaments.sweep'
@@ -119,6 +120,7 @@ import { Route as ApiAppV1PuzzlesNextRouteImport } from './routes/api/app/v1/puz
 import { Route as ApiAppV1PuzzlesDailyRouteImport } from './routes/api/app/v1/puzzles.daily'
 import { Route as ApiAppV1NotificationsReadRouteImport } from './routes/api/app/v1/notifications.read'
 import { Route as ApiAppV1GamesIdRouteImport } from './routes/api/app/v1/games.$id'
+import { Route as ApiAppV1ChallengesIdRouteImport } from './routes/api/app/v1/challenges.$id'
 import { Route as ApiPublicV1UsersUsernameRatingRouteImport } from './routes/api/public/v1/users.$username.rating'
 import { Route as ApiPublicV1UsersUsernameGamesRouteImport } from './routes/api/public/v1/users.$username.games'
 import { Route as ApiPublicV1TournamentsIdStandingsRouteImport } from './routes/api/public/v1/tournaments.$id.standings'
@@ -134,6 +136,7 @@ import { Route as ApiAppV1GamesIdClaimRouteImport } from './routes/api/app/v1/ga
 import { Route as ApiAppV1GamesIdBackRouteImport } from './routes/api/app/v1/games.$id.back'
 import { Route as ApiAppV1GamesIdAwayRouteImport } from './routes/api/app/v1/games.$id.away'
 import { Route as ApiAppV1GamesIdAbortRouteImport } from './routes/api/app/v1/games.$id.abort'
+import { Route as ApiAppV1ChallengesIdAcceptRouteImport } from './routes/api/app/v1/challenges.$id.accept'
 import { Route as ApiPublicV1ClassesSessionIdStudentsRouteImport } from './routes/api/public/v1/classes.session.$id.students'
 import { Route as ApiPublicV1ClassesSessionIdSetPositionRouteImport } from './routes/api/public/v1/classes.session.$id.set-position'
 
@@ -629,6 +632,11 @@ const ApiAppV1GamesIndexRoute = ApiAppV1GamesIndexRouteImport.update({
   path: '/api/app/v1/games/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1ChallengesIndexRoute = ApiAppV1ChallengesIndexRouteImport.update({
+  id: '/api/app/v1/challenges/',
+  path: '/api/app/v1/challenges/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1WebhooksRetrySweepRoute =
   ApiPublicV1WebhooksRetrySweepRouteImport.update({
     id: '/retry-sweep',
@@ -692,6 +700,11 @@ const ApiAppV1NotificationsReadRoute =
 const ApiAppV1GamesIdRoute = ApiAppV1GamesIdRouteImport.update({
   id: '/api/app/v1/games/$id',
   path: '/api/app/v1/games/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1ChallengesIdRoute = ApiAppV1ChallengesIdRouteImport.update({
+  id: '/api/app/v1/challenges/$id',
+  path: '/api/app/v1/challenges/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicV1UsersUsernameRatingRoute =
@@ -774,6 +787,12 @@ const ApiAppV1GamesIdAbortRoute = ApiAppV1GamesIdAbortRouteImport.update({
   path: '/abort',
   getParentRoute: () => ApiAppV1GamesIdRoute,
 } as any)
+const ApiAppV1ChallengesIdAcceptRoute =
+  ApiAppV1ChallengesIdAcceptRouteImport.update({
+    id: '/accept',
+    path: '/accept',
+    getParentRoute: () => ApiAppV1ChallengesIdRoute,
+  } as any)
 const ApiPublicV1ClassesSessionIdStudentsRoute =
   ApiPublicV1ClassesSessionIdStudentsRouteImport.update({
     id: '/$id/students',
@@ -884,6 +903,7 @@ export interface FileRoutesByFullPath {
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
+  '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
@@ -896,8 +916,10 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/tournaments/sweep': typeof ApiPublicV1TournamentsSweepRoute
   '/api/public/v1/webhooks/$id': typeof ApiPublicV1WebhooksIdRoute
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
+  '/api/app/v1/challenges/': typeof ApiAppV1ChallengesIndexRoute
   '/api/app/v1/games/': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications/': typeof ApiAppV1NotificationsIndexRoute
+  '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
   '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
   '/api/app/v1/games/$id/back': typeof ApiAppV1GamesIdBackRoute
@@ -1012,6 +1034,7 @@ export interface FileRoutesByTo {
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
+  '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
@@ -1024,8 +1047,10 @@ export interface FileRoutesByTo {
   '/api/public/v1/tournaments/sweep': typeof ApiPublicV1TournamentsSweepRoute
   '/api/public/v1/webhooks/$id': typeof ApiPublicV1WebhooksIdRoute
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
+  '/api/app/v1/challenges': typeof ApiAppV1ChallengesIndexRoute
   '/api/app/v1/games': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications': typeof ApiAppV1NotificationsIndexRoute
+  '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
   '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
   '/api/app/v1/games/$id/back': typeof ApiAppV1GamesIdBackRoute
@@ -1142,6 +1167,7 @@ export interface FileRoutesById {
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
+  '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
@@ -1154,8 +1180,10 @@ export interface FileRoutesById {
   '/api/public/v1/tournaments/sweep': typeof ApiPublicV1TournamentsSweepRoute
   '/api/public/v1/webhooks/$id': typeof ApiPublicV1WebhooksIdRoute
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
+  '/api/app/v1/challenges/': typeof ApiAppV1ChallengesIndexRoute
   '/api/app/v1/games/': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications/': typeof ApiAppV1NotificationsIndexRoute
+  '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
   '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
   '/api/app/v1/games/$id/back': typeof ApiAppV1GamesIdBackRoute
@@ -1273,6 +1301,7 @@ export interface FileRouteTypes {
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
+    | '/api/app/v1/challenges/$id'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/puzzles/daily'
@@ -1285,8 +1314,10 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments/sweep'
     | '/api/public/v1/webhooks/$id'
     | '/api/public/v1/webhooks/retry-sweep'
+    | '/api/app/v1/challenges/'
     | '/api/app/v1/games/'
     | '/api/app/v1/notifications/'
+    | '/api/app/v1/challenges/$id/accept'
     | '/api/app/v1/games/$id/abort'
     | '/api/app/v1/games/$id/away'
     | '/api/app/v1/games/$id/back'
@@ -1401,6 +1432,7 @@ export interface FileRouteTypes {
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
+    | '/api/app/v1/challenges/$id'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/puzzles/daily'
@@ -1413,8 +1445,10 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments/sweep'
     | '/api/public/v1/webhooks/$id'
     | '/api/public/v1/webhooks/retry-sweep'
+    | '/api/app/v1/challenges'
     | '/api/app/v1/games'
     | '/api/app/v1/notifications'
+    | '/api/app/v1/challenges/$id/accept'
     | '/api/app/v1/games/$id/abort'
     | '/api/app/v1/games/$id/away'
     | '/api/app/v1/games/$id/back'
@@ -1530,6 +1564,7 @@ export interface FileRouteTypes {
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
+    | '/api/app/v1/challenges/$id'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/puzzles/daily'
@@ -1542,8 +1577,10 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments/sweep'
     | '/api/public/v1/webhooks/$id'
     | '/api/public/v1/webhooks/retry-sweep'
+    | '/api/app/v1/challenges/'
     | '/api/app/v1/games/'
     | '/api/app/v1/notifications/'
+    | '/api/app/v1/challenges/$id/accept'
     | '/api/app/v1/games/$id/abort'
     | '/api/app/v1/games/$id/away'
     | '/api/app/v1/games/$id/back'
@@ -1645,6 +1682,7 @@ export interface RootRouteChildren {
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
   ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRouteWithChildren
   ApiPublicV1WebhooksRoute: typeof ApiPublicV1WebhooksRouteWithChildren
+  ApiAppV1ChallengesIdRoute: typeof ApiAppV1ChallengesIdRouteWithChildren
   ApiAppV1GamesIdRoute: typeof ApiAppV1GamesIdRouteWithChildren
   ApiAppV1NotificationsReadRoute: typeof ApiAppV1NotificationsReadRoute
   ApiAppV1PuzzlesDailyRoute: typeof ApiAppV1PuzzlesDailyRoute
@@ -1654,6 +1692,7 @@ export interface RootRouteChildren {
   ApiPublicV1ClassesSessionRoute: typeof ApiPublicV1ClassesSessionRouteWithChildren
   ApiPublicV1CorrespondenceSweepRoute: typeof ApiPublicV1CorrespondenceSweepRoute
   ApiPublicV1EmbedTokenRoute: typeof ApiPublicV1EmbedTokenRouteWithChildren
+  ApiAppV1ChallengesIndexRoute: typeof ApiAppV1ChallengesIndexRoute
   ApiAppV1GamesIndexRoute: typeof ApiAppV1GamesIndexRoute
   ApiAppV1NotificationsIndexRoute: typeof ApiAppV1NotificationsIndexRoute
   ApiAppV1PuzzlesIdAttemptRoute: typeof ApiAppV1PuzzlesIdAttemptRoute
@@ -2349,6 +2388,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1GamesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/challenges/': {
+      id: '/api/app/v1/challenges/'
+      path: '/api/app/v1/challenges'
+      fullPath: '/api/app/v1/challenges/'
+      preLoaderRoute: typeof ApiAppV1ChallengesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/webhooks/retry-sweep': {
       id: '/api/public/v1/webhooks/retry-sweep'
       path: '/retry-sweep'
@@ -2431,6 +2477,13 @@ declare module '@tanstack/react-router' {
       path: '/api/app/v1/games/$id'
       fullPath: '/api/app/v1/games/$id'
       preLoaderRoute: typeof ApiAppV1GamesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/challenges/$id': {
+      id: '/api/app/v1/challenges/$id'
+      path: '/api/app/v1/challenges/$id'
+      fullPath: '/api/app/v1/challenges/$id'
+      preLoaderRoute: typeof ApiAppV1ChallengesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/v1/users/$username/rating': {
@@ -2538,6 +2591,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1GamesIdAbortRouteImport
       parentRoute: typeof ApiAppV1GamesIdRoute
     }
+    '/api/app/v1/challenges/$id/accept': {
+      id: '/api/app/v1/challenges/$id/accept'
+      path: '/accept'
+      fullPath: '/api/app/v1/challenges/$id/accept'
+      preLoaderRoute: typeof ApiAppV1ChallengesIdAcceptRouteImport
+      parentRoute: typeof ApiAppV1ChallengesIdRoute
+    }
     '/api/public/v1/classes/session/$id/students': {
       id: '/api/public/v1/classes/session/$id/students'
       path: '/$id/students'
@@ -2622,6 +2682,17 @@ const ApiPublicV1WebhooksRouteChildren: ApiPublicV1WebhooksRouteChildren = {
 
 const ApiPublicV1WebhooksRouteWithChildren =
   ApiPublicV1WebhooksRoute._addFileChildren(ApiPublicV1WebhooksRouteChildren)
+
+interface ApiAppV1ChallengesIdRouteChildren {
+  ApiAppV1ChallengesIdAcceptRoute: typeof ApiAppV1ChallengesIdAcceptRoute
+}
+
+const ApiAppV1ChallengesIdRouteChildren: ApiAppV1ChallengesIdRouteChildren = {
+  ApiAppV1ChallengesIdAcceptRoute: ApiAppV1ChallengesIdAcceptRoute,
+}
+
+const ApiAppV1ChallengesIdRouteWithChildren =
+  ApiAppV1ChallengesIdRoute._addFileChildren(ApiAppV1ChallengesIdRouteChildren)
 
 interface ApiAppV1GamesIdRouteChildren {
   ApiAppV1GamesIdAbortRoute: typeof ApiAppV1GamesIdAbortRoute
@@ -2766,6 +2837,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
   ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRouteWithChildren,
   ApiPublicV1WebhooksRoute: ApiPublicV1WebhooksRouteWithChildren,
+  ApiAppV1ChallengesIdRoute: ApiAppV1ChallengesIdRouteWithChildren,
   ApiAppV1GamesIdRoute: ApiAppV1GamesIdRouteWithChildren,
   ApiAppV1NotificationsReadRoute: ApiAppV1NotificationsReadRoute,
   ApiAppV1PuzzlesDailyRoute: ApiAppV1PuzzlesDailyRoute,
@@ -2775,6 +2847,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicV1ClassesSessionRoute: ApiPublicV1ClassesSessionRouteWithChildren,
   ApiPublicV1CorrespondenceSweepRoute: ApiPublicV1CorrespondenceSweepRoute,
   ApiPublicV1EmbedTokenRoute: ApiPublicV1EmbedTokenRouteWithChildren,
+  ApiAppV1ChallengesIndexRoute: ApiAppV1ChallengesIndexRoute,
   ApiAppV1GamesIndexRoute: ApiAppV1GamesIndexRoute,
   ApiAppV1NotificationsIndexRoute: ApiAppV1NotificationsIndexRoute,
   ApiAppV1PuzzlesIdAttemptRoute: ApiAppV1PuzzlesIdAttemptRoute,

@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "ng.com.hamduk.chess",
+      "sha256_cert_fingerprints": [
+        "20:25:3C:63:86:B3:05:5E:2B:8A:EB:E1:56:EC:55:FB:FA:10:A2:06:D2:7E:B4:C5:13:67:73:B2:AB:27:DF:48"
+      ]
+    }
+  }
+]
