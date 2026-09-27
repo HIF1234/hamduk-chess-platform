@@ -73,7 +73,7 @@ export async function sendPush(userId: string, n: { title: string; body?: string
             token,
             notification: { title: n.title, body: n.body ?? "" },
             data: n.link ? { link: n.link } : {},
-            android: { priority: "high", notification: { channel_id: "games" } },
+            android: { priority: "high" },
           },
         }),
       });
