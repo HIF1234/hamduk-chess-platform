@@ -241,10 +241,13 @@ export const submitMove = createServerFn({ method: "POST" })
           }
         : baseUpdate;
 
-    const { error: uErr } = await supabaseAdmin.from("games").update(update).eq("id", game.id);
-    if (uErr) throw new Error(uErr.message);
-
-    const { error: mErr } = await supabaseAdmin.from("moves").insert({
+    // These writes are independent of each other, so they run concurrently instead of one
+    // after another — this sequential chain (game update, move insert, telemetry insert,
+    // event insert, each a separate round trip) was the main source of move-to-board-update
+    // latency. Only the game update and move insert are load-bearing; the rest are
+    // best-effort, exactly as before.
+    const gameUpdatePromise = supabaseAdmin.from("games").update(update).eq("id", game.id);
+    const moveInsertPromise = supabaseAdmin.from("moves").insert({
       game_id: game.id,
       ply: newPly,
       uci: data.uci,
@@ -252,23 +255,55 @@ export const submitMove = createServerFn({ method: "POST" })
       fen: newFen,
       by_user: userId,
     });
+    const bestEffort: PromiseLike<unknown>[] = [
+      // Telemetry (server-authoritative timing).
+      supabaseAdmin.from("move_telemetry").insert({
+        game_id: game.id,
+        ply: newPly,
+        user_id: userId,
+        elapsed_ms: elapsedServer,
+      }),
+      // Event log.
+      supabaseAdmin.from("game_events").insert({
+        game_id: game.id,
+        type: "move",
+        by_user: userId,
+        payload: { uci: data.uci, san: move.san, ply: newPly, elapsed_ms: elapsedServer },
+      }),
+    ];
+    // "Your move" push when the opponent has the app in the background (marked away).
+    // Fired alongside the writes above (not after them) so it never adds to the mover's
+    // own latency. Live games only; correspondence notifies separately below.
+    if (status === "active" && !isCorrespondence) {
+      const oppId = userId === game.white_id ? game.black_id : game.white_id;
+      bestEffort.push(
+        (async () => {
+          try {
+            const { redis } = await import("@/lib/redis.server");
+            const away = await redis.get(`game:${game.id}:disconnect:${oppId}`);
+            if (!away) return;
+            const [{ sendPush }, { data: me }] = await Promise.all([
+              import("@/lib/push.server"),
+              supabaseAdmin.from("profiles").select("username").eq("id", userId).maybeSingle(),
+            ]);
+            await sendPush(oppId, {
+              title: `Your move against ${me?.username ?? "your opponent"}`,
+              body: `They played ${move.san}. Your clock is running.`,
+              link: `/play/${game.id}`,
+            });
+          } catch {
+            /* best-effort: never blocks or fails the move */
+          }
+        })(),
+      );
+    }
+    const [{ error: uErr }, { error: mErr }] = await Promise.all([
+      gameUpdatePromise,
+      moveInsertPromise,
+      ...bestEffort,
+    ]);
+    if (uErr) throw new Error(uErr.message);
     if (mErr) throw new Error(mErr.message);
-
-    // Telemetry (server-authoritative timing)
-    await supabaseAdmin.from("move_telemetry").insert({
-      game_id: game.id,
-      ply: newPly,
-      user_id: userId,
-      elapsed_ms: elapsedServer,
-    });
-
-    // Event log
-    await supabaseAdmin.from("game_events").insert({
-      game_id: game.id,
-      type: "move",
-      by_user: userId,
-      payload: { uci: data.uci, san: move.san, ply: newPly, elapsed_ms: elapsedServer },
-    });
 
     // Correspondence: tell the opponent it's their move (and email them if this game has emails on).
     if (isCorrespondence && status === "active") {
@@ -394,25 +429,6 @@ export const submitMove = createServerFn({ method: "POST" })
             .update({ flagged_for_review: true, flag_reason: "fast_moves" })
             .eq("id", userId);
         }
-      }
-    }
-
-    // "Your move" push when the opponent has the app in the background (marked away).
-    // Live games only; correspondence already notifies through notify() above.
-    if (status === "active" && !isCorrespondence) {
-      const oppId = userId === game.white_id ? game.black_id : game.white_id;
-      const { redis } = await import("@/lib/redis.server");
-      const away = await redis.get(`game:${game.id}:disconnect:${oppId}`).catch(() => null);
-      if (away) {
-        const [{ sendPush }, { data: me }] = await Promise.all([
-          import("@/lib/push.server"),
-          supabaseAdmin.from("profiles").select("username").eq("id", userId).maybeSingle(),
-        ]);
-        await sendPush(oppId, {
-          title: `Your move against ${me?.username ?? "your opponent"}`,
-          body: `They played ${move.san}. Your clock is running.`,
-          link: `/play/${game.id}`,
-        });
       }
     }
 
