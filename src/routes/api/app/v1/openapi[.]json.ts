@@ -120,7 +120,10 @@ const SPEC = {
     },
     "/puzzles/pack": {
       get: op("Unseen puzzles near my rating for offline play", {
-        parameters: [{ name: "count", in: "query", schema: { type: "integer", maximum: 500 } }],
+        parameters: [
+          { name: "count", in: "query", schema: { type: "integer", maximum: 500 } },
+          { name: "theme", in: "query", schema: { type: "string", example: "fork" } },
+        ],
       }),
     },
     "/puzzles/sync": {

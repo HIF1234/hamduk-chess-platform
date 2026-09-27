@@ -78,7 +78,13 @@ export async function getGameForApp(_ctx: AppContext, input: unknown) {
 /** Unseen puzzles near the player's rating, to solve offline. Plus/Gold get bigger packs. */
 export async function getPuzzlePack(ctx: AppContext, input: unknown) {
   const data = z
-    .object({ count: z.coerce.number().int().min(1).max(500).default(100) })
+    .object({
+      count: z.coerce.number().int().min(1).max(500).default(100),
+      theme: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{2,30}$/)
+        .optional(),
+    })
     .parse(input ?? {});
   const s = await admin();
   const [{ data: me }, { data: stats }] = await Promise.all([
@@ -88,11 +94,14 @@ export async function getPuzzlePack(ctx: AppContext, input: unknown) {
   // Free players can only score 20 a day anyway, so a small pack is enough.
   const cap = me?.subscription_tier && me.subscription_tier !== "free" ? 500 : 30;
   const rating = stats?.rating ?? 1200;
+  // Theme packs use a wider band so rarer themes still fill a pack.
+  const band = data.theme ? { below: 400, above: 500 } : { below: 250, above: 350 };
   const { data: puzzles, error } = await s.rpc("puzzle_pack", {
     p_user: ctx.userId,
-    p_min: Math.max(400, rating - 250),
-    p_max: rating + 350,
+    p_min: Math.max(400, rating - band.below),
+    p_max: rating + band.above,
     p_limit: Math.min(data.count, cap),
+    p_theme: data.theme,
   });
   if (error) throw error;
   return { rating, puzzles: puzzles ?? [], maxPack: cap };

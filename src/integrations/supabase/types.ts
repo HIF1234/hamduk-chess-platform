@@ -3708,7 +3708,13 @@ export type Database = {
         }
       }
       puzzle_pack: {
-        Args: { p_limit: number; p_max: number; p_min: number; p_user: string }
+        Args: {
+          p_limit: number
+          p_max: number
+          p_min: number
+          p_theme?: string
+          p_user: string
+        }
         Returns: {
           fen: string
           id: string
