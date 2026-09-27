@@ -72,6 +72,7 @@ import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboa
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as ClubsSlugRouteImport } from './routes/clubs.$slug'
 import { Route as ChallengeIdRouteImport } from './routes/challenge.$id'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AnalysisIdRouteImport } from './routes/analysis.$id'
@@ -454,6 +455,11 @@ const ClubsSlugRoute = ClubsSlugRouteImport.update({
 const ChallengeIdRoute = ChallengeIdRouteImport.update({
   id: '/challenge/$id',
   path: '/challenge/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssistantThreadIdRoute = AssistantThreadIdRouteImport.update({
@@ -852,6 +858,7 @@ export interface FileRoutesByFullPath {
   '/analysis/$id': typeof AnalysisIdRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/challenge/$id': typeof ChallengeIdRoute
   '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -984,6 +991,7 @@ export interface FileRoutesByTo {
   '/analysis/$id': typeof AnalysisIdRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/challenge/$id': typeof ChallengeIdRoute
   '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -1118,6 +1126,7 @@ export interface FileRoutesById {
   '/analysis/$id': typeof AnalysisIdRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/challenge/$id': typeof ChallengeIdRoute
   '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -1253,6 +1262,7 @@ export interface FileRouteTypes {
     | '/analysis/$id'
     | '/api/chat'
     | '/assistant/$threadId'
+    | '/auth/callback'
     | '/challenge/$id'
     | '/clubs/$slug'
     | '/coaches/$coachId'
@@ -1385,6 +1395,7 @@ export interface FileRouteTypes {
     | '/analysis/$id'
     | '/api/chat'
     | '/assistant/$threadId'
+    | '/auth/callback'
     | '/challenge/$id'
     | '/clubs/$slug'
     | '/coaches/$coachId'
@@ -1518,6 +1529,7 @@ export interface FileRouteTypes {
     | '/analysis/$id'
     | '/api/chat'
     | '/assistant/$threadId'
+    | '/auth/callback'
     | '/challenge/$id'
     | '/clubs/$slug'
     | '/coaches/$coachId'
@@ -1640,6 +1652,7 @@ export interface RootRouteChildren {
   AnalysisIdRoute: typeof AnalysisIdRoute
   ApiChatRoute: typeof ApiChatRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   ChallengeIdRoute: typeof ChallengeIdRoute
   ClubsSlugRoute: typeof ClubsSlugRoute
   CoachesCoachIdRoute: typeof CoachesCoachIdRoute
@@ -2154,6 +2167,13 @@ declare module '@tanstack/react-router' {
       path: '/challenge/$id'
       fullPath: '/challenge/$id'
       preLoaderRoute: typeof ChallengeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assistant/$threadId': {
@@ -2803,6 +2823,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalysisIdRoute: AnalysisIdRoute,
   ApiChatRoute: ApiChatRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   ChallengeIdRoute: ChallengeIdRoute,
   ClubsSlugRoute: ClubsSlugRoute,
   CoachesCoachIdRoute: CoachesCoachIdRoute,
