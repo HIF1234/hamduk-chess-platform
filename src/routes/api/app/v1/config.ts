@@ -23,6 +23,11 @@ export const Route = createFileRoute("/api/app/v1/config")({
             // The publishable (anon) key; it's already public in the website's bundle.
             anonKey: process.env.SUPABASE_PUBLISHABLE_KEY,
           },
+          // The Web-type OAuth client used as the audience for Google sign-in (native
+          // Android sign-in requests an ID token issued for this client, which is what
+          // Supabase's Google provider is configured to accept). Google sign-in is hidden
+          // in the app until this is set — no Android client exists to sign in with yet.
+          googleWebClientId: process.env.GOOGLE_WEB_CLIENT_ID ?? null,
           timeControls: TIME_CONTROLS,
           bots: BOT_PERSONAS.map((b) => ({
             id: b.id,
