@@ -103,6 +103,7 @@ import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/publi
 import { Route as ApiAppV1SeekRouteImport } from './routes/api/app/v1/seek'
 import { Route as ApiAppV1OpenapiDotjsonRouteImport } from './routes/api/app/v1/openapi[.]json'
 import { Route as ApiAppV1MeRouteImport } from './routes/api/app/v1/me'
+import { Route as ApiAppV1DevicesRouteImport } from './routes/api/app/v1/devices'
 import { Route as ApiAppV1ConfigRouteImport } from './routes/api/app/v1/config'
 import { Route as ApiAppV1BotGamesRouteImport } from './routes/api/app/v1/bot-games'
 import { Route as ApiAppV1NotificationsIndexRouteImport } from './routes/api/app/v1/notifications.index'
@@ -611,6 +612,11 @@ const ApiAppV1MeRoute = ApiAppV1MeRouteImport.update({
   path: '/api/app/v1/me',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1DevicesRoute = ApiAppV1DevicesRouteImport.update({
+  id: '/api/app/v1/devices',
+  path: '/api/app/v1/devices',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1ConfigRoute = ApiAppV1ConfigRouteImport.update({
   id: '/api/app/v1/config',
   path: '/api/app/v1/config',
@@ -897,6 +903,7 @@ export interface FileRoutesByFullPath {
   '/puzzles/battle/': typeof PuzzlesBattleIndexRoute
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
+  '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
@@ -1028,6 +1035,7 @@ export interface FileRoutesByTo {
   '/puzzles/battle': typeof PuzzlesBattleIndexRoute
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
+  '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
@@ -1161,6 +1169,7 @@ export interface FileRoutesById {
   '/puzzles/battle/': typeof PuzzlesBattleIndexRoute
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
+  '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
@@ -1295,6 +1304,7 @@ export interface FileRouteTypes {
     | '/puzzles/battle/'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
+    | '/api/app/v1/devices'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/seek'
@@ -1426,6 +1436,7 @@ export interface FileRouteTypes {
     | '/puzzles/battle'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
+    | '/api/app/v1/devices'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/seek'
@@ -1558,6 +1569,7 @@ export interface FileRouteTypes {
     | '/puzzles/battle/'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
+    | '/api/app/v1/devices'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/seek'
@@ -1676,6 +1688,7 @@ export interface RootRouteChildren {
   PuzzlesBattleIndexRoute: typeof PuzzlesBattleIndexRoute
   ApiAppV1BotGamesRoute: typeof ApiAppV1BotGamesRoute
   ApiAppV1ConfigRoute: typeof ApiAppV1ConfigRoute
+  ApiAppV1DevicesRoute: typeof ApiAppV1DevicesRoute
   ApiAppV1MeRoute: typeof ApiAppV1MeRoute
   ApiAppV1OpenapiDotjsonRoute: typeof ApiAppV1OpenapiDotjsonRoute
   ApiAppV1SeekRoute: typeof ApiAppV1SeekRoute
@@ -2360,6 +2373,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1MeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/devices': {
+      id: '/api/app/v1/devices'
+      path: '/api/app/v1/devices'
+      fullPath: '/api/app/v1/devices'
+      preLoaderRoute: typeof ApiAppV1DevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/config': {
       id: '/api/app/v1/config'
       path: '/api/app/v1/config'
@@ -2831,6 +2851,7 @@ const rootRouteChildren: RootRouteChildren = {
   PuzzlesBattleIndexRoute: PuzzlesBattleIndexRoute,
   ApiAppV1BotGamesRoute: ApiAppV1BotGamesRoute,
   ApiAppV1ConfigRoute: ApiAppV1ConfigRoute,
+  ApiAppV1DevicesRoute: ApiAppV1DevicesRoute,
   ApiAppV1MeRoute: ApiAppV1MeRoute,
   ApiAppV1OpenapiDotjsonRoute: ApiAppV1OpenapiDotjsonRoute,
   ApiAppV1SeekRoute: ApiAppV1SeekRoute,

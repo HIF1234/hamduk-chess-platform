@@ -190,3 +190,33 @@ export async function getChallengeForApp(ctx: AppContext, input: unknown) {
     expired: !ch.game_id && new Date(ch.expires_at) < new Date(),
   };
 }
+
+const DeviceInput = z.object({
+  token: z.string().min(20).max(4096),
+  platform: z.enum(["android", "ios"]).default("android"),
+});
+
+/** Registers this phone for push notifications (re-registering moves a token to the player). */
+export async function registerDevice(ctx: AppContext, input: unknown) {
+  const data = DeviceInput.parse(input);
+  const s = await admin();
+  const { error } = await s.from("device_tokens").upsert(
+    {
+      token: data.token,
+      user_id: ctx.userId,
+      platform: data.platform,
+      last_seen_at: new Date().toISOString(),
+    },
+    { onConflict: "token" },
+  );
+  if (error) throw error;
+  return { ok: true };
+}
+
+/** Stops notifications to this phone, e.g. on sign-out. */
+export async function unregisterDevice(ctx: AppContext, input: unknown) {
+  const data = DeviceInput.pick({ token: true }).parse(input);
+  const s = await admin();
+  await s.from("device_tokens").delete().eq("token", data.token).eq("user_id", ctx.userId);
+  return { ok: true };
+}

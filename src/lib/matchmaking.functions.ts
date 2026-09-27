@@ -397,6 +397,25 @@ export const submitMove = createServerFn({ method: "POST" })
       }
     }
 
+    // "Your move" push when the opponent has the app in the background (marked away).
+    // Live games only; correspondence already notifies through notify() above.
+    if (status === "active" && !isCorrespondence) {
+      const oppId = userId === game.white_id ? game.black_id : game.white_id;
+      const { redis } = await import("@/lib/redis.server");
+      const away = await redis.get(`game:${game.id}:disconnect:${oppId}`).catch(() => null);
+      if (away) {
+        const [{ sendPush }, { data: me }] = await Promise.all([
+          import("@/lib/push.server"),
+          supabaseAdmin.from("profiles").select("username").eq("id", userId).maybeSingle(),
+        ]);
+        await sendPush(oppId, {
+          title: `Your move against ${me?.username ?? "your opponent"}`,
+          body: `They played ${move.san}. Your clock is running.`,
+          link: `/play/${game.id}`,
+        });
+      }
+    }
+
     return { ok: true, san: move.san, fen: newFen, status, result };
   });
 

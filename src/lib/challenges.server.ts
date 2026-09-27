@@ -80,5 +80,18 @@ export async function acceptChallengeFor(
     await db.from("games").delete().eq("id", game.id);
     throw new Error("Someone already accepted this challenge.");
   }
+  // Tell the sender, who may have closed the app while waiting.
+  const { data: acceptor } = await db
+    .from("profiles")
+    .select("username")
+    .eq("id", userId)
+    .maybeSingle();
+  const { notify } = await import("@/lib/notifications.server");
+  await notify(ch.creator_id, {
+    type: "challenge_accepted",
+    title: `${acceptor?.username ?? "Your friend"} accepted your challenge`,
+    body: `Your ${ch.time_control} game has started. Your clock is running.`,
+    link: `/play/${game.id}`,
+  });
   return { gameId: game.id };
 }

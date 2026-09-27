@@ -17,7 +17,8 @@ export type NotificationType =
   | "forum_reply"
   | "announcement"
   | "game_comment"
-  | "puzzle_review";
+  | "puzzle_review"
+  | "challenge_accepted";
 
 export async function notify(
   userId: string,
@@ -41,6 +42,9 @@ export async function notify(
       payload: (n.payload ?? {}) as never,
     });
     if (error) console.error("[notify] insert failed", error.message);
+    // Mirror to the player's phones (Android app). No-op until push is configured.
+    const { sendPush } = await import("@/lib/push.server");
+    await sendPush(userId, { title: n.title, body: n.body, link: n.link });
     if (n.email) {
       const { data } = await supabaseAdmin.auth.admin.getUserById(userId);
       const address = data.user?.email;

@@ -36,6 +36,7 @@ type Row = {
 const ICONS: Record<string, typeof Bell> = {
   achievement: Award,
   correspondence_move: Swords,
+  challenge_accepted: Swords,
   new_follower: UserPlus,
   friend_request: UserPlus,
   friend_accepted: Users,
