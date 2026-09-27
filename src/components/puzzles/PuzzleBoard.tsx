@@ -8,14 +8,27 @@ import { sounds } from "@/lib/chess-sounds";
 
 type Props = {
   puzzle: Puzzle;
-  /** `moves` is what the solver played, in UCI. */
-  onComplete?: (success: boolean, moves: string[]) => void;
+  /** `moves` is what the solver played, in UCI. `hintsUsed` (0-2) is the highest hint level
+   *  reached anywhere in the attempt: 1 = the source square was shown, 2 = the full move was
+   *  shown as an arrow. Pass it to submitPuzzleAttempt so the rating gain is dampened. */
+  onComplete?: (success: boolean, moves: string[], hintsUsed: number) => void;
   /** Hides Hint and Reset, for timed modes where a retry would be unfair. */
   hideHint?: boolean;
 };
 
 export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
-  const { fen, status, tryMove, hint, showHint, reset, playerColor } = usePuzzleSolver(puzzle);
+  const {
+    fen,
+    status,
+    tryMove,
+    hintFrom,
+    hintTo,
+    hintLevel,
+    hintsUsed,
+    showHint,
+    reset,
+    playerColor,
+  } = usePuzzleSolver(puzzle);
   const [notified, setNotified] = useState<string | null>(null);
   const [selected, setSelected] = useState<Square | null>(null);
   const played = useRef<string[]>([]);
@@ -29,10 +42,10 @@ export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
   // Fire onComplete once per puzzle resolution
   if (status === "solved" && notified !== puzzle.id + "solved") {
     sounds.end();
-    onComplete?.(true, played.current);
+    onComplete?.(true, played.current, hintsUsed);
     setNotified(puzzle.id + "solved");
   } else if (status === "failed" && notified !== puzzle.id + "failed") {
-    onComplete?.(false, played.current);
+    onComplete?.(false, played.current, hintsUsed);
     setNotified(puzzle.id + "failed");
   }
 
@@ -60,14 +73,23 @@ export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
         background: "radial-gradient(circle, rgba(20,20,20,0.35) 22%, transparent 25%)",
       };
     }
-    if (hint) {
-      s[hint] = {
+    if (hintFrom) {
+      s[hintFrom] = {
         background: "rgba(245, 166, 35, 0.65)",
         boxShadow: "inset 0 0 0 3px rgba(245,166,35,0.9)",
       };
     }
     return s;
-  }, [selected, legalTargets, hint]);
+  }, [selected, legalTargets, hintFrom]);
+
+  // Second hint press: show the full move as an arrow.
+  const hintArrows = useMemo(
+    () =>
+      hintFrom && hintTo
+        ? [{ startSquare: hintFrom, endSquare: hintTo, color: "rgba(245, 166, 35, 0.9)" }]
+        : [],
+    [hintFrom, hintTo],
+  );
 
   const attemptMove = (from: Square, to: Square) => {
     if (status === "playing") played.current = [...played.current, `${from}${to}`];
@@ -127,6 +149,7 @@ export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
     animationDurationInMs: 200,
     allowDragging: status === "playing",
     id: "puzzle-board",
+    arrows: hintArrows,
   };
 
   return (
@@ -137,7 +160,13 @@ export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
           <div className="absolute inset-0 flex items-center justify-center bg-emerald-900/60 backdrop-blur-sm pointer-events-none">
             <div className="text-center text-white">
               <p className="text-3xl font-serif font-bold">Solved</p>
-              <p className="text-sm text-emerald-100 mt-1">+rating</p>
+              <p className="text-sm text-emerald-100 mt-1">
+                {hintsUsed >= 2
+                  ? "No rating gained (move was shown)"
+                  : hintsUsed === 1
+                    ? "Reduced rating gain (hint used)"
+                    : "+rating"}
+              </p>
             </div>
           </div>
         )}
@@ -159,10 +188,17 @@ export function PuzzleBoard({ puzzle, onComplete, hideHint }: Props) {
         <div className={`flex gap-2 ${hideHint ? "hidden" : ""}`}>
           <button
             onClick={showHint}
-            disabled={status !== "playing"}
+            disabled={status !== "playing" || hintLevel >= 2}
+            title={
+              hintLevel === 0
+                ? "Highlights the piece to move. Reduces the rating you'd gain."
+                : hintLevel === 1
+                  ? "Shows the full move. Solving with this gives no rating."
+                  : undefined
+            }
             className="px-3 py-1.5 text-xs font-medium bg-card text-foreground rounded ring-1 ring-border hover:bg-accent disabled:opacity-40 cursor-pointer"
           >
-            Hint
+            {hintLevel === 0 ? "Hint" : "Show move"}
           </button>
           <button
             onClick={() => {

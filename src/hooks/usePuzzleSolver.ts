@@ -9,7 +9,11 @@ export function usePuzzleSolver(puzzle: Puzzle) {
   const [fen, setFen] = useState(puzzle.fen);
   const [stepIndex, setStepIndex] = useState(0);
   const [status, setStatus] = useState<SolverStatus>("loading");
-  const [hint, setHint] = useState<string | null>(null);
+  // 0 = no hint shown for the current move, 1 = source square highlighted,
+  // 2 = the full move shown as an arrow. Resets to 0 for each new move; the highest level
+  // reached anywhere in the puzzle (maxHintLevel) is what dampens the rating gain on solve.
+  const [hintLevel, setHintLevel] = useState(0);
+  const [maxHintLevel, setMaxHintLevel] = useState(0);
 
   // Reset when puzzle changes
   useEffect(() => {
@@ -17,7 +21,8 @@ export function usePuzzleSolver(puzzle: Puzzle) {
     setFen(puzzle.fen);
     setStepIndex(0);
     setStatus("playing");
-    setHint(null);
+    setHintLevel(0);
+    setMaxHintLevel(0);
   }, [puzzle, chess]);
 
   const playerColor = useMemo(() => puzzle.fen.split(" ")[1] as "w" | "b", [puzzle.fen]);
@@ -53,6 +58,7 @@ export function usePuzzleSolver(puzzle: Puzzle) {
       const m = chess.move({ from, to, promotion: promotion ?? expPromo ?? "q" });
       if (!m) return false;
       setFen(chess.fen());
+      setHintLevel(0); // fresh move, fresh hint state (maxHintLevel is untouched)
       const nextIdx = stepIndex + 1;
 
       // If solution complete
@@ -81,18 +87,41 @@ export function usePuzzleSolver(puzzle: Puzzle) {
     [chess, puzzle, stepIndex, status],
   );
 
+  /** First press highlights the source square; second press adds the destination as an
+   *  arrow. Caps at 2 for the current move. */
   const showHint = useCallback(() => {
-    const expected = puzzle.solution[stepIndex];
-    if (expected) setHint(expected.slice(0, 2));
-  }, [puzzle, stepIndex]);
+    setHintLevel((lvl) => {
+      const next = Math.min(2, lvl + 1);
+      setMaxHintLevel((m) => Math.max(m, next));
+      return next;
+    });
+  }, []);
 
   const reset = useCallback(() => {
     chess.load(puzzle.fen);
     setFen(puzzle.fen);
     setStepIndex(0);
     setStatus("playing");
-    setHint(null);
+    setHintLevel(0);
+    setMaxHintLevel(0);
   }, [chess, puzzle]);
 
-  return { fen, status, tryMove, hint, showHint, reset, playerColor };
+  const expectedMove = puzzle.solution[stepIndex];
+  const hintFrom = hintLevel >= 1 && expectedMove ? expectedMove.slice(0, 2) : null;
+  const hintTo = hintLevel >= 2 && expectedMove ? expectedMove.slice(2, 4) : null;
+
+  return {
+    fen,
+    status,
+    tryMove,
+    hintFrom,
+    hintTo,
+    hintLevel,
+    /** Highest hint level reached anywhere in this puzzle attempt (0-2); feeds the rating
+     *  dampening on the server. */
+    hintsUsed: maxHintLevel,
+    showHint,
+    reset,
+    playerColor,
+  };
 }

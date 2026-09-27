@@ -41,7 +41,7 @@ function DailyPuzzlePage() {
     queryFn: () => fetchDaily({ data: { date } }),
   });
 
-  const handleComplete = async (success: boolean) => {
+  const handleComplete = async (success: boolean, _moves: string[], hintsUsed: number) => {
     if (!puzzle) return;
     const { data: sess } = await supabase.auth.getSession();
     if (!sess.session) {
@@ -49,7 +49,7 @@ function DailyPuzzlePage() {
       return;
     }
     try {
-      const res = await submit({ data: { puzzleId: puzzle.id, success } });
+      const res = await submit({ data: { puzzleId: puzzle.id, success, hintsUsed } });
       setResultMsg(
         success
           ? `Solved! Rating ${res.rating} (${res.delta >= 0 ? "+" : ""}${res.delta})`

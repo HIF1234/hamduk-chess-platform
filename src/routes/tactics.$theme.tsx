@@ -96,14 +96,14 @@ function TacticsSession() {
     void loadNext();
   }, [theme, loadNext]);
 
-  const handleComplete = async (success: boolean) => {
+  const handleComplete = async (success: boolean, _moves: string[], hintsUsed: number) => {
     if (!puzzle || resolved === puzzle.id) return;
     setResolved(puzzle.id);
 
     // Persist
     if (user) {
       try {
-        const res = await submit({ data: { puzzleId: puzzle.id, success } });
+        const res = await submit({ data: { puzzleId: puzzle.id, success, hintsUsed } });
         setLastDelta(res.delta);
         refetchStats();
       } catch (e) {
@@ -195,11 +195,7 @@ function TacticsSession() {
                   key={i}
                   className={
                     "h-1.5 flex-1 rounded-full " +
-                    (h
-                      ? h.success
-                        ? "bg-emerald-500"
-                        : "bg-red-500"
-                      : "bg-muted/40")
+                    (h ? (h.success ? "bg-emerald-500" : "bg-red-500") : "bg-muted/40")
                   }
                 />
               );

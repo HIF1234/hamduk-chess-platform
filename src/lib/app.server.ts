@@ -112,7 +112,14 @@ export async function syncPuzzleAttempts(ctx: AppContext, input: unknown) {
   const data = z
     .object({
       attempts: z
-        .array(z.object({ puzzleId: z.string().uuid(), success: z.boolean() }))
+        .array(
+          z.object({
+            puzzleId: z.string().uuid(),
+            success: z.boolean(),
+            /** 0-2: highest hint level used (1 = square shown, 2 = move shown). */
+            hintsUsed: z.number().int().min(0).max(2).default(0),
+          }),
+        )
         .min(1)
         .max(200),
     })
@@ -132,6 +139,7 @@ export async function syncPuzzleAttempts(ctx: AppContext, input: unknown) {
     const { data: res, error } = await ctx.supabase.rpc("submit_puzzle_attempt", {
       p_puzzle_id: a.puzzleId,
       p_success: a.success,
+      p_hints_used: a.hintsUsed,
     });
     if (error) {
       limited = error.message.includes("daily_puzzle_limit");

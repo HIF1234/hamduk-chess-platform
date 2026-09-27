@@ -109,6 +109,8 @@ function PlayPage() {
     san: string;
   } | null>(null);
   const premoves = usePremoves(3);
+  // Tap-to-move: select a square, then tap its destination. Drag still works too.
+  const [selected, setSelected] = useState<Square | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
@@ -279,6 +281,12 @@ function PlayPage() {
       });
   }
 
+  // Clear any tap-to-move selection whenever the position changes (our move landed, the
+  // opponent moved, or a premove fired) so a stale highlight never lingers.
+  useEffect(() => {
+    setSelected(null);
+  }, [game?.fen]);
+
   // Try premove after opponent moves
   useEffect(() => {
     if (!game || game.status !== "active" || !myTurn) return;
@@ -306,31 +314,53 @@ function PlayPage() {
   const opponent = isWhite ? profiles[game.black_id] : profiles[game.white_id];
   const me = profiles[user.id];
 
-  function handleDrop({
-    sourceSquare,
-    targetSquare,
-    piece,
-  }: {
-    sourceSquare: string;
-    targetSquare: string | null;
-    piece: { pieceType: string };
-  }): boolean {
-    if (!targetSquare || !game) return false;
-    const from = sourceSquare as Square;
-    const to = targetSquare as Square;
-    const isPromo =
-      piece.pieceType.toLowerCase().endsWith("p") &&
-      ((myColor === "w" && to[1] === "8") || (myColor === "b" && to[1] === "1"));
+  // Squares the selected piece can go to: real legal moves on our turn, or (for a premove)
+  // any square not already held by our own piece — premoves aren't validated until played.
+  const legalTargets = new Set<Square>();
+  if (selected) {
+    if (myTurn) {
+      try {
+        const probe = new Chess(chess.fen());
+        for (const m of probe.moves({ square: selected, verbose: true }) as { to: string }[]) {
+          legalTargets.add(m.to as Square);
+        }
+      } catch {
+        /* no legal moves from this square */
+      }
+    } else {
+      for (const file of "abcdefgh") {
+        for (const rank of "12345678") {
+          const sq = `${file}${rank}` as Square;
+          if (sq === selected) continue;
+          const piece = chess.get(sq);
+          if (!piece || piece.color !== myColor) legalTargets.add(sq);
+        }
+      }
+    }
+  }
+
+  function isPromotionMove(from: Square, to: Square): boolean {
+    const piece = chess?.get(from);
+    if (!piece || piece.type !== "p") return false;
+    return (myColor === "w" && to[1] === "8") || (myColor === "b" && to[1] === "1");
+  }
+
+  /** Shared by drag-drop and tap-to-move. */
+  function attemptMove(from: Square, to: Square): boolean {
+    if (!game || !chess || from === to) return false;
+    const isPromo = isPromotionMove(from, to);
 
     if (!myTurn) {
-      // Premove path: validate against a hypothetical position by trusting the piece type
+      // Premove path: not validated against the current position (it's for a future one);
+      // it's checked for real when it's actually played, in usePremoves.consumeIfLegal.
       if (!myColor) return false;
       premoves.enqueue({ from, to, promotion: isPromo ? "q" : undefined });
+      setSelected(null);
       return true;
     }
 
     if (submitting) return false;
-    const probe = new Chess(chess!.fen());
+    const probe = new Chess(chess.fen());
     let legal;
     try {
       legal = probe.move({ from, to, promotion: "q" });
@@ -338,6 +368,7 @@ function PlayPage() {
       return false;
     }
     if (!legal) return false;
+    setSelected(null);
     const uci = `${from}${to}${isPromo ? "q" : ""}`;
     if (game.is_correspondence) {
       setPendingMove({ from, to, promotion: isPromo ? "q" : undefined, san: legal.san });
@@ -349,6 +380,34 @@ function PlayPage() {
       .catch((e: unknown) => moveFailed(e, "Move rejected"))
       .finally(() => setSubmitting(false));
     return true;
+  }
+
+  function handleDrop({
+    sourceSquare,
+    targetSquare,
+  }: {
+    sourceSquare: string;
+    targetSquare: string | null;
+  }): boolean {
+    if (!targetSquare) return false;
+    return attemptMove(sourceSquare as Square, targetSquare as Square);
+  }
+
+  function handleSquareClick({ square }: { square: string }) {
+    const sq = square as Square;
+    if (!chess || !game || game.status !== "active") return;
+    if (selected) {
+      if (sq === selected) {
+        setSelected(null);
+        return;
+      }
+      if (legalTargets.has(sq)) {
+        attemptMove(selected, sq);
+        return;
+      }
+    }
+    const piece = chess.get(sq);
+    setSelected(piece && myColor && piece.color === myColor ? sq : null);
   }
 
   async function handleResign() {
@@ -411,6 +470,18 @@ function PlayPage() {
     color: `rgba(245, 166, 35, ${0.5 - i * 0.1})`,
   }));
 
+  const squareStyles: Record<string, React.CSSProperties> = {};
+  if (selected) {
+    squareStyles[selected] = {
+      background: myTurn ? "rgba(234, 179, 8, 0.35)" : "rgba(245, 166, 35, 0.4)",
+    };
+    for (const t of legalTargets) {
+      squareStyles[t] = {
+        background: "radial-gradient(circle, rgba(24,24,27,0.35) 22%, transparent 24%)",
+      };
+    }
+  }
+
   const statusText =
     game.status === "completed"
       ? game.result === "draw"
@@ -447,6 +518,8 @@ function PlayPage() {
                 ...boardSquares,
                 position: chess.fen(),
                 onPieceDrop: handleDrop,
+                onSquareClick: handleSquareClick,
+                squareStyles,
                 boardOrientation: orientation,
                 allowDragging: isParticipant && game.status === "active",
                 animationDurationInMs: 200,

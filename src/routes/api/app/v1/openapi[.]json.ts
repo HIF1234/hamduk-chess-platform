@@ -115,7 +115,19 @@ const SPEC = {
     "/puzzles/{id}/attempt": {
       post: op("Record a puzzle attempt", {
         parameters: [idParam],
-        requestBody: json({ success: { type: "boolean" } }, ["success"]),
+        requestBody: json(
+          {
+            success: { type: "boolean" },
+            hintsUsed: {
+              type: "integer",
+              minimum: 0,
+              maximum: 2,
+              description:
+                "Highest hint level reached (0 none, 1 square shown, 2 move shown). Dampens the rating gain on solve.",
+            },
+          },
+          ["success"],
+        ),
       }),
     },
     "/puzzles/pack": {
@@ -138,6 +150,7 @@ const SPEC = {
                 properties: {
                   puzzleId: { type: "string", format: "uuid" },
                   success: { type: "boolean" },
+                  hintsUsed: { type: "integer", minimum: 0, maximum: 2 },
                 },
                 required: ["puzzleId", "success"],
               },

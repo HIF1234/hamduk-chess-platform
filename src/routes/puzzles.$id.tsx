@@ -67,7 +67,7 @@ function SinglePuzzle() {
         <div className="mt-6">
           <PuzzleBoard
             puzzle={p}
-            onComplete={async (success) => {
+            onComplete={async (success, _moves, hintsUsed) => {
               if (!user)
                 return setMsg(
                   success
@@ -75,7 +75,7 @@ function SinglePuzzle() {
                     : "Not quite — try again.",
                 );
               try {
-                const r = await submit({ data: { puzzleId: p.id, success } });
+                const r = await submit({ data: { puzzleId: p.id, success, hintsUsed } });
                 setMsg(
                   `${success ? "Solved!" : "Not quite."} Rating ${r.rating} (${r.delta >= 0 ? "+" : ""}${r.delta})`,
                 );

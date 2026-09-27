@@ -91,11 +91,11 @@ export function PuzzleHub() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, theme, signedIn]);
 
-  const handleComplete = async (success: boolean) => {
+  const handleComplete = async (success: boolean, _moves: string[], hintsUsed: number) => {
     if (!puzzle) return;
     if (signedIn) {
       try {
-        const res = await submit({ data: { puzzleId: puzzle.id, success } });
+        const res = await submit({ data: { puzzleId: puzzle.id, success, hintsUsed } });
         setLastDelta(res.delta);
         refetchStats();
         if (res.remaining_today !== null && res.remaining_today <= 3) {

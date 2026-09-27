@@ -14,6 +14,9 @@ const UuidSchema = z.object({ puzzleId: z.string().uuid() });
 const AttemptSchema = z.object({
   puzzleId: z.string().uuid(),
   success: z.boolean(),
+  /** Highest hint level reached (0 = none, 1 = square shown, 2 = move shown). Dampens the
+   *  rating gain on the server; see submit_puzzle_attempt. */
+  hintsUsed: z.number().int().min(0).max(2).default(0),
 });
 const NextSchema = z
   .object({ theme: z.string().min(1).max(40).optional() })
@@ -128,6 +131,7 @@ export const submitPuzzleAttempt = createServerFn({ method: "POST" })
     const { data: res, error } = await supabase.rpc("submit_puzzle_attempt", {
       p_puzzle_id: data.puzzleId,
       p_success: data.success,
+      p_hints_used: data.hintsUsed,
     });
     if (error) {
       if (error.message.includes("daily_puzzle_limit")) {
@@ -147,6 +151,7 @@ export const submitPuzzleAttempt = createServerFn({ method: "POST" })
       leitner_box: number;
       next_due_at: string;
       remaining_today: number | null;
+      hints_used: number;
     };
   });
 
