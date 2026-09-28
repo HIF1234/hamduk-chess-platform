@@ -212,6 +212,13 @@ function AdminUserDetail() {
               <dt className="text-xs text-muted-foreground">Subscription status</dt>
               <dd>{d.profile.subscription_status}</dd>
             </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">First-move no-show strikes</dt>
+              <dd>
+                {d.profile.first_move_strikes}
+                {d.profile.first_move_ban_stage > 0 ? ` (stage ${d.profile.first_move_ban_stage})` : ""}
+              </dd>
+            </div>
           </dl>
           {d.profile.banned_at ? (
             <p className="mt-3 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">

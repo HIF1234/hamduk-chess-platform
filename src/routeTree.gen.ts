@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TvRouteImport } from './routes/tv'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SupportRouteImport } from './routes/support'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
@@ -101,9 +102,11 @@ import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$user
 import { Route as ApiPublicV1WebhooksRouteImport } from './routes/api/public/v1/webhooks'
 import { Route as ApiPublicV1TournamentsRouteImport } from './routes/api/public/v1/tournaments'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
+import { Route as ApiAppV1SpectateRouteImport } from './routes/api/app/v1/spectate'
 import { Route as ApiAppV1SeekRouteImport } from './routes/api/app/v1/seek'
 import { Route as ApiAppV1OpenapiDotjsonRouteImport } from './routes/api/app/v1/openapi[.]json'
 import { Route as ApiAppV1MeRouteImport } from './routes/api/app/v1/me'
+import { Route as ApiAppV1LeaderboardRouteImport } from './routes/api/app/v1/leaderboard'
 import { Route as ApiAppV1DevicesRouteImport } from './routes/api/app/v1/devices'
 import { Route as ApiAppV1ConfigRouteImport } from './routes/api/app/v1/config'
 import { Route as ApiAppV1BotGamesRouteImport } from './routes/api/app/v1/bot-games'
@@ -120,6 +123,7 @@ import { Route as ApiAppV1PuzzlesSyncRouteImport } from './routes/api/app/v1/puz
 import { Route as ApiAppV1PuzzlesPackRouteImport } from './routes/api/app/v1/puzzles.pack'
 import { Route as ApiAppV1PuzzlesNextRouteImport } from './routes/api/app/v1/puzzles.next'
 import { Route as ApiAppV1PuzzlesDailyRouteImport } from './routes/api/app/v1/puzzles.daily'
+import { Route as ApiAppV1ProfileUsernameRouteImport } from './routes/api/app/v1/profile.$username'
 import { Route as ApiAppV1NotificationsReadRouteImport } from './routes/api/app/v1/notifications.read'
 import { Route as ApiAppV1GamesIdRouteImport } from './routes/api/app/v1/games.$id'
 import { Route as ApiAppV1ChallengesIdRouteImport } from './routes/api/app/v1/challenges.$id'
@@ -131,8 +135,10 @@ import { Route as ApiAppV1PuzzlesIdAttemptRouteImport } from './routes/api/app/v
 import { Route as ApiAppV1GamesIdTakebackRouteImport } from './routes/api/app/v1/games.$id.takeback'
 import { Route as ApiAppV1GamesIdResignRouteImport } from './routes/api/app/v1/games.$id.resign'
 import { Route as ApiAppV1GamesIdRematchRouteImport } from './routes/api/app/v1/games.$id.rematch'
+import { Route as ApiAppV1GamesIdReadyRouteImport } from './routes/api/app/v1/games.$id.ready'
 import { Route as ApiAppV1GamesIdMoveRouteImport } from './routes/api/app/v1/games.$id.move'
 import { Route as ApiAppV1GamesIdFlagRouteImport } from './routes/api/app/v1/games.$id.flag'
+import { Route as ApiAppV1GamesIdFirstMoveTimeoutRouteImport } from './routes/api/app/v1/games.$id.first-move-timeout'
 import { Route as ApiAppV1GamesIdDrawRouteImport } from './routes/api/app/v1/games.$id.draw'
 import { Route as ApiAppV1GamesIdClaimRouteImport } from './routes/api/app/v1/games.$id.claim'
 import { Route as ApiAppV1GamesIdBackRouteImport } from './routes/api/app/v1/games.$id.back'
@@ -155,6 +161,11 @@ const TermsRoute = TermsRouteImport.update({
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
   path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -603,6 +614,11 @@ const ApiPublicPaystackWebhookRoute =
     path: '/api/public/paystack/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiAppV1SpectateRoute = ApiAppV1SpectateRouteImport.update({
+  id: '/api/app/v1/spectate',
+  path: '/api/app/v1/spectate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1SeekRoute = ApiAppV1SeekRouteImport.update({
   id: '/api/app/v1/seek',
   path: '/api/app/v1/seek',
@@ -616,6 +632,11 @@ const ApiAppV1OpenapiDotjsonRoute = ApiAppV1OpenapiDotjsonRouteImport.update({
 const ApiAppV1MeRoute = ApiAppV1MeRouteImport.update({
   id: '/api/app/v1/me',
   path: '/api/app/v1/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1LeaderboardRoute = ApiAppV1LeaderboardRouteImport.update({
+  id: '/api/app/v1/leaderboard',
+  path: '/api/app/v1/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAppV1DevicesRoute = ApiAppV1DevicesRouteImport.update({
@@ -703,6 +724,11 @@ const ApiAppV1PuzzlesDailyRoute = ApiAppV1PuzzlesDailyRouteImport.update({
   path: '/api/app/v1/puzzles/daily',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1ProfileUsernameRoute = ApiAppV1ProfileUsernameRouteImport.update({
+  id: '/api/app/v1/profile/$username',
+  path: '/api/app/v1/profile/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1NotificationsReadRoute =
   ApiAppV1NotificationsReadRouteImport.update({
     id: '/api/app/v1/notifications/read',
@@ -764,6 +790,11 @@ const ApiAppV1GamesIdRematchRoute = ApiAppV1GamesIdRematchRouteImport.update({
   path: '/rematch',
   getParentRoute: () => ApiAppV1GamesIdRoute,
 } as any)
+const ApiAppV1GamesIdReadyRoute = ApiAppV1GamesIdReadyRouteImport.update({
+  id: '/ready',
+  path: '/ready',
+  getParentRoute: () => ApiAppV1GamesIdRoute,
+} as any)
 const ApiAppV1GamesIdMoveRoute = ApiAppV1GamesIdMoveRouteImport.update({
   id: '/move',
   path: '/move',
@@ -774,6 +805,12 @@ const ApiAppV1GamesIdFlagRoute = ApiAppV1GamesIdFlagRouteImport.update({
   path: '/flag',
   getParentRoute: () => ApiAppV1GamesIdRoute,
 } as any)
+const ApiAppV1GamesIdFirstMoveTimeoutRoute =
+  ApiAppV1GamesIdFirstMoveTimeoutRouteImport.update({
+    id: '/first-move-timeout',
+    path: '/first-move-timeout',
+    getParentRoute: () => ApiAppV1GamesIdRoute,
+  } as any)
 const ApiAppV1GamesIdDrawRoute = ApiAppV1GamesIdDrawRouteImport.update({
   id: '/draw',
   path: '/draw',
@@ -840,6 +877,7 @@ export interface FileRoutesByFullPath {
   '/refund-policy': typeof RefundPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/tv': typeof TvRoute
@@ -911,15 +949,18 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
+  '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
+  '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
+  '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
@@ -939,8 +980,10 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/games/$id/back': typeof ApiAppV1GamesIdBackRoute
   '/api/app/v1/games/$id/claim': typeof ApiAppV1GamesIdClaimRoute
   '/api/app/v1/games/$id/draw': typeof ApiAppV1GamesIdDrawRoute
+  '/api/app/v1/games/$id/first-move-timeout': typeof ApiAppV1GamesIdFirstMoveTimeoutRoute
   '/api/app/v1/games/$id/flag': typeof ApiAppV1GamesIdFlagRoute
   '/api/app/v1/games/$id/move': typeof ApiAppV1GamesIdMoveRoute
+  '/api/app/v1/games/$id/ready': typeof ApiAppV1GamesIdReadyRoute
   '/api/app/v1/games/$id/rematch': typeof ApiAppV1GamesIdRematchRoute
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
@@ -973,6 +1016,7 @@ export interface FileRoutesByTo {
   '/refund-policy': typeof RefundPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/tv': typeof TvRoute
@@ -1044,15 +1088,18 @@ export interface FileRoutesByTo {
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
+  '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
+  '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
+  '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
@@ -1072,8 +1119,10 @@ export interface FileRoutesByTo {
   '/api/app/v1/games/$id/back': typeof ApiAppV1GamesIdBackRoute
   '/api/app/v1/games/$id/claim': typeof ApiAppV1GamesIdClaimRoute
   '/api/app/v1/games/$id/draw': typeof ApiAppV1GamesIdDrawRoute
+  '/api/app/v1/games/$id/first-move-timeout': typeof ApiAppV1GamesIdFirstMoveTimeoutRoute
   '/api/app/v1/games/$id/flag': typeof ApiAppV1GamesIdFlagRoute
   '/api/app/v1/games/$id/move': typeof ApiAppV1GamesIdMoveRoute
+  '/api/app/v1/games/$id/ready': typeof ApiAppV1GamesIdReadyRoute
   '/api/app/v1/games/$id/rematch': typeof ApiAppV1GamesIdRematchRoute
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
@@ -1108,6 +1157,7 @@ export interface FileRoutesById {
   '/refund-policy': typeof RefundPolicyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/tv': typeof TvRoute
@@ -1179,15 +1229,18 @@ export interface FileRoutesById {
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
+  '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
+  '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
+  '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
@@ -1207,8 +1260,10 @@ export interface FileRoutesById {
   '/api/app/v1/games/$id/back': typeof ApiAppV1GamesIdBackRoute
   '/api/app/v1/games/$id/claim': typeof ApiAppV1GamesIdClaimRoute
   '/api/app/v1/games/$id/draw': typeof ApiAppV1GamesIdDrawRoute
+  '/api/app/v1/games/$id/first-move-timeout': typeof ApiAppV1GamesIdFirstMoveTimeoutRoute
   '/api/app/v1/games/$id/flag': typeof ApiAppV1GamesIdFlagRoute
   '/api/app/v1/games/$id/move': typeof ApiAppV1GamesIdMoveRoute
+  '/api/app/v1/games/$id/ready': typeof ApiAppV1GamesIdReadyRoute
   '/api/app/v1/games/$id/rematch': typeof ApiAppV1GamesIdRematchRoute
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
@@ -1244,6 +1299,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/reset-password'
     | '/settings'
+    | '/sitemap.xml'
     | '/support'
     | '/terms'
     | '/tv'
@@ -1315,15 +1371,18 @@ export interface FileRouteTypes {
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
+    | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/seek'
+    | '/api/app/v1/spectate'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
     | '/api/app/v1/challenges/$id'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
+    | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
@@ -1343,8 +1402,10 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/back'
     | '/api/app/v1/games/$id/claim'
     | '/api/app/v1/games/$id/draw'
+    | '/api/app/v1/games/$id/first-move-timeout'
     | '/api/app/v1/games/$id/flag'
     | '/api/app/v1/games/$id/move'
+    | '/api/app/v1/games/$id/ready'
     | '/api/app/v1/games/$id/rematch'
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
@@ -1377,6 +1438,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/reset-password'
     | '/settings'
+    | '/sitemap.xml'
     | '/support'
     | '/terms'
     | '/tv'
@@ -1448,15 +1510,18 @@ export interface FileRouteTypes {
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
+    | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/seek'
+    | '/api/app/v1/spectate'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
     | '/api/app/v1/challenges/$id'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
+    | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
@@ -1476,8 +1541,10 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/back'
     | '/api/app/v1/games/$id/claim'
     | '/api/app/v1/games/$id/draw'
+    | '/api/app/v1/games/$id/first-move-timeout'
     | '/api/app/v1/games/$id/flag'
     | '/api/app/v1/games/$id/move'
+    | '/api/app/v1/games/$id/ready'
     | '/api/app/v1/games/$id/rematch'
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
@@ -1511,6 +1578,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/reset-password'
     | '/settings'
+    | '/sitemap.xml'
     | '/support'
     | '/terms'
     | '/tv'
@@ -1582,15 +1650,18 @@ export interface FileRouteTypes {
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
+    | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/seek'
+    | '/api/app/v1/spectate'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
     | '/api/app/v1/challenges/$id'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
+    | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
@@ -1610,8 +1681,10 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/back'
     | '/api/app/v1/games/$id/claim'
     | '/api/app/v1/games/$id/draw'
+    | '/api/app/v1/games/$id/first-move-timeout'
     | '/api/app/v1/games/$id/flag'
     | '/api/app/v1/games/$id/move'
+    | '/api/app/v1/games/$id/ready'
     | '/api/app/v1/games/$id/rematch'
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
@@ -1646,6 +1719,7 @@ export interface RootRouteChildren {
   RefundPolicyRoute: typeof RefundPolicyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
   TvRoute: typeof TvRoute
@@ -1702,15 +1776,18 @@ export interface RootRouteChildren {
   ApiAppV1BotGamesRoute: typeof ApiAppV1BotGamesRoute
   ApiAppV1ConfigRoute: typeof ApiAppV1ConfigRoute
   ApiAppV1DevicesRoute: typeof ApiAppV1DevicesRoute
+  ApiAppV1LeaderboardRoute: typeof ApiAppV1LeaderboardRoute
   ApiAppV1MeRoute: typeof ApiAppV1MeRoute
   ApiAppV1OpenapiDotjsonRoute: typeof ApiAppV1OpenapiDotjsonRoute
   ApiAppV1SeekRoute: typeof ApiAppV1SeekRoute
+  ApiAppV1SpectateRoute: typeof ApiAppV1SpectateRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
   ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRouteWithChildren
   ApiPublicV1WebhooksRoute: typeof ApiPublicV1WebhooksRouteWithChildren
   ApiAppV1ChallengesIdRoute: typeof ApiAppV1ChallengesIdRouteWithChildren
   ApiAppV1GamesIdRoute: typeof ApiAppV1GamesIdRouteWithChildren
   ApiAppV1NotificationsReadRoute: typeof ApiAppV1NotificationsReadRoute
+  ApiAppV1ProfileUsernameRoute: typeof ApiAppV1ProfileUsernameRoute
   ApiAppV1PuzzlesDailyRoute: typeof ApiAppV1PuzzlesDailyRoute
   ApiAppV1PuzzlesNextRoute: typeof ApiAppV1PuzzlesNextRoute
   ApiAppV1PuzzlesPackRoute: typeof ApiAppV1PuzzlesPackRoute
@@ -1747,6 +1824,13 @@ declare module '@tanstack/react-router' {
       path: '/support'
       fullPath: '/support'
       preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -2372,6 +2456,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaystackWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/spectate': {
+      id: '/api/app/v1/spectate'
+      path: '/api/app/v1/spectate'
+      fullPath: '/api/app/v1/spectate'
+      preLoaderRoute: typeof ApiAppV1SpectateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/seek': {
       id: '/api/app/v1/seek'
       path: '/api/app/v1/seek'
@@ -2391,6 +2482,13 @@ declare module '@tanstack/react-router' {
       path: '/api/app/v1/me'
       fullPath: '/api/app/v1/me'
       preLoaderRoute: typeof ApiAppV1MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/leaderboard': {
+      id: '/api/app/v1/leaderboard'
+      path: '/api/app/v1/leaderboard'
+      fullPath: '/api/app/v1/leaderboard'
+      preLoaderRoute: typeof ApiAppV1LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/app/v1/devices': {
@@ -2505,6 +2603,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PuzzlesDailyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/profile/$username': {
+      id: '/api/app/v1/profile/$username'
+      path: '/api/app/v1/profile/$username'
+      fullPath: '/api/app/v1/profile/$username'
+      preLoaderRoute: typeof ApiAppV1ProfileUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/notifications/read': {
       id: '/api/app/v1/notifications/read'
       path: '/api/app/v1/notifications/read'
@@ -2582,6 +2687,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1GamesIdRematchRouteImport
       parentRoute: typeof ApiAppV1GamesIdRoute
     }
+    '/api/app/v1/games/$id/ready': {
+      id: '/api/app/v1/games/$id/ready'
+      path: '/ready'
+      fullPath: '/api/app/v1/games/$id/ready'
+      preLoaderRoute: typeof ApiAppV1GamesIdReadyRouteImport
+      parentRoute: typeof ApiAppV1GamesIdRoute
+    }
     '/api/app/v1/games/$id/move': {
       id: '/api/app/v1/games/$id/move'
       path: '/move'
@@ -2594,6 +2706,13 @@ declare module '@tanstack/react-router' {
       path: '/flag'
       fullPath: '/api/app/v1/games/$id/flag'
       preLoaderRoute: typeof ApiAppV1GamesIdFlagRouteImport
+      parentRoute: typeof ApiAppV1GamesIdRoute
+    }
+    '/api/app/v1/games/$id/first-move-timeout': {
+      id: '/api/app/v1/games/$id/first-move-timeout'
+      path: '/first-move-timeout'
+      fullPath: '/api/app/v1/games/$id/first-move-timeout'
+      preLoaderRoute: typeof ApiAppV1GamesIdFirstMoveTimeoutRouteImport
       parentRoute: typeof ApiAppV1GamesIdRoute
     }
     '/api/app/v1/games/$id/draw': {
@@ -2740,8 +2859,10 @@ interface ApiAppV1GamesIdRouteChildren {
   ApiAppV1GamesIdBackRoute: typeof ApiAppV1GamesIdBackRoute
   ApiAppV1GamesIdClaimRoute: typeof ApiAppV1GamesIdClaimRoute
   ApiAppV1GamesIdDrawRoute: typeof ApiAppV1GamesIdDrawRoute
+  ApiAppV1GamesIdFirstMoveTimeoutRoute: typeof ApiAppV1GamesIdFirstMoveTimeoutRoute
   ApiAppV1GamesIdFlagRoute: typeof ApiAppV1GamesIdFlagRoute
   ApiAppV1GamesIdMoveRoute: typeof ApiAppV1GamesIdMoveRoute
+  ApiAppV1GamesIdReadyRoute: typeof ApiAppV1GamesIdReadyRoute
   ApiAppV1GamesIdRematchRoute: typeof ApiAppV1GamesIdRematchRoute
   ApiAppV1GamesIdResignRoute: typeof ApiAppV1GamesIdResignRoute
   ApiAppV1GamesIdTakebackRoute: typeof ApiAppV1GamesIdTakebackRoute
@@ -2753,8 +2874,10 @@ const ApiAppV1GamesIdRouteChildren: ApiAppV1GamesIdRouteChildren = {
   ApiAppV1GamesIdBackRoute: ApiAppV1GamesIdBackRoute,
   ApiAppV1GamesIdClaimRoute: ApiAppV1GamesIdClaimRoute,
   ApiAppV1GamesIdDrawRoute: ApiAppV1GamesIdDrawRoute,
+  ApiAppV1GamesIdFirstMoveTimeoutRoute: ApiAppV1GamesIdFirstMoveTimeoutRoute,
   ApiAppV1GamesIdFlagRoute: ApiAppV1GamesIdFlagRoute,
   ApiAppV1GamesIdMoveRoute: ApiAppV1GamesIdMoveRoute,
+  ApiAppV1GamesIdReadyRoute: ApiAppV1GamesIdReadyRoute,
   ApiAppV1GamesIdRematchRoute: ApiAppV1GamesIdRematchRoute,
   ApiAppV1GamesIdResignRoute: ApiAppV1GamesIdResignRoute,
   ApiAppV1GamesIdTakebackRoute: ApiAppV1GamesIdTakebackRoute,
@@ -2817,6 +2940,7 @@ const rootRouteChildren: RootRouteChildren = {
   RefundPolicyRoute: RefundPolicyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
   TvRoute: TvRoute,
@@ -2873,15 +2997,18 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1BotGamesRoute: ApiAppV1BotGamesRoute,
   ApiAppV1ConfigRoute: ApiAppV1ConfigRoute,
   ApiAppV1DevicesRoute: ApiAppV1DevicesRoute,
+  ApiAppV1LeaderboardRoute: ApiAppV1LeaderboardRoute,
   ApiAppV1MeRoute: ApiAppV1MeRoute,
   ApiAppV1OpenapiDotjsonRoute: ApiAppV1OpenapiDotjsonRoute,
   ApiAppV1SeekRoute: ApiAppV1SeekRoute,
+  ApiAppV1SpectateRoute: ApiAppV1SpectateRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
   ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRouteWithChildren,
   ApiPublicV1WebhooksRoute: ApiPublicV1WebhooksRouteWithChildren,
   ApiAppV1ChallengesIdRoute: ApiAppV1ChallengesIdRouteWithChildren,
   ApiAppV1GamesIdRoute: ApiAppV1GamesIdRouteWithChildren,
   ApiAppV1NotificationsReadRoute: ApiAppV1NotificationsReadRoute,
+  ApiAppV1ProfileUsernameRoute: ApiAppV1ProfileUsernameRoute,
   ApiAppV1PuzzlesDailyRoute: ApiAppV1PuzzlesDailyRoute,
   ApiAppV1PuzzlesNextRoute: ApiAppV1PuzzlesNextRoute,
   ApiAppV1PuzzlesPackRoute: ApiAppV1PuzzlesPackRoute,

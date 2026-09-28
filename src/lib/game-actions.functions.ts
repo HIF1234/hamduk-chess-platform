@@ -236,6 +236,16 @@ export const acceptRematch = createServerFn({ method: "POST" })
     return { gameId: created.id };
   });
 
+export const checkFirstMoveTimeout = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => GameIdInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const game = await loadGame(data.gameId);
+    assertParticipant(game, context.userId);
+    const { checkAndAbortFirstMoveTimeout } = await import("@/lib/first-move-timeout.server");
+    return checkAndAbortFirstMoveTimeout(data.gameId);
+  });
+
 export const checkFlag = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => GameIdInput.parse(d))

@@ -187,7 +187,10 @@ export class ReviewAnalyzer {
       const sign = p.color === "w" ? 1 : -1;
       const cpLoss = Math.max(0, (evalBefore - evalAfter) * sign);
       // Rough "book" heuristic for the first 6 moves each side; a checkmate is never book.
-      const wasBook = i < 12 && cpLoss < 25 && !p.san.endsWith("#");
+      // The threshold is generous (not the ~15cp "best" cutoff) because Stockfish 11's
+      // classical eval is genuinely noisy in the opening -- swings of 80-100cp between
+      // near-symmetric positions a few plies apart are normal engine noise, not a mistake.
+      const wasBook = i < 12 && cpLoss < 150 && !p.san.endsWith("#");
       moves.push({
         ply: i + 1,
         san: p.san,
@@ -222,11 +225,16 @@ function classify(cpLoss: number, isTop: boolean): Classification {
   return "blunder";
 }
 
-/** Lichess-style accuracy: winPct(before) - winPct(after) mapped 0-100. */
+/**
+ * Lichess-style accuracy: winPct(before) - winPct(after) mapped 0-100. Book moves are
+ * skipped -- they're theory, not something the engine's noisy opening-phase eval should
+ * be allowed to mark down.
+ */
 function computeAccuracy(moves: MoveReview[]): number {
-  if (moves.length === 0) return 100;
+  const scored = moves.filter(m => m.classification !== "book");
+  if (scored.length === 0) return 100;
   let sum = 0;
-  for (const m of moves) {
+  for (const m of scored) {
     const sign = m.color === "w" ? 1 : -1;
     const before = winPct(m.evalBefore * sign);
     const after = winPct(m.evalAfter * sign);
@@ -235,7 +243,7 @@ function computeAccuracy(moves: MoveReview[]): number {
     const acc = 103.1668 * Math.exp(-0.04354 * drop) - 3.1669;
     sum += Math.max(0, Math.min(100, acc));
   }
-  return Math.round((sum / moves.length) * 10) / 10;
+  return Math.round((sum / scored.length) * 10) / 10;
 }
 
 /** Sigmoid mapping cp → win % from mover's POV. */

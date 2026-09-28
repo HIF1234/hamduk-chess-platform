@@ -91,6 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Play, learn and compete in chess. Africa-first: Nigerian bots, puzzles, tournaments, clubs and coaching.",
       },
       { name: "author", content: "Hamduk Chess Club" },
+      { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Hamduk Chess" },
       {
         property: "og:description",
@@ -98,6 +99,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Play, learn and compete in chess. Africa-first: Nigerian bots, puzzles, tournaments, clubs and coaching.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://play.chess.hamduk.com.ng" },
+      { property: "og:site_name", content: "Hamduk Chess" },
+      { property: "og:image", content: "https://play.chess.hamduk.com.ng/favicon.ico" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Hamduk Chess" },
       {
@@ -111,6 +115,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "canonical", href: "https://play.chess.hamduk.com.ng" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -122,6 +127,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         children:
           "(function(){try{var t=localStorage.getItem('hamduk:theme')||'system';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var r=document.documentElement;if(d)r.classList.add('dark');r.style.colorScheme=d?'dark':'light';}catch(e){}})();",
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Hamduk Chess",
+          url: "https://play.chess.hamduk.com.ng",
+          description:
+            "Play, learn and compete in chess. Africa-first: Nigerian bots, puzzles, tournaments, clubs and coaching.",
+          publisher: { "@type": "Organization", name: "Hamduk Chess", url: "https://chess.hamduk.com.ng" },
+        }),
       },
     ],
   }),

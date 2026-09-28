@@ -1621,6 +1621,7 @@ export type Database = {
           explorer_indexed: boolean
           fairplay_submitted_at: string | null
           fen: string
+          first_move_ready_at: string | null
           flag_reason: string | null
           flagged_for_review: boolean
           id: string
@@ -1666,6 +1667,7 @@ export type Database = {
           explorer_indexed?: boolean
           fairplay_submitted_at?: string | null
           fen?: string
+          first_move_ready_at?: string | null
           flag_reason?: string | null
           flagged_for_review?: boolean
           id?: string
@@ -1711,6 +1713,7 @@ export type Database = {
           explorer_indexed?: boolean
           fairplay_submitted_at?: string | null
           fen?: string
+          first_move_ready_at?: string | null
           flag_reason?: string | null
           flagged_for_review?: boolean
           id?: string
@@ -2184,6 +2187,8 @@ export type Database = {
           daily_puzzle_emailed_on: string | null
           draws: number
           email_notify_moves: boolean
+          first_move_ban_stage: number
+          first_move_strikes: number
           flag_reason: string | null
           flagged_for_review: boolean
           games_played: number
@@ -2218,6 +2223,8 @@ export type Database = {
           daily_puzzle_emailed_on?: string | null
           draws?: number
           email_notify_moves?: boolean
+          first_move_ban_stage?: number
+          first_move_strikes?: number
           flag_reason?: string | null
           flagged_for_review?: boolean
           games_played?: number
@@ -2252,6 +2259,8 @@ export type Database = {
           daily_puzzle_emailed_on?: string | null
           draws?: number
           email_notify_moves?: boolean
+          first_move_ban_stage?: number
+          first_move_strikes?: number
           flag_reason?: string | null
           flagged_for_review?: boolean
           games_played?: number
@@ -3613,6 +3622,7 @@ export type Database = {
         Args: { _board_id: string; _user_id: string }
         Returns: boolean
       }
+      clear_first_move_strikes: { Args: { p_user: string }; Returns: undefined }
       current_admin_role: {
         Args: never
         Returns: Database["public"]["Enums"]["admin_role_enum"]
@@ -3760,8 +3770,17 @@ export type Database = {
         Args: { p_time_control: string; p_variant?: string }
         Returns: undefined
       }
+      record_first_move_strike: {
+        Args: { p_user: string }
+        Returns: {
+          banned_until: string
+          indefinite: boolean
+          new_stage: number
+          new_strikes: number
+        }[]
+      }
       submit_puzzle_attempt: {
-        Args: { p_puzzle_id: string; p_success: boolean }
+        Args: { p_hints_used?: number; p_puzzle_id: string; p_success: boolean }
         Returns: Json
       }
       weekly_report_candidates: {

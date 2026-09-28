@@ -60,6 +60,25 @@ const SPEC = {
     "/games/{id}": {
       get: op("One game with players and the server time", { parameters: [idParam] }),
     },
+    "/leaderboard": {
+      get: op("Top players by rating", {
+        parameters: [
+          { name: "category", in: "query", schema: { enum: ["bullet", "blitz", "rapid", "classical"] } },
+          { name: "variant", in: "query", schema: { enum: ["standard", "chess960"] } },
+          { name: "country", in: "query", schema: { type: "string" } },
+          { name: "month", in: "query", schema: { type: "boolean" } },
+          { name: "page", in: "query", schema: { type: "integer", minimum: 1 } },
+        ],
+      }),
+    },
+    "/spectate": {
+      get: op("Public games open to spectate right now"),
+    },
+    "/profile/{username}": {
+      get: op("A player's public profile: ratings, rank and recent games", {
+        parameters: [{ name: "username", in: "path", required: true, schema: { type: "string" } }],
+      }),
+    },
     "/games/{id}/move": {
       post: op("Play a move", {
         parameters: [idParam],
@@ -83,6 +102,16 @@ const SPEC = {
     },
     "/games/{id}/flag": {
       post: op("End the game if a clock has run out", { parameters: [idParam] }),
+    },
+    "/games/{id}/ready": {
+      post: op("White confirms the game screen has loaded; starts the first-move no-show clock", {
+        parameters: [idParam],
+      }),
+    },
+    "/games/{id}/first-move-timeout": {
+      post: op("Abort the game if White never made a first move in time", {
+        parameters: [idParam],
+      }),
     },
     "/games/{id}/draw": {
       post: op("Offer a draw, or answer one with { accept }", {

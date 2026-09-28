@@ -23,6 +23,8 @@ export const Route = createFileRoute("/api/cron/tick")({
           guests: async () => (await import("@/lib/guests.server")).cleanupGuests(),
           sentinelSubmit: async () => (await import("@/lib/sentinel.server")).submitDueGames(),
           sentinelPoll: async () => (await import("@/lib/sentinel.server")).pollOpenJobs(),
+          firstMoveTimeouts: async () =>
+            (await import("@/lib/first-move-timeout.server")).sweepFirstMoveTimeouts(),
         };
         const results: Record<string, unknown> = {};
         for (const [name, run] of Object.entries(jobs)) {

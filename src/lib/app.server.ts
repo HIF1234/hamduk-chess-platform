@@ -228,3 +228,58 @@ export async function unregisterDevice(ctx: AppContext, input: unknown) {
   await s.from("device_tokens").delete().eq("token", data.token).eq("user_id", ctx.userId);
   return { ok: true };
 }
+
+/** Top players by rating, same data as the website's /leaderboard. */
+export async function getLeaderboard(_ctx: AppContext | null, input: unknown) {
+  const { idsIn } = await import("@/lib/time-controls");
+  const data = z
+    .object({
+      category: z.enum(["bullet", "blitz", "rapid", "classical"]).default("blitz"),
+      variant: z.enum(["standard", "chess960"]).default("standard"),
+      country: z.string().length(2).optional(),
+      month: z.coerce.boolean().default(false),
+      page: z.coerce.number().int().min(1).default(1),
+    })
+    .parse(input ?? {});
+  const pageSize = 25;
+  const s = await admin();
+  const { data: rows, error } = await s.rpc("leaderboard", {
+    p_tcs: idsIn(data.category),
+    p_variant: data.variant,
+    p_country: data.country,
+    p_friends_of: undefined,
+    p_month: data.month,
+    p_limit: pageSize,
+    p_offset: (data.page - 1) * pageSize,
+  });
+  if (error) throw new Error(error.message);
+  return { rows: rows ?? [], page: data.page, pageSize };
+}
+
+/** Public games open to spectate right now, same pool as the website's /spectate. */
+export async function listLiveGames(_ctx: AppContext | null) {
+  const s = await admin();
+  const { data: games, error } = await s
+    .from("games")
+    .select("id, white_id, black_id, time_control, variant, ply, spectator_count, rated")
+    .eq("status", "active")
+    .eq("is_public", true)
+    .eq("is_correspondence", false)
+    .order("last_move_at", { ascending: false })
+    .limit(30);
+  if (error) throw new Error(error.message);
+  const who = await names((games ?? []).flatMap((g) => [g.white_id, g.black_id]));
+  return {
+    games: (games ?? []).map((g) => ({
+      ...g,
+      white: who.get(g.white_id) ?? null,
+      black: who.get(g.black_id) ?? null,
+    })),
+  };
+}
+
+/** A player's public profile by username, same data as the website's /profile/{username}. */
+export async function getPublicProfile(_ctx: AppContext | null, input: unknown) {
+  const { getProfileByUsername } = await import("@/lib/profile.functions");
+  return getProfileByUsername({ data: input });
+}

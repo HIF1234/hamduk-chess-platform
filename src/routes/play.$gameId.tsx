@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { Loader2, ArrowLeft, Clock } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
-import { submitMove, resignGame } from "@/lib/matchmaking.functions";
+import { submitMove, resignGame, confirmGameReady } from "@/lib/matchmaking.functions";
 import {
   offerDraw,
   respondDraw,
@@ -22,6 +22,7 @@ import {
   offerRematch,
   acceptRematch,
   checkFlag,
+  checkFirstMoveTimeout,
 } from "@/lib/game-actions.functions";
 import {
   heartbeat,
@@ -90,6 +91,8 @@ function PlayPage() {
   const rematchOffer = useServerFn(offerRematch);
   const rematchAccept = useServerFn(acceptRematch);
   const flagCheck = useServerFn(checkFlag);
+  const firstMoveTimeoutCheck = useServerFn(checkFirstMoveTimeout);
+  const gameReady = useServerFn(confirmGameReady);
   const beat = useServerFn(heartbeat);
   const disconnect = useServerFn(markDisconnected);
   const reconnectFn = useServerFn(reconnect);
@@ -256,6 +259,30 @@ function PlayPage() {
       });
     }
   }, [game, myColor, whiteDisplayMs, blackDisplayMs, myTurn, gameId, flagCheck]);
+
+  // White's client confirms it has actually loaded the game once -- this is what starts the
+  // first-move no-show clock, not game creation, so a slow connection gets time to catch up
+  // instead of losing the abort race before the board even renders.
+  const readySentRef = useRef(false);
+  useEffect(() => {
+    if (!game || readySentRef.current) return;
+    if (isWhite && game.ply === 0 && game.status === "active") {
+      readySentRef.current = true;
+      void gameReady({ data: { gameId } }).catch(() => {
+        readySentRef.current = false;
+      });
+    }
+  }, [game, isWhite, gameId, gameReady]);
+
+  // Black polls for White's first-move no-show while waiting on ply 0 -- there's no clock
+  // hitting zero to key off yet, so this checks periodically instead.
+  useEffect(() => {
+    if (!game || game.status !== "active" || game.ply !== 0 || isWhite) return;
+    const id = setInterval(() => {
+      void firstMoveTimeoutCheck({ data: { gameId } }).catch(() => {});
+    }, 5000);
+    return () => clearInterval(id);
+  }, [game, isWhite, gameId, firstMoveTimeoutCheck]);
 
   // A move can race the end of the game (most often a clock running out in bullet). Show
   // what happened and pull the final state instead of the raw server message.
@@ -485,7 +512,9 @@ function PlayPage() {
   const statusText =
     game.status === "completed"
       ? game.result === "draw"
-        ? `Draw by ${game.end_reason ?? "agreement"}`
+        ? game.end_reason === "first_move_timeout"
+          ? "Game aborted — no first move made in time"
+          : `Draw by ${game.end_reason ?? "agreement"}`
         : `${game.result === "white" ? (profiles[game.white_id]?.username ?? "White") : (profiles[game.black_id]?.username ?? "Black")} won by ${game.end_reason ?? "resignation"}`
       : myTurn
         ? "Your turn"

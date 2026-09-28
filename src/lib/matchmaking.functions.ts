@@ -40,6 +40,28 @@ export const cancelQueue = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/** Called once by White's client when the game screen has actually rendered. Starts the
+ *  first-move no-show clock (see first-move-timeout.server.ts) -- not the real chess clock,
+ *  which is unaffected and keeps counting from game creation as it always has. */
+export const confirmGameReady = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ gameId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: game, error } = await supabaseAdmin
+      .from("games")
+      .select("white_id, ply, status, first_move_ready_at")
+      .eq("id", data.gameId)
+      .single();
+    if (error || !game) throw new Error("Game not found");
+    if (context.userId !== game.white_id) return { ok: true };
+    if (game.status !== "active" || game.ply !== 0 || game.first_move_ready_at) return { ok: true };
+    await supabaseAdmin
+      .from("games")
+      .update({ first_move_ready_at: new Date().toISOString() })
+      .eq("id", data.gameId);
+    return { ok: true };
+  });
+
 export const submitMove = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
@@ -271,6 +293,11 @@ export const submitMove = createServerFn({ method: "POST" })
         payload: { uci: data.uci, san: move.san, ply: newPly, elapsed_ms: elapsedServer },
       }),
     ];
+    // White showed up and made their first move in time: clear any no-show strikes so an
+    // occasional slow connection never accumulates toward a ban (see first-move-timeout.server.ts).
+    if (game.ply === 0 && isWhite) {
+      bestEffort.push(supabaseAdmin.rpc("clear_first_move_strikes", { p_user: userId }));
+    }
     // "Your move" push when the opponent has the app in the background (marked away).
     // Fired alongside the writes above (not after them) so it never adds to the mover's
     // own latency. Live games only; correspondence notifies separately below.
