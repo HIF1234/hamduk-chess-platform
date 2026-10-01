@@ -5,6 +5,7 @@ import { Chess } from "chess.js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { chess960StartFen } from "./chess960";
+import { getCachedGameState, setCachedGameState, invalidateGameCache } from "./game-cache.server";
 
 const TimeControl = z.enum(TIME_CONTROL_IDS);
 const Variant = z.enum(["standard", "chess960"]);
@@ -87,14 +88,20 @@ export const submitMove = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { userId } = context;
-    const { data: game, error: gErr } = await supabaseAdmin
-      .from("games")
-      .select(
-        "id, white_id, black_id, fen, pgn, ply, status, result, time_white_ms, time_black_ms, increment_sec, last_clock_update, initial_sec, chess960_start_fen, variant, is_correspondence, days_per_move, notify_by_email",
-      )
-      .eq("id", data.gameId)
-      .single();
-    if (gErr || !game) throw new Error("Game not found");
+    // Fast path: skip the Postgres round trip on a cache hit (live games only -- see
+    // game-cache.server.ts). A miss, or any doubt, falls straight back to Postgres below.
+    let game = await getCachedGameState(data.gameId);
+    if (!game) {
+      const { data: fresh, error: gErr } = await supabaseAdmin
+        .from("games")
+        .select(
+          "id, white_id, black_id, fen, pgn, ply, status, result, time_white_ms, time_black_ms, increment_sec, last_clock_update, initial_sec, chess960_start_fen, variant, is_correspondence, days_per_move, notify_by_email",
+        )
+        .eq("id", data.gameId)
+        .single();
+      if (gErr || !fresh) throw new Error("Game not found");
+      game = fresh;
+    }
     if (userId !== game.white_id && userId !== game.black_id) throw new Error("Not a participant");
 
     // A retry of a move that already landed (e.g. the reply was lost on a bad connection).
@@ -189,6 +196,7 @@ export const submitMove = createServerFn({ method: "POST" })
         const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
         await emitGameCompleted(game.id);
       }
+      await invalidateGameCache(game.id);
       throw new Error("Flagged on time");
     }
 
@@ -297,6 +305,8 @@ export const submitMove = createServerFn({ method: "POST" })
 
     const bestEffort: PromiseLike<unknown>[] = [
       broadcastPromise,
+      // Write-through: keeps the next move's pre-move read on the cache fast path too.
+      setCachedGameState(movePayload),
       // Telemetry (server-authoritative timing).
       supabaseAdmin.from("move_telemetry").insert({
         game_id: game.id,

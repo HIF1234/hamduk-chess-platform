@@ -4,6 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { assertRate } from "./rate-limit.server";
 import { chess960StartFen } from "./chess960";
+import { invalidateGameCache } from "./game-cache.server";
 
 const GameIdInput = z.object({ gameId: z.string().uuid() });
 const OFFER_TTL_MS = 30_000;
@@ -36,6 +37,7 @@ export const offerDraw = createServerFn({ method: "POST" })
       draw_offer_by: userId,
       draw_offer_at: new Date().toISOString(),
     }).eq("id", game.id);
+    await invalidateGameCache(game.id);
     await supabaseAdmin.from("game_events").insert({
       game_id: game.id, type: "draw_offer", by_user: userId, payload: {},
     });
@@ -54,6 +56,7 @@ export const respondDraw = createServerFn({ method: "POST" })
     const offered = game.draw_offer_at ? new Date(game.draw_offer_at).getTime() : 0;
     if (Date.now() - offered > OFFER_TTL_MS) {
       await supabaseAdmin.from("games").update({ draw_offer_by: null, draw_offer_at: null }).eq("id", game.id);
+      await invalidateGameCache(game.id);
       throw new Error("Offer expired");
     }
     if (data.accept) {
@@ -65,6 +68,7 @@ export const respondDraw = createServerFn({ method: "POST" })
         draw_offer_by: null,
         draw_offer_at: null,
       }).eq("id", game.id);
+      await invalidateGameCache(game.id);
       await supabaseAdmin.from("game_events").insert({
         game_id: game.id, type: "draw_accept", by_user: userId, payload: {},
       });
@@ -79,6 +83,7 @@ export const respondDraw = createServerFn({ method: "POST" })
       await supabaseAdmin.from("games").update({
         draw_offer_by: null, draw_offer_at: null,
       }).eq("id", game.id);
+      await invalidateGameCache(game.id);
       await supabaseAdmin.from("game_events").insert({
         game_id: game.id, type: "draw_decline", by_user: userId, payload: {},
       });
@@ -101,6 +106,7 @@ export const abortGame = createServerFn({ method: "POST" })
       end_reason: "abort",
       ended_at: new Date().toISOString(),
     }).eq("id", game.id);
+    await invalidateGameCache(game.id);
     await supabaseAdmin.from("game_events").insert({
       game_id: game.id, type: "abort", by_user: userId, payload: {},
     });
@@ -125,6 +131,7 @@ export const requestTakeback = createServerFn({ method: "POST" })
       takeback_offer_by: userId,
       takeback_offer_at: new Date().toISOString(),
     }).eq("id", game.id);
+    await invalidateGameCache(game.id);
     await supabaseAdmin.from("game_events").insert({
       game_id: game.id, type: "takeback_offer", by_user: userId, payload: {},
     });
@@ -142,12 +149,14 @@ export const respondTakeback = createServerFn({ method: "POST" })
     const offered = game.takeback_offer_at ? new Date(game.takeback_offer_at).getTime() : 0;
     if (Date.now() - offered > OFFER_TTL_MS) {
       await supabaseAdmin.from("games").update({ takeback_offer_by: null, takeback_offer_at: null }).eq("id", game.id);
+      await invalidateGameCache(game.id);
       throw new Error("Offer expired");
     }
     if (!data.accept) {
       await supabaseAdmin.from("games").update({
         takeback_offer_by: null, takeback_offer_at: null,
       }).eq("id", game.id);
+      await invalidateGameCache(game.id);
       await supabaseAdmin.from("game_events").insert({
         game_id: game.id, type: "takeback_decline", by_user: userId, payload: {},
       });
@@ -171,6 +180,7 @@ export const respondTakeback = createServerFn({ method: "POST" })
       takeback_offer_by: null,
       takeback_offer_at: null,
     }).eq("id", game.id);
+    await invalidateGameCache(game.id);
     await supabaseAdmin.from("game_events").insert({
       game_id: game.id, type: "takeback_accept", by_user: userId, payload: { reverted_ply: last.ply },
     });
@@ -270,6 +280,7 @@ export const checkFlag = createServerFn({ method: "POST" })
       time_black_ms: turn === "b" ? 0 : game.time_black_ms,
       ended_at: new Date().toISOString(),
     }).eq("id", game.id);
+    await invalidateGameCache(game.id);
     await supabaseAdmin.from("game_events").insert({
       game_id: game.id, type: "flag", by_user: null, payload: { loser: turn },
     });

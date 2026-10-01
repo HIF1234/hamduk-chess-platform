@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { redis } from "./redis.server";
+import { invalidateGameCache } from "./game-cache.server";
 
 export const heartbeat = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -107,6 +108,7 @@ export const claimDisconnectWin = createServerFn({ method: "POST" })
         end_reason: "abort",
         ended_at: new Date().toISOString(),
       }).eq("id", game.id);
+      await invalidateGameCache(game.id);
       await supabaseAdmin.from("game_events").insert({
         game_id: game.id, type: "abort", by_user: userId, payload: { reason: "disconnect_pre_move_10" },
       });
@@ -127,6 +129,7 @@ export const claimDisconnectWin = createServerFn({ method: "POST" })
       end_reason: "disconnect",
       ended_at: new Date().toISOString(),
     }).eq("id", game.id);
+    await invalidateGameCache(game.id);
     await supabaseAdmin.from("game_events").insert({
       game_id: game.id, type: "disconnect_win", by_user: userId, payload: {},
     });

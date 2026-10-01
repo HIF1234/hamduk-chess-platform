@@ -7,6 +7,7 @@
 // while it's waiting (same pattern as checkFlag for a normal time forfeit), and the cron
 // sweep below catches the case where neither client is present to notice.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { invalidateGameCache } from "./game-cache.server";
 
 /** Grace period to actually make the first move, once White's client has confirmed ready. */
 export const FIRST_MOVE_GRACE_MS = 25_000;
@@ -44,6 +45,7 @@ export async function checkAndAbortFirstMoveTimeout(gameId: string): Promise<{ t
     .select("id")
     .maybeSingle();
   if (uErr || !updated) return { timedOut: false };
+  await invalidateGameCache(gameId);
 
   await supabaseAdmin.from("game_events").insert({
     game_id: gameId,
