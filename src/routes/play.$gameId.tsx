@@ -99,9 +99,11 @@ function PlayPage() {
   const claimWin = useServerFn(claimDisconnectWin);
 
   const [game, setGame] = useState<GameRow | null>(null);
-  // Guards against playing the move sound twice for the same ply when both the broadcast and
-  // the postgres_changes backstop fire for the same move (expected, not an error).
-  const lastAppliedPlyRef = useRef(0);
+  // The ply we last played the move sound for -- whichever source reaches it first (our own
+  // optimistic local apply, the broadcast, or the postgres_changes backstop). State updates
+  // from all three still always apply (server truth always wins on fields like clocks), this
+  // only stops the sound firing twice for the same move.
+  const lastSoundedPlyRef = useRef(0);
   const [profiles, setProfiles] = useState<Record<string, ProfileLite>>({});
   const [submitting, setSubmitting] = useState(false);
   const [opponentDisconnectedAt, setOpponentDisconnectedAt] = useState<string | null>(null);
@@ -149,10 +151,11 @@ function PlayPage() {
       .channel(`game:${gameId}`)
       .on("broadcast", { event: "move" }, (msg) => {
         const next = msg.payload as GameRow & { san: string; uci: string };
-        if (next.ply <= lastAppliedPlyRef.current) return; // already applied (e.g. our own move, or a dupe)
-        lastAppliedPlyRef.current = next.ply;
         setGame((prev) => (prev ? { ...prev, ...next } : next));
-        sounds.move();
+        if (next.ply > lastSoundedPlyRef.current) {
+          lastSoundedPlyRef.current = next.ply;
+          sounds.move();
+        }
       })
       .on(
         "postgres_changes",
@@ -160,9 +163,10 @@ function PlayPage() {
         (payload) => {
           const next = payload.new as GameRow;
           setGame(next);
-          // Backstop path: only play the sound if the broadcast didn't already handle this ply.
-          if (next.ply > lastAppliedPlyRef.current) {
-            lastAppliedPlyRef.current = next.ply;
+          // Backstop path: only play the sound if nothing has already sounded for this ply
+          // (our own optimistic local move, or a broadcast that beat this here).
+          if (next.ply > lastSoundedPlyRef.current) {
+            lastSoundedPlyRef.current = next.ply;
             sounds.move();
           }
         },
@@ -331,10 +335,18 @@ function PlayPage() {
 
   // Try premove after opponent moves
   useEffect(() => {
-    if (!game || game.status !== "active" || !myTurn) return;
+    if (!game || game.status !== "active" || !myTurn || !myColor) return;
     const next = premoves.consumeIfLegal(game.fen);
     if (next) {
       const uci = `${next.from}${next.to}${next.promotion ?? ""}`;
+      const after = new Chess(game.fen);
+      try {
+        after.move({ from: next.from, to: next.to, promotion: next.promotion ?? "q" });
+        applyMoveOptimistically(after, myColor, game);
+      } catch {
+        /* validated a moment ago by consumeIfLegal; if this still somehow fails, the server
+         * round trip below is the source of truth anyway -- just skip the optimistic render */
+      }
       setSubmitting(true);
       signals.onMoveMade(game.ply + 1);
       void submit({ data: { gameId, uci } })
@@ -387,6 +399,45 @@ function PlayPage() {
     return (myColor === "w" && to[1] === "8") || (myColor === "b" && to[1] === "1");
   }
 
+  /** Renders a locally-validated move immediately instead of waiting on the round trip to the
+   *  server and back through Realtime -- see the longer note at its call sites. `after` is the
+   *  chess.js instance with the move already applied (mutates in place, so callers pass the
+   *  same instance they just called .move() on). */
+  function applyMoveOptimistically(after: Chess, moverColor: "w" | "b", baseline: GameRow) {
+    const ply = baseline.ply + 1;
+    let status = baseline.status;
+    let result = baseline.result;
+    let endReason = baseline.end_reason;
+    if (after.isCheckmate()) {
+      status = "completed";
+      result = moverColor === "w" ? "white" : "black";
+      endReason = "checkmate";
+    } else if (after.isStalemate() || after.isDraw()) {
+      status = "completed";
+      result = "draw";
+      endReason = after.isStalemate() ? "stalemate" : "draw";
+    }
+    setGame((prev) =>
+      prev
+        ? {
+            ...prev,
+            fen: after.fen(),
+            pgn: after.pgn(),
+            ply,
+            status,
+            result,
+            end_reason: endReason,
+            draw_offer_by: null,
+            draw_offer_at: null,
+            takeback_offer_by: null,
+            takeback_offer_at: null,
+          }
+        : prev,
+    );
+    lastSoundedPlyRef.current = ply;
+    sounds.move();
+  }
+
   /** Shared by drag-drop and tap-to-move. */
   function attemptMove(from: Square, to: Square): boolean {
     if (!game || !chess || from === to) return false;
@@ -416,6 +467,14 @@ function PlayPage() {
       setPendingMove({ from, to, promotion: isPromo ? "q" : undefined, san: legal.san });
       return false;
     }
+
+    // The move is already known legal locally -- render it now, don't wait on the server.
+    // The server is still authoritative: its broadcast (or moveFailed's refetch, if the move
+    // is ever rejected -- an out-of-sync race, not a legality issue since that was already
+    // checked here) overwrites this moments later with the real state.
+    if (!myColor) return false;
+    applyMoveOptimistically(probe, myColor, game);
+
     setSubmitting(true);
     signals.onMoveMade(game.ply + 1);
     void submit({ data: { gameId, uci } })
