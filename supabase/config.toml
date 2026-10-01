@@ -1,3 +1,6 @@
 project_id = "mzupxdpbsxlovxwcokla"
 [api]
 schemas = ["public", "graphql_public", "club"]
+
+[auth]
+additional_redirect_urls = ["https://play.chess.hamduk.com.ng/**", "https://hamduk-chess-platform-*-hamdukislamicfoundation-9128s-projects.vercel.app/**", "https://hamdukchessclub.vercel.app/**", "https://hamdukchessclub-*-hamdukislamicfoundation-9128s-projects.vercel.app/**", "https://club.chess.hamduk.com.ng/**", "http://localhost:3000/**"]
