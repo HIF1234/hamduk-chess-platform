@@ -99,6 +99,9 @@ function PlayPage() {
   const claimWin = useServerFn(claimDisconnectWin);
 
   const [game, setGame] = useState<GameRow | null>(null);
+  // Guards against playing the move sound twice for the same ply when both the broadcast and
+  // the postgres_changes backstop fire for the same move (expected, not an error).
+  const lastAppliedPlyRef = useRef(0);
   const [profiles, setProfiles] = useState<Record<string, ProfileLite>>({});
   const [submitting, setSubmitting] = useState(false);
   const [opponentDisconnectedAt, setOpponentDisconnectedAt] = useState<string | null>(null);
@@ -144,12 +147,24 @@ function PlayPage() {
     void load();
     const channel = supabase
       .channel(`game:${gameId}`)
+      .on("broadcast", { event: "move" }, (msg) => {
+        const next = msg.payload as GameRow & { san: string; uci: string };
+        if (next.ply <= lastAppliedPlyRef.current) return; // already applied (e.g. our own move, or a dupe)
+        lastAppliedPlyRef.current = next.ply;
+        setGame((prev) => (prev ? { ...prev, ...next } : next));
+        sounds.move();
+      })
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "games", filter: `id=eq.${gameId}` },
         (payload) => {
-          setGame(payload.new as GameRow);
-          sounds.move();
+          const next = payload.new as GameRow;
+          setGame(next);
+          // Backstop path: only play the sound if the broadcast didn't already handle this ply.
+          if (next.ply > lastAppliedPlyRef.current) {
+            lastAppliedPlyRef.current = next.ply;
+            sounds.move();
+          }
         },
       )
       .on(

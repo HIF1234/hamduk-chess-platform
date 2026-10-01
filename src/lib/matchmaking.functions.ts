@@ -277,7 +277,26 @@ export const submitMove = createServerFn({ method: "POST" })
       fen: newFen,
       by_user: userId,
     });
+    // Deliver the move to the opponent over Realtime Broadcast instead of waiting for them to
+    // pick it up via postgres_changes on the games UPDATE below -- that path only fires once
+    // the write has gone through Postgres' WAL and been decoded by Realtime, which is where
+    // most of the old move-to-board latency came from. Broadcast is a direct, low-latency
+    // relay (sent over plain HTTP, no socket needed from this serverless function) and doesn't
+    // wait on the DB write at all -- the new position is already fully known at this point.
+    // postgres_changes stays wired up client-side as a backstop in case this call is ever
+    // dropped (e.g. a transient Realtime hiccup), just no longer the primary delivery path.
+    const movePayload = { ...game, ...update, san: move.san, uci: data.uci };
+    const broadcastPromise = (async () => {
+      const channel = supabaseAdmin.channel(`game:${game.id}`);
+      try {
+        await channel.httpSend("move", movePayload);
+      } finally {
+        await supabaseAdmin.removeChannel(channel);
+      }
+    })();
+
     const bestEffort: PromiseLike<unknown>[] = [
+      broadcastPromise,
       // Telemetry (server-authoritative timing).
       supabaseAdmin.from("move_telemetry").insert({
         game_id: game.id,
