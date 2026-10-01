@@ -102,11 +102,11 @@ function DailyPuzzlePage() {
   );
 }
 
-function DailyError({ error, reset }: { error: Error; reset: () => void }) {
+function DailyError({ error, reset }: { error: unknown; reset: () => void }) {
   const router = useRouter();
   return (
     <div className="p-8 text-center text-sm text-muted-foreground">
-      Couldn't load this puzzle: {error.message}
+      Couldn't load this puzzle: {error instanceof Error ? error.message : String(error)}
       <button
         onClick={() => {
           reset();

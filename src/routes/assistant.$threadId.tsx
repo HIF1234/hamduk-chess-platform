@@ -26,7 +26,7 @@ export const Route = createFileRoute("/assistant/$threadId")({
     ],
   }),
   errorComponent: ({ error }) => (
-    <div className="p-8 text-sm text-muted-foreground">Chat failed to load: {error.message}</div>
+    <div className="p-8 text-sm text-muted-foreground">Chat failed to load: {error instanceof Error ? error.message : String(error)}</div>
   ),
   notFoundComponent: () => (
     <div className="p-8 text-sm text-muted-foreground">Conversation not found.</div>

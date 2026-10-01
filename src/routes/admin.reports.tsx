@@ -16,7 +16,7 @@ export const Route = createFileRoute("/admin/reports")({
   }),
   component: AdminReports,
   errorComponent: ({ error }) => (
-    <div className="p-4 text-sm text-destructive">{error.message}</div>
+    <div className="p-4 text-sm text-destructive">{error instanceof Error ? error.message : String(error)}</div>
   ),
   notFoundComponent: () => <div className="p-4 text-sm text-muted-foreground">Not found</div>,
 });

@@ -54,7 +54,7 @@ export const Route = createFileRoute("/profile/$username")({
   notFoundComponent: () => <NotFound username="" />,
 });
 
-function ProfileError({ reset }: { error: Error; reset: () => void }) {
+function ProfileError({ reset }: { error: unknown; reset: () => void }) {
   const router = useRouter();
   return (
     <div className="min-h-screen bg-background">

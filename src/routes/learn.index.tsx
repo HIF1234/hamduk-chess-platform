@@ -25,7 +25,7 @@ export const Route = createFileRoute("/learn/")({
   }),
   errorComponent: ({ error }) => (
     <div className="p-8 text-center text-sm text-muted-foreground">
-      Learn page failed to load: {error.message}
+      Learn page failed to load: {error instanceof Error ? error.message : String(error)}
     </div>
   ),
   notFoundComponent: () => <div className="p-8">Not found.</div>,

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/admin/audit-log")({
     ],
   }),
   component: AdminAuditLog,
-  errorComponent: ({ error }) => <div className="p-4 text-sm text-destructive">{error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-4 text-sm text-destructive">{error instanceof Error ? error.message : String(error)}</div>,
   notFoundComponent: () => <div className="p-4 text-sm text-muted-foreground">Not found</div>,
 });
 
