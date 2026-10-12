@@ -71,6 +71,15 @@ const SPEC = {
         ],
       }),
     },
+    "/subscription/checkout": {
+      post: op("Start a Plus/Gold Paystack checkout", {
+        description:
+          "Open the returned `authorization_url` in the device's browser. callback_url is the website's own " +
+          "/billing page, which verifies the transaction and applies the upgrade on return -- the app's next " +
+          "GET /me reflects the new tier, since both share one database. No in-app payment SDK.",
+        requestBody: json({ tier: { enum: ["plus", "gold"] } }, ["tier"]),
+      }),
+    },
     "/tournaments": {
       get: op("Public tournaments (not club-scoped), with entrant counts"),
     },

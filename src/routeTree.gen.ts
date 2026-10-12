@@ -121,6 +121,7 @@ import { Route as ApiAppV1PuzzlesDailyRouteImport } from './routes/api/app/v1/pu
 import { Route as ApiAppV1PuzzlesNextRouteImport } from './routes/api/app/v1/puzzles.next'
 import { Route as ApiAppV1PuzzlesPackRouteImport } from './routes/api/app/v1/puzzles.pack'
 import { Route as ApiAppV1PuzzlesSyncRouteImport } from './routes/api/app/v1/puzzles.sync'
+import { Route as ApiAppV1SubscriptionCheckoutRouteImport } from './routes/api/app/v1/subscription.checkout'
 import { Route as ApiAppV1TournamentsIndexRouteImport } from './routes/api/app/v1/tournaments.index'
 import { Route as ApiAppV1TournamentsIdRouteImport } from './routes/api/app/v1/tournaments.$id'
 import { Route as ApiPublicV1ClassesSessionRouteImport } from './routes/api/public/v1/classes.session'
@@ -715,6 +716,12 @@ const ApiAppV1PuzzlesSyncRoute = ApiAppV1PuzzlesSyncRouteImport.update({
   path: '/api/app/v1/puzzles/sync',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1SubscriptionCheckoutRoute =
+  ApiAppV1SubscriptionCheckoutRouteImport.update({
+    id: '/api/app/v1/subscription/checkout',
+    path: '/api/app/v1/subscription/checkout',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAppV1TournamentsIndexRoute =
   ApiAppV1TournamentsIndexRouteImport.update({
     id: '/api/app/v1/tournaments/',
@@ -992,6 +999,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
@@ -1135,6 +1143,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
@@ -1280,6 +1289,7 @@ export interface FileRoutesById {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
@@ -1426,6 +1436,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
@@ -1569,6 +1580,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
@@ -1713,6 +1725,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
@@ -1843,6 +1856,7 @@ export interface RootRouteChildren {
   ApiAppV1PuzzlesNextRoute: typeof ApiAppV1PuzzlesNextRoute
   ApiAppV1PuzzlesPackRoute: typeof ApiAppV1PuzzlesPackRoute
   ApiAppV1PuzzlesSyncRoute: typeof ApiAppV1PuzzlesSyncRoute
+  ApiAppV1SubscriptionCheckoutRoute: typeof ApiAppV1SubscriptionCheckoutRoute
   ApiAppV1TournamentsIdRoute: typeof ApiAppV1TournamentsIdRouteWithChildren
   ApiPublicV1ClassesSessionRoute: typeof ApiPublicV1ClassesSessionRouteWithChildren
   ApiPublicV1CorrespondenceSweepRoute: typeof ApiPublicV1CorrespondenceSweepRoute
@@ -2642,6 +2656,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PuzzlesSyncRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/subscription/checkout': {
+      id: '/api/app/v1/subscription/checkout'
+      path: '/api/app/v1/subscription/checkout'
+      fullPath: '/api/app/v1/subscription/checkout'
+      preLoaderRoute: typeof ApiAppV1SubscriptionCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/tournaments/': {
       id: '/api/app/v1/tournaments/'
       path: '/api/app/v1/tournaments'
@@ -3109,6 +3130,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1PuzzlesNextRoute: ApiAppV1PuzzlesNextRoute,
   ApiAppV1PuzzlesPackRoute: ApiAppV1PuzzlesPackRoute,
   ApiAppV1PuzzlesSyncRoute: ApiAppV1PuzzlesSyncRoute,
+  ApiAppV1SubscriptionCheckoutRoute: ApiAppV1SubscriptionCheckoutRoute,
   ApiAppV1TournamentsIdRoute: ApiAppV1TournamentsIdRouteWithChildren,
   ApiPublicV1ClassesSessionRoute: ApiPublicV1ClassesSessionRouteWithChildren,
   ApiPublicV1CorrespondenceSweepRoute: ApiPublicV1CorrespondenceSweepRoute,
