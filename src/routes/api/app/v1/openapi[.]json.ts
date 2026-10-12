@@ -71,6 +71,26 @@ const SPEC = {
         ],
       }),
     },
+    "/tournaments": {
+      get: op("Public tournaments (not club-scoped), with entrant counts"),
+    },
+    "/tournaments/{id}": {
+      get: op("Tournament detail: standings, this round's pairings/live boards, your own entry", {
+        parameters: [idParam],
+      }),
+    },
+    "/tournaments/{id}/join": {
+      post: op("Join a tournament", {
+        parameters: [idParam],
+        description:
+          "Fails if registration is closed, the tournament is full, or your membership tier doesn't meet " +
+          "min_tier. A successful response may include `requiresPayment: true` for a paid entry -- send the " +
+          "player to the website to complete checkout; there's no in-app payment flow yet.",
+      }),
+    },
+    "/tournaments/{id}/withdraw": {
+      post: op("Withdraw from a tournament", { parameters: [idParam] }),
+    },
     "/spectate": {
       get: op("Public games open to spectate right now"),
     },

@@ -121,6 +121,8 @@ import { Route as ApiAppV1PuzzlesDailyRouteImport } from './routes/api/app/v1/pu
 import { Route as ApiAppV1PuzzlesNextRouteImport } from './routes/api/app/v1/puzzles.next'
 import { Route as ApiAppV1PuzzlesPackRouteImport } from './routes/api/app/v1/puzzles.pack'
 import { Route as ApiAppV1PuzzlesSyncRouteImport } from './routes/api/app/v1/puzzles.sync'
+import { Route as ApiAppV1TournamentsIndexRouteImport } from './routes/api/app/v1/tournaments.index'
+import { Route as ApiAppV1TournamentsIdRouteImport } from './routes/api/app/v1/tournaments.$id'
 import { Route as ApiPublicV1ClassesSessionRouteImport } from './routes/api/public/v1/classes.session'
 import { Route as ApiPublicV1CorrespondenceSweepRouteImport } from './routes/api/public/v1/correspondence.sweep'
 import { Route as ApiPublicV1EmbedTokenRouteImport } from './routes/api/public/v1/embed.token'
@@ -141,6 +143,8 @@ import { Route as ApiAppV1GamesIdRematchRouteImport } from './routes/api/app/v1/
 import { Route as ApiAppV1GamesIdResignRouteImport } from './routes/api/app/v1/games.$id.resign'
 import { Route as ApiAppV1GamesIdTakebackRouteImport } from './routes/api/app/v1/games.$id.takeback'
 import { Route as ApiAppV1PuzzlesIdAttemptRouteImport } from './routes/api/app/v1/puzzles.$id.attempt'
+import { Route as ApiAppV1TournamentsIdJoinRouteImport } from './routes/api/app/v1/tournaments.$id.join'
+import { Route as ApiAppV1TournamentsIdWithdrawRouteImport } from './routes/api/app/v1/tournaments.$id.withdraw'
 import { Route as ApiPublicV1EmbedTokenTokenRouteImport } from './routes/api/public/v1/embed.token.$token'
 import { Route as ApiPublicV1TournamentsIdStandingsRouteImport } from './routes/api/public/v1/tournaments.$id.standings'
 import { Route as ApiPublicV1UsersUsernameGamesRouteImport } from './routes/api/public/v1/users.$username.games'
@@ -711,6 +715,17 @@ const ApiAppV1PuzzlesSyncRoute = ApiAppV1PuzzlesSyncRouteImport.update({
   path: '/api/app/v1/puzzles/sync',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1TournamentsIndexRoute =
+  ApiAppV1TournamentsIndexRouteImport.update({
+    id: '/api/app/v1/tournaments/',
+    path: '/api/app/v1/tournaments/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAppV1TournamentsIdRoute = ApiAppV1TournamentsIdRouteImport.update({
+  id: '/api/app/v1/tournaments/$id',
+  path: '/api/app/v1/tournaments/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1ClassesSessionRoute =
   ApiPublicV1ClassesSessionRouteImport.update({
     id: '/api/public/v1/classes/session',
@@ -817,6 +832,18 @@ const ApiAppV1PuzzlesIdAttemptRoute =
     id: '/api/app/v1/puzzles/$id/attempt',
     path: '/api/app/v1/puzzles/$id/attempt',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAppV1TournamentsIdJoinRoute =
+  ApiAppV1TournamentsIdJoinRouteImport.update({
+    id: '/join',
+    path: '/join',
+    getParentRoute: () => ApiAppV1TournamentsIdRoute,
+  } as any)
+const ApiAppV1TournamentsIdWithdrawRoute =
+  ApiAppV1TournamentsIdWithdrawRouteImport.update({
+    id: '/withdraw',
+    path: '/withdraw',
+    getParentRoute: () => ApiAppV1TournamentsIdRoute,
   } as any)
 const ApiPublicV1EmbedTokenTokenRoute =
   ApiPublicV1EmbedTokenTokenRouteImport.update({
@@ -965,6 +992,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
@@ -974,6 +1002,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/challenges/': typeof ApiAppV1ChallengesIndexRoute
   '/api/app/v1/games/': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications/': typeof ApiAppV1NotificationsIndexRoute
+  '/api/app/v1/tournaments/': typeof ApiAppV1TournamentsIndexRoute
   '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
   '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
@@ -988,6 +1017,8 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
+  '/api/app/v1/tournaments/$id/join': typeof ApiAppV1TournamentsIdJoinRoute
+  '/api/app/v1/tournaments/$id/withdraw': typeof ApiAppV1TournamentsIdWithdrawRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
   '/api/public/v1/tournaments/$id/standings': typeof ApiPublicV1TournamentsIdStandingsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
@@ -1104,6 +1135,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
@@ -1113,6 +1145,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/challenges': typeof ApiAppV1ChallengesIndexRoute
   '/api/app/v1/games': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications': typeof ApiAppV1NotificationsIndexRoute
+  '/api/app/v1/tournaments': typeof ApiAppV1TournamentsIndexRoute
   '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
   '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
@@ -1127,6 +1160,8 @@ export interface FileRoutesByTo {
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
+  '/api/app/v1/tournaments/$id/join': typeof ApiAppV1TournamentsIdJoinRoute
+  '/api/app/v1/tournaments/$id/withdraw': typeof ApiAppV1TournamentsIdWithdrawRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
   '/api/public/v1/tournaments/$id/standings': typeof ApiPublicV1TournamentsIdStandingsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
@@ -1245,6 +1280,7 @@ export interface FileRoutesById {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
@@ -1254,6 +1290,7 @@ export interface FileRoutesById {
   '/api/app/v1/challenges/': typeof ApiAppV1ChallengesIndexRoute
   '/api/app/v1/games/': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications/': typeof ApiAppV1NotificationsIndexRoute
+  '/api/app/v1/tournaments/': typeof ApiAppV1TournamentsIndexRoute
   '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
   '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
@@ -1268,6 +1305,8 @@ export interface FileRoutesById {
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
+  '/api/app/v1/tournaments/$id/join': typeof ApiAppV1TournamentsIdJoinRoute
+  '/api/app/v1/tournaments/$id/withdraw': typeof ApiAppV1TournamentsIdWithdrawRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
   '/api/public/v1/tournaments/$id/standings': typeof ApiPublicV1TournamentsIdStandingsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
@@ -1387,6 +1426,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/tournaments/$id'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
@@ -1396,6 +1436,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/challenges/'
     | '/api/app/v1/games/'
     | '/api/app/v1/notifications/'
+    | '/api/app/v1/tournaments/'
     | '/api/app/v1/challenges/$id/accept'
     | '/api/app/v1/games/$id/abort'
     | '/api/app/v1/games/$id/away'
@@ -1410,6 +1451,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
     | '/api/app/v1/puzzles/$id/attempt'
+    | '/api/app/v1/tournaments/$id/join'
+    | '/api/app/v1/tournaments/$id/withdraw'
     | '/api/public/v1/embed/token/$token'
     | '/api/public/v1/tournaments/$id/standings'
     | '/api/public/v1/users/$username/games'
@@ -1526,6 +1569,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/tournaments/$id'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
@@ -1535,6 +1579,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/challenges'
     | '/api/app/v1/games'
     | '/api/app/v1/notifications'
+    | '/api/app/v1/tournaments'
     | '/api/app/v1/challenges/$id/accept'
     | '/api/app/v1/games/$id/abort'
     | '/api/app/v1/games/$id/away'
@@ -1549,6 +1594,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
     | '/api/app/v1/puzzles/$id/attempt'
+    | '/api/app/v1/tournaments/$id/join'
+    | '/api/app/v1/tournaments/$id/withdraw'
     | '/api/public/v1/embed/token/$token'
     | '/api/public/v1/tournaments/$id/standings'
     | '/api/public/v1/users/$username/games'
@@ -1666,6 +1713,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/tournaments/$id'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
@@ -1675,6 +1723,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/challenges/'
     | '/api/app/v1/games/'
     | '/api/app/v1/notifications/'
+    | '/api/app/v1/tournaments/'
     | '/api/app/v1/challenges/$id/accept'
     | '/api/app/v1/games/$id/abort'
     | '/api/app/v1/games/$id/away'
@@ -1689,6 +1738,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
     | '/api/app/v1/puzzles/$id/attempt'
+    | '/api/app/v1/tournaments/$id/join'
+    | '/api/app/v1/tournaments/$id/withdraw'
     | '/api/public/v1/embed/token/$token'
     | '/api/public/v1/tournaments/$id/standings'
     | '/api/public/v1/users/$username/games'
@@ -1792,12 +1843,14 @@ export interface RootRouteChildren {
   ApiAppV1PuzzlesNextRoute: typeof ApiAppV1PuzzlesNextRoute
   ApiAppV1PuzzlesPackRoute: typeof ApiAppV1PuzzlesPackRoute
   ApiAppV1PuzzlesSyncRoute: typeof ApiAppV1PuzzlesSyncRoute
+  ApiAppV1TournamentsIdRoute: typeof ApiAppV1TournamentsIdRouteWithChildren
   ApiPublicV1ClassesSessionRoute: typeof ApiPublicV1ClassesSessionRouteWithChildren
   ApiPublicV1CorrespondenceSweepRoute: typeof ApiPublicV1CorrespondenceSweepRoute
   ApiPublicV1EmbedTokenRoute: typeof ApiPublicV1EmbedTokenRouteWithChildren
   ApiAppV1ChallengesIndexRoute: typeof ApiAppV1ChallengesIndexRoute
   ApiAppV1GamesIndexRoute: typeof ApiAppV1GamesIndexRoute
   ApiAppV1NotificationsIndexRoute: typeof ApiAppV1NotificationsIndexRoute
+  ApiAppV1TournamentsIndexRoute: typeof ApiAppV1TournamentsIndexRoute
   ApiAppV1PuzzlesIdAttemptRoute: typeof ApiAppV1PuzzlesIdAttemptRoute
   ApiPublicV1UsersUsernameGamesRoute: typeof ApiPublicV1UsersUsernameGamesRoute
   ApiPublicV1UsersUsernameRatingRoute: typeof ApiPublicV1UsersUsernameRatingRoute
@@ -2589,6 +2642,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PuzzlesSyncRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/tournaments/': {
+      id: '/api/app/v1/tournaments/'
+      path: '/api/app/v1/tournaments'
+      fullPath: '/api/app/v1/tournaments/'
+      preLoaderRoute: typeof ApiAppV1TournamentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/tournaments/$id': {
+      id: '/api/app/v1/tournaments/$id'
+      path: '/api/app/v1/tournaments/$id'
+      fullPath: '/api/app/v1/tournaments/$id'
+      preLoaderRoute: typeof ApiAppV1TournamentsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/classes/session': {
       id: '/api/public/v1/classes/session'
       path: '/api/public/v1/classes/session'
@@ -2728,6 +2795,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/app/v1/puzzles/$id/attempt'
       preLoaderRoute: typeof ApiAppV1PuzzlesIdAttemptRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/tournaments/$id/join': {
+      id: '/api/app/v1/tournaments/$id/join'
+      path: '/join'
+      fullPath: '/api/app/v1/tournaments/$id/join'
+      preLoaderRoute: typeof ApiAppV1TournamentsIdJoinRouteImport
+      parentRoute: typeof ApiAppV1TournamentsIdRoute
+    }
+    '/api/app/v1/tournaments/$id/withdraw': {
+      id: '/api/app/v1/tournaments/$id/withdraw'
+      path: '/withdraw'
+      fullPath: '/api/app/v1/tournaments/$id/withdraw'
+      preLoaderRoute: typeof ApiAppV1TournamentsIdWithdrawRouteImport
+      parentRoute: typeof ApiAppV1TournamentsIdRoute
     }
     '/api/public/v1/embed/token/$token': {
       id: '/api/public/v1/embed/token/$token'
@@ -2887,6 +2968,21 @@ const ApiAppV1GamesIdRouteWithChildren = ApiAppV1GamesIdRoute._addFileChildren(
   ApiAppV1GamesIdRouteChildren,
 )
 
+interface ApiAppV1TournamentsIdRouteChildren {
+  ApiAppV1TournamentsIdJoinRoute: typeof ApiAppV1TournamentsIdJoinRoute
+  ApiAppV1TournamentsIdWithdrawRoute: typeof ApiAppV1TournamentsIdWithdrawRoute
+}
+
+const ApiAppV1TournamentsIdRouteChildren: ApiAppV1TournamentsIdRouteChildren = {
+  ApiAppV1TournamentsIdJoinRoute: ApiAppV1TournamentsIdJoinRoute,
+  ApiAppV1TournamentsIdWithdrawRoute: ApiAppV1TournamentsIdWithdrawRoute,
+}
+
+const ApiAppV1TournamentsIdRouteWithChildren =
+  ApiAppV1TournamentsIdRoute._addFileChildren(
+    ApiAppV1TournamentsIdRouteChildren,
+  )
+
 interface ApiPublicV1ClassesSessionRouteChildren {
   ApiPublicV1ClassesSessionIdSetPositionRoute: typeof ApiPublicV1ClassesSessionIdSetPositionRoute
   ApiPublicV1ClassesSessionIdStudentsRoute: typeof ApiPublicV1ClassesSessionIdStudentsRoute
@@ -3013,12 +3109,14 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1PuzzlesNextRoute: ApiAppV1PuzzlesNextRoute,
   ApiAppV1PuzzlesPackRoute: ApiAppV1PuzzlesPackRoute,
   ApiAppV1PuzzlesSyncRoute: ApiAppV1PuzzlesSyncRoute,
+  ApiAppV1TournamentsIdRoute: ApiAppV1TournamentsIdRouteWithChildren,
   ApiPublicV1ClassesSessionRoute: ApiPublicV1ClassesSessionRouteWithChildren,
   ApiPublicV1CorrespondenceSweepRoute: ApiPublicV1CorrespondenceSweepRoute,
   ApiPublicV1EmbedTokenRoute: ApiPublicV1EmbedTokenRouteWithChildren,
   ApiAppV1ChallengesIndexRoute: ApiAppV1ChallengesIndexRoute,
   ApiAppV1GamesIndexRoute: ApiAppV1GamesIndexRoute,
   ApiAppV1NotificationsIndexRoute: ApiAppV1NotificationsIndexRoute,
+  ApiAppV1TournamentsIndexRoute: ApiAppV1TournamentsIndexRoute,
   ApiAppV1PuzzlesIdAttemptRoute: ApiAppV1PuzzlesIdAttemptRoute,
   ApiPublicV1UsersUsernameGamesRoute: ApiPublicV1UsersUsernameGamesRoute,
   ApiPublicV1UsersUsernameRatingRoute: ApiPublicV1UsersUsernameRatingRoute,

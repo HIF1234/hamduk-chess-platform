@@ -6,6 +6,96 @@ import { CREATE_LIMITS } from "./tournament-config";
 
 const TypeEnum = z.enum(["swiss", "arena", "round_robin", "knockout"]);
 
+/** Public tournament list -- same query the web /tournaments page runs, reused so the mobile
+ *  app's /api/app/v1/tournaments route doesn't duplicate it. */
+export const listTournaments = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("tournaments")
+      .select(
+        "id, name, type, time_control, variant, rated, rounds, starts_at, max_players, min_tier, entry_fee_kobo, status",
+      )
+      .is("club_id", null)
+      .order("starts_at", { ascending: true })
+      .limit(60);
+    if (error) throw new Error(error.message);
+    const rows = data ?? [];
+    const counts: Record<string, number> = {};
+    if (rows.length) {
+      const { data: players } = await supabaseAdmin
+        .from("tournament_players")
+        .select("tournament_id")
+        .in("tournament_id", rows.map((r) => r.id));
+      for (const p of players ?? []) counts[p.tournament_id] = (counts[p.tournament_id] ?? 0) + 1;
+    }
+    return { tournaments: rows, counts };
+  });
+
+/** Tournament + standings + this round's pairings/boards + the caller's own entry, if any --
+ *  same shape the web /tournaments/$id page builds, reused for the mobile app's
+ *  /api/app/v1/tournaments/$id route. */
+export const getTournamentDetail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ tournamentId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: t, error } = await supabaseAdmin
+      .from("tournaments")
+      .select("*")
+      .eq("id", data.tournamentId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!t) throw new Error("Tournament not found");
+
+    const [{ data: players }, { data: tgames }] = await Promise.all([
+      supabaseAdmin
+        .from("tournament_players")
+        .select("id, user_id, score, buchholz, games_played, status, paid, rating_at_join")
+        .eq("tournament_id", t.id)
+        .order("score", { ascending: false })
+        .order("buchholz", { ascending: false }),
+      supabaseAdmin
+        .from("tournament_games")
+        .select("id, round, game_id, white_id, black_id, result, recorded")
+        .eq("tournament_id", t.id)
+        .order("round", { ascending: false }),
+    ]);
+
+    const ids = Array.from(new Set((players ?? []).map((p) => p.user_id)));
+    const names: Record<string, string> = {};
+    if (ids.length) {
+      const { data: profs } = await supabaseAdmin.from("profiles").select("id, username").in("id", ids);
+      for (const p of profs ?? []) names[p.id] = p.username;
+    }
+
+    const currentRound = t.current_round;
+    const liveIds = (tgames ?? [])
+      .filter((g) => g.round === currentRound && g.game_id)
+      .map((g) => g.game_id as string);
+    let boards: { id: string; fen: string; status: string; chess960_start_fen: string | null }[] = [];
+    if (liveIds.length) {
+      const { data: games } = await supabaseAdmin
+        .from("games")
+        .select("id, fen, status, chess960_start_fen")
+        .in("id", liveIds);
+      boards = games ?? [];
+    }
+
+    const standings = players ?? [];
+    const myEntry = standings.find((s) => s.user_id === context.userId) ?? null;
+
+    return {
+      tournament: t,
+      standings,
+      games: tgames ?? [],
+      names,
+      boards,
+      myEntry,
+    };
+  });
+
 async function readProfile(userId: string) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data } = await supabaseAdmin
