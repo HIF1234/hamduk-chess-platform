@@ -131,6 +131,10 @@ import { Route as ApiAppV1SocialMessagesRouteImport } from './routes/api/app/v1/
 import { Route as ApiAppV1SubscriptionCheckoutRouteImport } from './routes/api/app/v1/subscription.checkout'
 import { Route as ApiAppV1TournamentsIndexRouteImport } from './routes/api/app/v1/tournaments.index'
 import { Route as ApiAppV1TournamentsIdRouteImport } from './routes/api/app/v1/tournaments.$id'
+import { Route as ApiAppV1TutorialsIndexRouteImport } from './routes/api/app/v1/tutorials.index'
+import { Route as ApiAppV1TutorialsIdRouteImport } from './routes/api/app/v1/tutorials.$id'
+import { Route as ApiAppV1VideosIndexRouteImport } from './routes/api/app/v1/videos.index'
+import { Route as ApiAppV1VideosProgressRouteImport } from './routes/api/app/v1/videos.progress'
 import { Route as ApiPublicV1ClassesSessionRouteImport } from './routes/api/public/v1/classes.session'
 import { Route as ApiPublicV1CorrespondenceSweepRouteImport } from './routes/api/public/v1/correspondence.sweep'
 import { Route as ApiPublicV1EmbedTokenRouteImport } from './routes/api/public/v1/embed.token'
@@ -160,6 +164,7 @@ import { Route as ApiAppV1SocialMessagesSendRouteImport } from './routes/api/app
 import { Route as ApiAppV1SocialRelationUserIdRouteImport } from './routes/api/app/v1/social.relation.$userId'
 import { Route as ApiAppV1TournamentsIdJoinRouteImport } from './routes/api/app/v1/tournaments.$id.join'
 import { Route as ApiAppV1TournamentsIdWithdrawRouteImport } from './routes/api/app/v1/tournaments.$id.withdraw'
+import { Route as ApiAppV1VideosIdUrlRouteImport } from './routes/api/app/v1/videos.$id.url'
 import { Route as ApiPublicV1EmbedTokenTokenRouteImport } from './routes/api/public/v1/embed.token.$token'
 import { Route as ApiPublicV1TournamentsIdStandingsRouteImport } from './routes/api/public/v1/tournaments.$id.standings'
 import { Route as ApiPublicV1UsersUsernameGamesRouteImport } from './routes/api/public/v1/users.$username.games'
@@ -784,6 +789,26 @@ const ApiAppV1TournamentsIdRoute = ApiAppV1TournamentsIdRouteImport.update({
   path: '/api/app/v1/tournaments/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1TutorialsIndexRoute = ApiAppV1TutorialsIndexRouteImport.update({
+  id: '/api/app/v1/tutorials/',
+  path: '/api/app/v1/tutorials/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1TutorialsIdRoute = ApiAppV1TutorialsIdRouteImport.update({
+  id: '/api/app/v1/tutorials/$id',
+  path: '/api/app/v1/tutorials/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1VideosIndexRoute = ApiAppV1VideosIndexRouteImport.update({
+  id: '/api/app/v1/videos/',
+  path: '/api/app/v1/videos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1VideosProgressRoute = ApiAppV1VideosProgressRouteImport.update({
+  id: '/api/app/v1/videos/progress',
+  path: '/api/app/v1/videos/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1ClassesSessionRoute =
   ApiPublicV1ClassesSessionRouteImport.update({
     id: '/api/public/v1/classes/session',
@@ -944,6 +969,11 @@ const ApiAppV1TournamentsIdWithdrawRoute =
     path: '/withdraw',
     getParentRoute: () => ApiAppV1TournamentsIdRoute,
   } as any)
+const ApiAppV1VideosIdUrlRoute = ApiAppV1VideosIdUrlRouteImport.update({
+  id: '/api/app/v1/videos/$id/url',
+  path: '/api/app/v1/videos/$id/url',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1EmbedTokenTokenRoute =
   ApiPublicV1EmbedTokenTokenRouteImport.update({
     id: '/$token',
@@ -1105,6 +1135,8 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/social/messages': typeof ApiAppV1SocialMessagesRouteWithChildren
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
+  '/api/app/v1/tutorials/$id': typeof ApiAppV1TutorialsIdRoute
+  '/api/app/v1/videos/progress': typeof ApiAppV1VideosProgressRoute
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
@@ -1116,6 +1148,8 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/games/': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications/': typeof ApiAppV1NotificationsIndexRoute
   '/api/app/v1/tournaments/': typeof ApiAppV1TournamentsIndexRoute
+  '/api/app/v1/tutorials/': typeof ApiAppV1TutorialsIndexRoute
+  '/api/app/v1/videos/': typeof ApiAppV1VideosIndexRoute
   '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
   '/api/app/v1/coaches/$id/book': typeof ApiAppV1CoachesIdBookRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
@@ -1139,6 +1173,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/social/relation/$userId': typeof ApiAppV1SocialRelationUserIdRoute
   '/api/app/v1/tournaments/$id/join': typeof ApiAppV1TournamentsIdJoinRoute
   '/api/app/v1/tournaments/$id/withdraw': typeof ApiAppV1TournamentsIdWithdrawRoute
+  '/api/app/v1/videos/$id/url': typeof ApiAppV1VideosIdUrlRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
   '/api/public/v1/tournaments/$id/standings': typeof ApiPublicV1TournamentsIdStandingsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
@@ -1264,6 +1299,8 @@ export interface FileRoutesByTo {
   '/api/app/v1/social/messages': typeof ApiAppV1SocialMessagesRouteWithChildren
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
+  '/api/app/v1/tutorials/$id': typeof ApiAppV1TutorialsIdRoute
+  '/api/app/v1/videos/progress': typeof ApiAppV1VideosProgressRoute
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
@@ -1275,6 +1312,8 @@ export interface FileRoutesByTo {
   '/api/app/v1/games': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications': typeof ApiAppV1NotificationsIndexRoute
   '/api/app/v1/tournaments': typeof ApiAppV1TournamentsIndexRoute
+  '/api/app/v1/tutorials': typeof ApiAppV1TutorialsIndexRoute
+  '/api/app/v1/videos': typeof ApiAppV1VideosIndexRoute
   '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
   '/api/app/v1/coaches/$id/book': typeof ApiAppV1CoachesIdBookRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
@@ -1298,6 +1337,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/social/relation/$userId': typeof ApiAppV1SocialRelationUserIdRoute
   '/api/app/v1/tournaments/$id/join': typeof ApiAppV1TournamentsIdJoinRoute
   '/api/app/v1/tournaments/$id/withdraw': typeof ApiAppV1TournamentsIdWithdrawRoute
+  '/api/app/v1/videos/$id/url': typeof ApiAppV1VideosIdUrlRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
   '/api/public/v1/tournaments/$id/standings': typeof ApiPublicV1TournamentsIdStandingsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
@@ -1425,6 +1465,8 @@ export interface FileRoutesById {
   '/api/app/v1/social/messages': typeof ApiAppV1SocialMessagesRouteWithChildren
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
+  '/api/app/v1/tutorials/$id': typeof ApiAppV1TutorialsIdRoute
+  '/api/app/v1/videos/progress': typeof ApiAppV1VideosProgressRoute
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
@@ -1436,6 +1478,8 @@ export interface FileRoutesById {
   '/api/app/v1/games/': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications/': typeof ApiAppV1NotificationsIndexRoute
   '/api/app/v1/tournaments/': typeof ApiAppV1TournamentsIndexRoute
+  '/api/app/v1/tutorials/': typeof ApiAppV1TutorialsIndexRoute
+  '/api/app/v1/videos/': typeof ApiAppV1VideosIndexRoute
   '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
   '/api/app/v1/coaches/$id/book': typeof ApiAppV1CoachesIdBookRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
@@ -1459,6 +1503,7 @@ export interface FileRoutesById {
   '/api/app/v1/social/relation/$userId': typeof ApiAppV1SocialRelationUserIdRoute
   '/api/app/v1/tournaments/$id/join': typeof ApiAppV1TournamentsIdJoinRoute
   '/api/app/v1/tournaments/$id/withdraw': typeof ApiAppV1TournamentsIdWithdrawRoute
+  '/api/app/v1/videos/$id/url': typeof ApiAppV1VideosIdUrlRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
   '/api/public/v1/tournaments/$id/standings': typeof ApiPublicV1TournamentsIdStandingsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
@@ -1587,6 +1632,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/social/messages'
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
+    | '/api/app/v1/tutorials/$id'
+    | '/api/app/v1/videos/progress'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
@@ -1598,6 +1645,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/'
     | '/api/app/v1/notifications/'
     | '/api/app/v1/tournaments/'
+    | '/api/app/v1/tutorials/'
+    | '/api/app/v1/videos/'
     | '/api/app/v1/challenges/$id/accept'
     | '/api/app/v1/coaches/$id/book'
     | '/api/app/v1/games/$id/abort'
@@ -1621,6 +1670,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/social/relation/$userId'
     | '/api/app/v1/tournaments/$id/join'
     | '/api/app/v1/tournaments/$id/withdraw'
+    | '/api/app/v1/videos/$id/url'
     | '/api/public/v1/embed/token/$token'
     | '/api/public/v1/tournaments/$id/standings'
     | '/api/public/v1/users/$username/games'
@@ -1746,6 +1796,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/social/messages'
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
+    | '/api/app/v1/tutorials/$id'
+    | '/api/app/v1/videos/progress'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
@@ -1757,6 +1809,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/games'
     | '/api/app/v1/notifications'
     | '/api/app/v1/tournaments'
+    | '/api/app/v1/tutorials'
+    | '/api/app/v1/videos'
     | '/api/app/v1/challenges/$id/accept'
     | '/api/app/v1/coaches/$id/book'
     | '/api/app/v1/games/$id/abort'
@@ -1780,6 +1834,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/social/relation/$userId'
     | '/api/app/v1/tournaments/$id/join'
     | '/api/app/v1/tournaments/$id/withdraw'
+    | '/api/app/v1/videos/$id/url'
     | '/api/public/v1/embed/token/$token'
     | '/api/public/v1/tournaments/$id/standings'
     | '/api/public/v1/users/$username/games'
@@ -1906,6 +1961,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/social/messages'
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
+    | '/api/app/v1/tutorials/$id'
+    | '/api/app/v1/videos/progress'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
@@ -1917,6 +1974,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/'
     | '/api/app/v1/notifications/'
     | '/api/app/v1/tournaments/'
+    | '/api/app/v1/tutorials/'
+    | '/api/app/v1/videos/'
     | '/api/app/v1/challenges/$id/accept'
     | '/api/app/v1/coaches/$id/book'
     | '/api/app/v1/games/$id/abort'
@@ -1940,6 +1999,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/social/relation/$userId'
     | '/api/app/v1/tournaments/$id/join'
     | '/api/app/v1/tournaments/$id/withdraw'
+    | '/api/app/v1/videos/$id/url'
     | '/api/public/v1/embed/token/$token'
     | '/api/public/v1/tournaments/$id/standings'
     | '/api/public/v1/users/$username/games'
@@ -2052,6 +2112,8 @@ export interface RootRouteChildren {
   ApiAppV1SocialMessagesRoute: typeof ApiAppV1SocialMessagesRouteWithChildren
   ApiAppV1SubscriptionCheckoutRoute: typeof ApiAppV1SubscriptionCheckoutRoute
   ApiAppV1TournamentsIdRoute: typeof ApiAppV1TournamentsIdRouteWithChildren
+  ApiAppV1TutorialsIdRoute: typeof ApiAppV1TutorialsIdRoute
+  ApiAppV1VideosProgressRoute: typeof ApiAppV1VideosProgressRoute
   ApiPublicV1ClassesSessionRoute: typeof ApiPublicV1ClassesSessionRouteWithChildren
   ApiPublicV1CorrespondenceSweepRoute: typeof ApiPublicV1CorrespondenceSweepRoute
   ApiPublicV1EmbedTokenRoute: typeof ApiPublicV1EmbedTokenRouteWithChildren
@@ -2060,8 +2122,11 @@ export interface RootRouteChildren {
   ApiAppV1GamesIndexRoute: typeof ApiAppV1GamesIndexRoute
   ApiAppV1NotificationsIndexRoute: typeof ApiAppV1NotificationsIndexRoute
   ApiAppV1TournamentsIndexRoute: typeof ApiAppV1TournamentsIndexRoute
+  ApiAppV1TutorialsIndexRoute: typeof ApiAppV1TutorialsIndexRoute
+  ApiAppV1VideosIndexRoute: typeof ApiAppV1VideosIndexRoute
   ApiAppV1PuzzlesIdAttemptRoute: typeof ApiAppV1PuzzlesIdAttemptRoute
   ApiAppV1SocialRelationUserIdRoute: typeof ApiAppV1SocialRelationUserIdRoute
+  ApiAppV1VideosIdUrlRoute: typeof ApiAppV1VideosIdUrlRoute
   ApiPublicV1UsersUsernameGamesRoute: typeof ApiPublicV1UsersUsernameGamesRoute
   ApiPublicV1UsersUsernameRatingRoute: typeof ApiPublicV1UsersUsernameRatingRoute
 }
@@ -2922,6 +2987,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1TournamentsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/tutorials/': {
+      id: '/api/app/v1/tutorials/'
+      path: '/api/app/v1/tutorials'
+      fullPath: '/api/app/v1/tutorials/'
+      preLoaderRoute: typeof ApiAppV1TutorialsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/tutorials/$id': {
+      id: '/api/app/v1/tutorials/$id'
+      path: '/api/app/v1/tutorials/$id'
+      fullPath: '/api/app/v1/tutorials/$id'
+      preLoaderRoute: typeof ApiAppV1TutorialsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/videos/': {
+      id: '/api/app/v1/videos/'
+      path: '/api/app/v1/videos'
+      fullPath: '/api/app/v1/videos/'
+      preLoaderRoute: typeof ApiAppV1VideosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/videos/progress': {
+      id: '/api/app/v1/videos/progress'
+      path: '/api/app/v1/videos/progress'
+      fullPath: '/api/app/v1/videos/progress'
+      preLoaderRoute: typeof ApiAppV1VideosProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/classes/session': {
       id: '/api/public/v1/classes/session'
       path: '/api/public/v1/classes/session'
@@ -3124,6 +3217,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/app/v1/tournaments/$id/withdraw'
       preLoaderRoute: typeof ApiAppV1TournamentsIdWithdrawRouteImport
       parentRoute: typeof ApiAppV1TournamentsIdRoute
+    }
+    '/api/app/v1/videos/$id/url': {
+      id: '/api/app/v1/videos/$id/url'
+      path: '/api/app/v1/videos/$id/url'
+      fullPath: '/api/app/v1/videos/$id/url'
+      preLoaderRoute: typeof ApiAppV1VideosIdUrlRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/v1/embed/token/$token': {
       id: '/api/public/v1/embed/token/$token'
@@ -3498,6 +3598,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1SocialMessagesRoute: ApiAppV1SocialMessagesRouteWithChildren,
   ApiAppV1SubscriptionCheckoutRoute: ApiAppV1SubscriptionCheckoutRoute,
   ApiAppV1TournamentsIdRoute: ApiAppV1TournamentsIdRouteWithChildren,
+  ApiAppV1TutorialsIdRoute: ApiAppV1TutorialsIdRoute,
+  ApiAppV1VideosProgressRoute: ApiAppV1VideosProgressRoute,
   ApiPublicV1ClassesSessionRoute: ApiPublicV1ClassesSessionRouteWithChildren,
   ApiPublicV1CorrespondenceSweepRoute: ApiPublicV1CorrespondenceSweepRoute,
   ApiPublicV1EmbedTokenRoute: ApiPublicV1EmbedTokenRouteWithChildren,
@@ -3506,8 +3608,11 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1GamesIndexRoute: ApiAppV1GamesIndexRoute,
   ApiAppV1NotificationsIndexRoute: ApiAppV1NotificationsIndexRoute,
   ApiAppV1TournamentsIndexRoute: ApiAppV1TournamentsIndexRoute,
+  ApiAppV1TutorialsIndexRoute: ApiAppV1TutorialsIndexRoute,
+  ApiAppV1VideosIndexRoute: ApiAppV1VideosIndexRoute,
   ApiAppV1PuzzlesIdAttemptRoute: ApiAppV1PuzzlesIdAttemptRoute,
   ApiAppV1SocialRelationUserIdRoute: ApiAppV1SocialRelationUserIdRoute,
+  ApiAppV1VideosIdUrlRoute: ApiAppV1VideosIdUrlRoute,
   ApiPublicV1UsersUsernameGamesRoute: ApiPublicV1UsersUsernameGamesRoute,
   ApiPublicV1UsersUsernameRatingRoute: ApiPublicV1UsersUsernameRatingRoute,
 }

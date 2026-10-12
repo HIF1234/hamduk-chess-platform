@@ -131,6 +131,37 @@ const SPEC = {
         ),
       }),
     },
+    "/tutorials": {
+      get: op("Interactive board tutorials (no video) -- basics and middlegame, static content"),
+    },
+    "/tutorials/{id}": {
+      get: op("One tutorial's steps (observe/move positions to play through)", { parameters: [idParam] }),
+    },
+    "/videos": {
+      get: op("Published video lessons (YouTube/Vimeo/cloud)", {
+        description:
+          "Gold-only lessons (`is_premium`) are listed too -- gate playback client-side using /me's " +
+          "billing tier, the same way the website does.",
+      }),
+    },
+    "/videos/progress": {
+      get: op("My watch progress for every video lesson"),
+      post: op("Record watch progress (position, completed)", {
+        requestBody: json(
+          { videoId: { type: "string", format: "uuid" }, positionSec: { type: "integer" }, completed: { type: "boolean" } },
+          ["videoId", "positionSec", "completed"],
+        ),
+      }),
+    },
+    "/videos/{id}/url": {
+      post: op("Signed playback URL for a cloud-hosted lesson", {
+        parameters: [idParam],
+        description:
+          "Only for `source: \"cloud\"` lessons. YouTube/Vimeo lessons embed directly with their " +
+          "external_id and never call this. Rejects with upgrade_required if the lesson is Gold-only " +
+          "and the caller isn't Gold.",
+      }),
+    },
     "/spectate": {
       get: op("Public games open to spectate right now"),
     },
