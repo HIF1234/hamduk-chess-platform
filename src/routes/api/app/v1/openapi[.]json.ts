@@ -100,6 +100,37 @@ const SPEC = {
     "/tournaments/{id}/withdraw": {
       post: op("Withdraw from a tournament", { parameters: [idParam] }),
     },
+    "/coaches": {
+      get: { summary: "Browse active human coaches (FIDE title, rate, specialties, rating)", responses: ok },
+    },
+    "/coaches/{id}": {
+      get: op("Coach detail: profile, weekly availability, reviews", { security: [], parameters: [idParam] }),
+    },
+    "/coaches/{id}/book": {
+      post: op("Book a coaching session (Gold only) -- returns a Paystack authorization_url", {
+        parameters: [idParam],
+        description:
+          "Open authorization_url in the device's browser; callback_url is fixed to the coach's own " +
+          "website page, which verifies the transaction on return -- the app's next GET /coaching/sessions " +
+          "reflects the confirmed status. No in-app payment SDK.",
+        requestBody: json(
+          { scheduled_at: { type: "string", format: "date-time" }, duration_min: { type: "integer", minimum: 15, maximum: 240 } },
+          ["scheduled_at", "duration_min"],
+        ),
+      }),
+    },
+    "/coaching/sessions": {
+      get: op("My coaching sessions, as student and (if I coach) as coach"),
+    },
+    "/coaching/sessions/{id}/review": {
+      post: op("Leave a 1-5 star review on a completed session", {
+        parameters: [idParam],
+        requestBody: json(
+          { rating: { type: "integer", minimum: 1, maximum: 5 }, comment: { type: "string", maxLength: 1000 } },
+          ["rating"],
+        ),
+      }),
+    },
     "/spectate": {
       get: op("Public games open to spectate right now"),
     },
