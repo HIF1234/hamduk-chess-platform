@@ -17,6 +17,7 @@ export const followUser = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     if (data.userId === userId) throw new Error("Cannot follow yourself");
+    if (await isBlocked(userId, data.userId)) throw new Error("You can't follow this player");
     const { error } = await supabase
       .from("follows")
       .insert({ follower_id: userId, following_id: data.userId });
@@ -56,6 +57,7 @@ export const sendFriendRequest = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     if (data.userId === userId) throw new Error("Cannot friend yourself");
+    if (await isBlocked(userId, data.userId)) throw new Error("You can't send a friend request to this player");
     // If reverse pending exists, accept it instead
     const { data: reverse } = await supabase
       .from("friends")
@@ -136,6 +138,67 @@ export const removeFriend = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// ---------- BLOCKING ----------
+// The 'blocked' status has existed on friend_status_enum since the table was created but was
+// never reachable until now. Blocking reuses the friends row between the two people (any
+// existing pending/accepted row is overwritten) rather than a separate table, same as every
+// other relation state here.
+export const blockUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => UserIdSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    if (data.userId === userId) throw new Error("Cannot block yourself");
+    const { data: existing } = await supabase
+      .from("friends")
+      .select("id")
+      .or(
+        `and(requester_id.eq.${userId},addressee_id.eq.${data.userId}),and(requester_id.eq.${data.userId},addressee_id.eq.${userId})`,
+      )
+      .maybeSingle();
+    if (existing) {
+      const { error } = await supabase
+        .from("friends")
+        .update({ status: "blocked", blocked_by: userId })
+        .eq("id", existing.id);
+      if (error) throw new Error(error.message);
+    } else {
+      const { error } = await supabase
+        .from("friends")
+        .insert({ requester_id: userId, addressee_id: data.userId, status: "blocked", blocked_by: userId });
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
+export const unblockUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => UserIdSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    // Only the person who blocked can lift it -- being blocked doesn't let you unblock yourself.
+    const { error } = await supabase
+      .from("friends")
+      .delete()
+      .or(
+        `and(requester_id.eq.${userId},addressee_id.eq.${data.userId}),and(requester_id.eq.${data.userId},addressee_id.eq.${userId})`,
+      )
+      .eq("status", "blocked")
+      .eq("blocked_by", userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+async function isBlocked(a: string, b: string) {
+  const { data } = await supabaseAdmin
+    .from("friends")
+    .select("status")
+    .or(`and(requester_id.eq.${a},addressee_id.eq.${b}),and(requester_id.eq.${b},addressee_id.eq.${a})`)
+    .eq("status", "blocked")
+    .maybeSingle();
+  return !!data;
+}
+
 // ---------- RELATION STATE (for profile page) ----------
 export const getRelation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -151,7 +214,7 @@ export const getRelation = createServerFn({ method: "POST" })
         .maybeSingle(),
       supabase
         .from("friends")
-        .select("id, status, requester_id, addressee_id")
+        .select("id, status, requester_id, addressee_id, blocked_by")
         .or(
           `and(requester_id.eq.${userId},addressee_id.eq.${data.userId}),and(requester_id.eq.${data.userId},addressee_id.eq.${userId})`,
         )
@@ -164,6 +227,7 @@ export const getRelation = createServerFn({ method: "POST" })
             id: friend.id,
             status: friend.status as "pending" | "accepted" | "blocked",
             iAmRequester: friend.requester_id === userId,
+            blockedByMe: friend.status === "blocked" && friend.blocked_by === userId,
           }
         : null,
     };
@@ -222,6 +286,7 @@ export const sendMessage = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     if (data.recipientId === userId) throw new Error("Cannot message yourself");
+    if (await isBlocked(userId, data.recipientId)) throw new Error("You can't message this player");
     const { data: msg, error } = await supabase
       .from("messages")
       .insert({

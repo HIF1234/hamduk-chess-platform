@@ -355,6 +355,30 @@ const SPEC = {
         ),
       }),
     },
+    "/social/block": {
+      post: op("Block a player -- they can no longer message, follow or friend-request you", {
+        requestBody: json({ userId: { type: "string", format: "uuid" } }, ["userId"]),
+      }),
+    },
+    "/social/unblock": {
+      post: op("Lift a block you placed (only the blocker can unblock)", {
+        requestBody: json({ userId: { type: "string", format: "uuid" } }, ["userId"]),
+      }),
+    },
+    "/report": {
+      post: op("File a report into the moderation queue (max 5/day)", {
+        requestBody: json(
+          {
+            targetType: { enum: ["user", "game", "club_post", "message", "forum_post", "game_comment"] },
+            targetId: { type: "string", format: "uuid" },
+            reason: { enum: ["cheating", "abuse", "username", "sandbagging", "spam", "other"] },
+            details: { type: "string", maxLength: 1000 },
+          },
+          ["targetType", "targetId", "reason"],
+        ),
+      }),
+    },
+    "/report/reasons": { get: op("Valid `reason` values for POST /report, with display labels") },
   },
 };
 
