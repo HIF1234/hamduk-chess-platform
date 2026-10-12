@@ -124,6 +124,10 @@ import { Route as ApiAppV1PuzzlesDailyRouteImport } from './routes/api/app/v1/pu
 import { Route as ApiAppV1PuzzlesNextRouteImport } from './routes/api/app/v1/puzzles.next'
 import { Route as ApiAppV1PuzzlesPackRouteImport } from './routes/api/app/v1/puzzles.pack'
 import { Route as ApiAppV1PuzzlesSyncRouteImport } from './routes/api/app/v1/puzzles.sync'
+import { Route as ApiAppV1SocialFeedRouteImport } from './routes/api/app/v1/social.feed'
+import { Route as ApiAppV1SocialFollowRouteImport } from './routes/api/app/v1/social.follow'
+import { Route as ApiAppV1SocialFriendsRouteImport } from './routes/api/app/v1/social.friends'
+import { Route as ApiAppV1SocialMessagesRouteImport } from './routes/api/app/v1/social.messages'
 import { Route as ApiAppV1SubscriptionCheckoutRouteImport } from './routes/api/app/v1/subscription.checkout'
 import { Route as ApiAppV1TournamentsIndexRouteImport } from './routes/api/app/v1/tournaments.index'
 import { Route as ApiAppV1TournamentsIdRouteImport } from './routes/api/app/v1/tournaments.$id'
@@ -148,6 +152,12 @@ import { Route as ApiAppV1GamesIdRematchRouteImport } from './routes/api/app/v1/
 import { Route as ApiAppV1GamesIdResignRouteImport } from './routes/api/app/v1/games.$id.resign'
 import { Route as ApiAppV1GamesIdTakebackRouteImport } from './routes/api/app/v1/games.$id.takeback'
 import { Route as ApiAppV1PuzzlesIdAttemptRouteImport } from './routes/api/app/v1/puzzles.$id.attempt'
+import { Route as ApiAppV1SocialFriendsRemoveRouteImport } from './routes/api/app/v1/social.friends.remove'
+import { Route as ApiAppV1SocialFriendsRequestRouteImport } from './routes/api/app/v1/social.friends.request'
+import { Route as ApiAppV1SocialFriendsRespondRouteImport } from './routes/api/app/v1/social.friends.respond'
+import { Route as ApiAppV1SocialMessagesUsernameRouteImport } from './routes/api/app/v1/social.messages.$username'
+import { Route as ApiAppV1SocialMessagesSendRouteImport } from './routes/api/app/v1/social.messages.send'
+import { Route as ApiAppV1SocialRelationUserIdRouteImport } from './routes/api/app/v1/social.relation.$userId'
 import { Route as ApiAppV1TournamentsIdJoinRouteImport } from './routes/api/app/v1/tournaments.$id.join'
 import { Route as ApiAppV1TournamentsIdWithdrawRouteImport } from './routes/api/app/v1/tournaments.$id.withdraw'
 import { Route as ApiPublicV1EmbedTokenTokenRouteImport } from './routes/api/public/v1/embed.token.$token'
@@ -737,6 +747,26 @@ const ApiAppV1PuzzlesSyncRoute = ApiAppV1PuzzlesSyncRouteImport.update({
   path: '/api/app/v1/puzzles/sync',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1SocialFeedRoute = ApiAppV1SocialFeedRouteImport.update({
+  id: '/api/app/v1/social/feed',
+  path: '/api/app/v1/social/feed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1SocialFollowRoute = ApiAppV1SocialFollowRouteImport.update({
+  id: '/api/app/v1/social/follow',
+  path: '/api/app/v1/social/follow',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1SocialFriendsRoute = ApiAppV1SocialFriendsRouteImport.update({
+  id: '/api/app/v1/social/friends',
+  path: '/api/app/v1/social/friends',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1SocialMessagesRoute = ApiAppV1SocialMessagesRouteImport.update({
+  id: '/api/app/v1/social/messages',
+  path: '/api/app/v1/social/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1SubscriptionCheckoutRoute =
   ApiAppV1SubscriptionCheckoutRouteImport.update({
     id: '/api/app/v1/subscription/checkout',
@@ -864,6 +894,42 @@ const ApiAppV1PuzzlesIdAttemptRoute =
   ApiAppV1PuzzlesIdAttemptRouteImport.update({
     id: '/api/app/v1/puzzles/$id/attempt',
     path: '/api/app/v1/puzzles/$id/attempt',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAppV1SocialFriendsRemoveRoute =
+  ApiAppV1SocialFriendsRemoveRouteImport.update({
+    id: '/remove',
+    path: '/remove',
+    getParentRoute: () => ApiAppV1SocialFriendsRoute,
+  } as any)
+const ApiAppV1SocialFriendsRequestRoute =
+  ApiAppV1SocialFriendsRequestRouteImport.update({
+    id: '/request',
+    path: '/request',
+    getParentRoute: () => ApiAppV1SocialFriendsRoute,
+  } as any)
+const ApiAppV1SocialFriendsRespondRoute =
+  ApiAppV1SocialFriendsRespondRouteImport.update({
+    id: '/respond',
+    path: '/respond',
+    getParentRoute: () => ApiAppV1SocialFriendsRoute,
+  } as any)
+const ApiAppV1SocialMessagesUsernameRoute =
+  ApiAppV1SocialMessagesUsernameRouteImport.update({
+    id: '/$username',
+    path: '/$username',
+    getParentRoute: () => ApiAppV1SocialMessagesRoute,
+  } as any)
+const ApiAppV1SocialMessagesSendRoute =
+  ApiAppV1SocialMessagesSendRouteImport.update({
+    id: '/send',
+    path: '/send',
+    getParentRoute: () => ApiAppV1SocialMessagesRoute,
+  } as any)
+const ApiAppV1SocialRelationUserIdRoute =
+  ApiAppV1SocialRelationUserIdRouteImport.update({
+    id: '/api/app/v1/social/relation/$userId',
+    path: '/api/app/v1/social/relation/$userId',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiAppV1TournamentsIdJoinRoute =
@@ -1033,6 +1099,10 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/social/feed': typeof ApiAppV1SocialFeedRoute
+  '/api/app/v1/social/follow': typeof ApiAppV1SocialFollowRoute
+  '/api/app/v1/social/friends': typeof ApiAppV1SocialFriendsRouteWithChildren
+  '/api/app/v1/social/messages': typeof ApiAppV1SocialMessagesRouteWithChildren
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
@@ -1061,6 +1131,12 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
+  '/api/app/v1/social/friends/remove': typeof ApiAppV1SocialFriendsRemoveRoute
+  '/api/app/v1/social/friends/request': typeof ApiAppV1SocialFriendsRequestRoute
+  '/api/app/v1/social/friends/respond': typeof ApiAppV1SocialFriendsRespondRoute
+  '/api/app/v1/social/messages/$username': typeof ApiAppV1SocialMessagesUsernameRoute
+  '/api/app/v1/social/messages/send': typeof ApiAppV1SocialMessagesSendRoute
+  '/api/app/v1/social/relation/$userId': typeof ApiAppV1SocialRelationUserIdRoute
   '/api/app/v1/tournaments/$id/join': typeof ApiAppV1TournamentsIdJoinRoute
   '/api/app/v1/tournaments/$id/withdraw': typeof ApiAppV1TournamentsIdWithdrawRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
@@ -1182,6 +1258,10 @@ export interface FileRoutesByTo {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/social/feed': typeof ApiAppV1SocialFeedRoute
+  '/api/app/v1/social/follow': typeof ApiAppV1SocialFollowRoute
+  '/api/app/v1/social/friends': typeof ApiAppV1SocialFriendsRouteWithChildren
+  '/api/app/v1/social/messages': typeof ApiAppV1SocialMessagesRouteWithChildren
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
@@ -1210,6 +1290,12 @@ export interface FileRoutesByTo {
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
+  '/api/app/v1/social/friends/remove': typeof ApiAppV1SocialFriendsRemoveRoute
+  '/api/app/v1/social/friends/request': typeof ApiAppV1SocialFriendsRequestRoute
+  '/api/app/v1/social/friends/respond': typeof ApiAppV1SocialFriendsRespondRoute
+  '/api/app/v1/social/messages/$username': typeof ApiAppV1SocialMessagesUsernameRoute
+  '/api/app/v1/social/messages/send': typeof ApiAppV1SocialMessagesSendRoute
+  '/api/app/v1/social/relation/$userId': typeof ApiAppV1SocialRelationUserIdRoute
   '/api/app/v1/tournaments/$id/join': typeof ApiAppV1TournamentsIdJoinRoute
   '/api/app/v1/tournaments/$id/withdraw': typeof ApiAppV1TournamentsIdWithdrawRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
@@ -1333,6 +1419,10 @@ export interface FileRoutesById {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/social/feed': typeof ApiAppV1SocialFeedRoute
+  '/api/app/v1/social/follow': typeof ApiAppV1SocialFollowRoute
+  '/api/app/v1/social/friends': typeof ApiAppV1SocialFriendsRouteWithChildren
+  '/api/app/v1/social/messages': typeof ApiAppV1SocialMessagesRouteWithChildren
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
@@ -1361,6 +1451,12 @@ export interface FileRoutesById {
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
+  '/api/app/v1/social/friends/remove': typeof ApiAppV1SocialFriendsRemoveRoute
+  '/api/app/v1/social/friends/request': typeof ApiAppV1SocialFriendsRequestRoute
+  '/api/app/v1/social/friends/respond': typeof ApiAppV1SocialFriendsRespondRoute
+  '/api/app/v1/social/messages/$username': typeof ApiAppV1SocialMessagesUsernameRoute
+  '/api/app/v1/social/messages/send': typeof ApiAppV1SocialMessagesSendRoute
+  '/api/app/v1/social/relation/$userId': typeof ApiAppV1SocialRelationUserIdRoute
   '/api/app/v1/tournaments/$id/join': typeof ApiAppV1TournamentsIdJoinRoute
   '/api/app/v1/tournaments/$id/withdraw': typeof ApiAppV1TournamentsIdWithdrawRoute
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
@@ -1485,6 +1581,10 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/social/feed'
+    | '/api/app/v1/social/follow'
+    | '/api/app/v1/social/friends'
+    | '/api/app/v1/social/messages'
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/public/v1/classes/session'
@@ -1513,6 +1613,12 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
     | '/api/app/v1/puzzles/$id/attempt'
+    | '/api/app/v1/social/friends/remove'
+    | '/api/app/v1/social/friends/request'
+    | '/api/app/v1/social/friends/respond'
+    | '/api/app/v1/social/messages/$username'
+    | '/api/app/v1/social/messages/send'
+    | '/api/app/v1/social/relation/$userId'
     | '/api/app/v1/tournaments/$id/join'
     | '/api/app/v1/tournaments/$id/withdraw'
     | '/api/public/v1/embed/token/$token'
@@ -1634,6 +1740,10 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/social/feed'
+    | '/api/app/v1/social/follow'
+    | '/api/app/v1/social/friends'
+    | '/api/app/v1/social/messages'
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/public/v1/classes/session'
@@ -1662,6 +1772,12 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
     | '/api/app/v1/puzzles/$id/attempt'
+    | '/api/app/v1/social/friends/remove'
+    | '/api/app/v1/social/friends/request'
+    | '/api/app/v1/social/friends/respond'
+    | '/api/app/v1/social/messages/$username'
+    | '/api/app/v1/social/messages/send'
+    | '/api/app/v1/social/relation/$userId'
     | '/api/app/v1/tournaments/$id/join'
     | '/api/app/v1/tournaments/$id/withdraw'
     | '/api/public/v1/embed/token/$token'
@@ -1784,6 +1900,10 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/social/feed'
+    | '/api/app/v1/social/follow'
+    | '/api/app/v1/social/friends'
+    | '/api/app/v1/social/messages'
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/public/v1/classes/session'
@@ -1812,6 +1932,12 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
     | '/api/app/v1/puzzles/$id/attempt'
+    | '/api/app/v1/social/friends/remove'
+    | '/api/app/v1/social/friends/request'
+    | '/api/app/v1/social/friends/respond'
+    | '/api/app/v1/social/messages/$username'
+    | '/api/app/v1/social/messages/send'
+    | '/api/app/v1/social/relation/$userId'
     | '/api/app/v1/tournaments/$id/join'
     | '/api/app/v1/tournaments/$id/withdraw'
     | '/api/public/v1/embed/token/$token'
@@ -1920,6 +2046,10 @@ export interface RootRouteChildren {
   ApiAppV1PuzzlesNextRoute: typeof ApiAppV1PuzzlesNextRoute
   ApiAppV1PuzzlesPackRoute: typeof ApiAppV1PuzzlesPackRoute
   ApiAppV1PuzzlesSyncRoute: typeof ApiAppV1PuzzlesSyncRoute
+  ApiAppV1SocialFeedRoute: typeof ApiAppV1SocialFeedRoute
+  ApiAppV1SocialFollowRoute: typeof ApiAppV1SocialFollowRoute
+  ApiAppV1SocialFriendsRoute: typeof ApiAppV1SocialFriendsRouteWithChildren
+  ApiAppV1SocialMessagesRoute: typeof ApiAppV1SocialMessagesRouteWithChildren
   ApiAppV1SubscriptionCheckoutRoute: typeof ApiAppV1SubscriptionCheckoutRoute
   ApiAppV1TournamentsIdRoute: typeof ApiAppV1TournamentsIdRouteWithChildren
   ApiPublicV1ClassesSessionRoute: typeof ApiPublicV1ClassesSessionRouteWithChildren
@@ -1931,6 +2061,7 @@ export interface RootRouteChildren {
   ApiAppV1NotificationsIndexRoute: typeof ApiAppV1NotificationsIndexRoute
   ApiAppV1TournamentsIndexRoute: typeof ApiAppV1TournamentsIndexRoute
   ApiAppV1PuzzlesIdAttemptRoute: typeof ApiAppV1PuzzlesIdAttemptRoute
+  ApiAppV1SocialRelationUserIdRoute: typeof ApiAppV1SocialRelationUserIdRoute
   ApiPublicV1UsersUsernameGamesRoute: typeof ApiPublicV1UsersUsernameGamesRoute
   ApiPublicV1UsersUsernameRatingRoute: typeof ApiPublicV1UsersUsernameRatingRoute
 }
@@ -2742,6 +2873,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PuzzlesSyncRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/social/feed': {
+      id: '/api/app/v1/social/feed'
+      path: '/api/app/v1/social/feed'
+      fullPath: '/api/app/v1/social/feed'
+      preLoaderRoute: typeof ApiAppV1SocialFeedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/social/follow': {
+      id: '/api/app/v1/social/follow'
+      path: '/api/app/v1/social/follow'
+      fullPath: '/api/app/v1/social/follow'
+      preLoaderRoute: typeof ApiAppV1SocialFollowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/social/friends': {
+      id: '/api/app/v1/social/friends'
+      path: '/api/app/v1/social/friends'
+      fullPath: '/api/app/v1/social/friends'
+      preLoaderRoute: typeof ApiAppV1SocialFriendsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/social/messages': {
+      id: '/api/app/v1/social/messages'
+      path: '/api/app/v1/social/messages'
+      fullPath: '/api/app/v1/social/messages'
+      preLoaderRoute: typeof ApiAppV1SocialMessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/subscription/checkout': {
       id: '/api/app/v1/subscription/checkout'
       path: '/api/app/v1/subscription/checkout'
@@ -2908,6 +3067,48 @@ declare module '@tanstack/react-router' {
       path: '/api/app/v1/puzzles/$id/attempt'
       fullPath: '/api/app/v1/puzzles/$id/attempt'
       preLoaderRoute: typeof ApiAppV1PuzzlesIdAttemptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/social/friends/remove': {
+      id: '/api/app/v1/social/friends/remove'
+      path: '/remove'
+      fullPath: '/api/app/v1/social/friends/remove'
+      preLoaderRoute: typeof ApiAppV1SocialFriendsRemoveRouteImport
+      parentRoute: typeof ApiAppV1SocialFriendsRoute
+    }
+    '/api/app/v1/social/friends/request': {
+      id: '/api/app/v1/social/friends/request'
+      path: '/request'
+      fullPath: '/api/app/v1/social/friends/request'
+      preLoaderRoute: typeof ApiAppV1SocialFriendsRequestRouteImport
+      parentRoute: typeof ApiAppV1SocialFriendsRoute
+    }
+    '/api/app/v1/social/friends/respond': {
+      id: '/api/app/v1/social/friends/respond'
+      path: '/respond'
+      fullPath: '/api/app/v1/social/friends/respond'
+      preLoaderRoute: typeof ApiAppV1SocialFriendsRespondRouteImport
+      parentRoute: typeof ApiAppV1SocialFriendsRoute
+    }
+    '/api/app/v1/social/messages/$username': {
+      id: '/api/app/v1/social/messages/$username'
+      path: '/$username'
+      fullPath: '/api/app/v1/social/messages/$username'
+      preLoaderRoute: typeof ApiAppV1SocialMessagesUsernameRouteImport
+      parentRoute: typeof ApiAppV1SocialMessagesRoute
+    }
+    '/api/app/v1/social/messages/send': {
+      id: '/api/app/v1/social/messages/send'
+      path: '/send'
+      fullPath: '/api/app/v1/social/messages/send'
+      preLoaderRoute: typeof ApiAppV1SocialMessagesSendRouteImport
+      parentRoute: typeof ApiAppV1SocialMessagesRoute
+    }
+    '/api/app/v1/social/relation/$userId': {
+      id: '/api/app/v1/social/relation/$userId'
+      path: '/api/app/v1/social/relation/$userId'
+      fullPath: '/api/app/v1/social/relation/$userId'
+      preLoaderRoute: typeof ApiAppV1SocialRelationUserIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/app/v1/tournaments/$id/join': {
@@ -3115,6 +3316,39 @@ const ApiAppV1GamesIdRouteWithChildren = ApiAppV1GamesIdRoute._addFileChildren(
   ApiAppV1GamesIdRouteChildren,
 )
 
+interface ApiAppV1SocialFriendsRouteChildren {
+  ApiAppV1SocialFriendsRemoveRoute: typeof ApiAppV1SocialFriendsRemoveRoute
+  ApiAppV1SocialFriendsRequestRoute: typeof ApiAppV1SocialFriendsRequestRoute
+  ApiAppV1SocialFriendsRespondRoute: typeof ApiAppV1SocialFriendsRespondRoute
+}
+
+const ApiAppV1SocialFriendsRouteChildren: ApiAppV1SocialFriendsRouteChildren = {
+  ApiAppV1SocialFriendsRemoveRoute: ApiAppV1SocialFriendsRemoveRoute,
+  ApiAppV1SocialFriendsRequestRoute: ApiAppV1SocialFriendsRequestRoute,
+  ApiAppV1SocialFriendsRespondRoute: ApiAppV1SocialFriendsRespondRoute,
+}
+
+const ApiAppV1SocialFriendsRouteWithChildren =
+  ApiAppV1SocialFriendsRoute._addFileChildren(
+    ApiAppV1SocialFriendsRouteChildren,
+  )
+
+interface ApiAppV1SocialMessagesRouteChildren {
+  ApiAppV1SocialMessagesUsernameRoute: typeof ApiAppV1SocialMessagesUsernameRoute
+  ApiAppV1SocialMessagesSendRoute: typeof ApiAppV1SocialMessagesSendRoute
+}
+
+const ApiAppV1SocialMessagesRouteChildren: ApiAppV1SocialMessagesRouteChildren =
+  {
+    ApiAppV1SocialMessagesUsernameRoute: ApiAppV1SocialMessagesUsernameRoute,
+    ApiAppV1SocialMessagesSendRoute: ApiAppV1SocialMessagesSendRoute,
+  }
+
+const ApiAppV1SocialMessagesRouteWithChildren =
+  ApiAppV1SocialMessagesRoute._addFileChildren(
+    ApiAppV1SocialMessagesRouteChildren,
+  )
+
 interface ApiAppV1TournamentsIdRouteChildren {
   ApiAppV1TournamentsIdJoinRoute: typeof ApiAppV1TournamentsIdJoinRoute
   ApiAppV1TournamentsIdWithdrawRoute: typeof ApiAppV1TournamentsIdWithdrawRoute
@@ -3258,6 +3492,10 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1PuzzlesNextRoute: ApiAppV1PuzzlesNextRoute,
   ApiAppV1PuzzlesPackRoute: ApiAppV1PuzzlesPackRoute,
   ApiAppV1PuzzlesSyncRoute: ApiAppV1PuzzlesSyncRoute,
+  ApiAppV1SocialFeedRoute: ApiAppV1SocialFeedRoute,
+  ApiAppV1SocialFollowRoute: ApiAppV1SocialFollowRoute,
+  ApiAppV1SocialFriendsRoute: ApiAppV1SocialFriendsRouteWithChildren,
+  ApiAppV1SocialMessagesRoute: ApiAppV1SocialMessagesRouteWithChildren,
   ApiAppV1SubscriptionCheckoutRoute: ApiAppV1SubscriptionCheckoutRoute,
   ApiAppV1TournamentsIdRoute: ApiAppV1TournamentsIdRouteWithChildren,
   ApiPublicV1ClassesSessionRoute: ApiPublicV1ClassesSessionRouteWithChildren,
@@ -3269,6 +3507,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1NotificationsIndexRoute: ApiAppV1NotificationsIndexRoute,
   ApiAppV1TournamentsIndexRoute: ApiAppV1TournamentsIndexRoute,
   ApiAppV1PuzzlesIdAttemptRoute: ApiAppV1PuzzlesIdAttemptRoute,
+  ApiAppV1SocialRelationUserIdRoute: ApiAppV1SocialRelationUserIdRoute,
   ApiPublicV1UsersUsernameGamesRoute: ApiPublicV1UsersUsernameGamesRoute,
   ApiPublicV1UsersUsernameRatingRoute: ApiPublicV1UsersUsernameRatingRoute,
 }

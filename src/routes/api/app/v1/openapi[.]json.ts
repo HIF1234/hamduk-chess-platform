@@ -277,6 +277,53 @@ const SPEC = {
         }),
       }),
     },
+    "/social/friends": { get: op("My friends: accepted, incoming and outgoing requests") },
+    "/social/friends/request": {
+      post: op("Send a friend request (auto-accepts a reverse pending request)", {
+        requestBody: json({ userId: { type: "string", format: "uuid" } }, ["userId"]),
+      }),
+    },
+    "/social/friends/respond": {
+      post: op("Accept or decline an incoming friend request", {
+        requestBody: json(
+          { requestId: { type: "string", format: "uuid" }, accept: { type: "boolean" } },
+          ["requestId", "accept"],
+        ),
+      }),
+    },
+    "/social/friends/remove": {
+      post: op("Remove a friend or cancel a pending request either way", {
+        requestBody: json({ userId: { type: "string", format: "uuid" } }, ["userId"]),
+      }),
+    },
+    "/social/follow": {
+      post: op("Follow a player", {
+        requestBody: json({ userId: { type: "string", format: "uuid" } }, ["userId"]),
+      }),
+      delete: op("Unfollow a player", {
+        requestBody: json({ userId: { type: "string", format: "uuid" } }, ["userId"]),
+      }),
+    },
+    "/social/relation/{userId}": {
+      get: op("My follow/friend state with another player", {
+        parameters: [{ name: "userId", in: "path", required: true, schema: { type: "string", format: "uuid" } }],
+      }),
+    },
+    "/social/feed": { get: op("Recent activity from players I follow") },
+    "/social/messages": { get: op("My conversations, most recent first") },
+    "/social/messages/{username}": {
+      get: op("My conversation with one player; marks their messages read", {
+        parameters: [{ name: "username", in: "path", required: true, schema: { type: "string" } }],
+      }),
+    },
+    "/social/messages/send": {
+      post: op("Send a direct message", {
+        requestBody: json(
+          { recipientId: { type: "string", format: "uuid" }, content: { type: "string", maxLength: 2000 } },
+          ["recipientId", "content"],
+        ),
+      }),
+    },
   },
 };
 
