@@ -27,10 +27,19 @@ export const Route = createFileRoute("/api/app/v1/config")({
             enabled: process.env.MAINTENANCE_ENABLED === "true",
             message: process.env.MAINTENANCE_MESSAGE ?? "We're upgrading. Back soon.",
           },
-          // Remote kill switches so a feature can be turned off without an app release
-          // (e.g. paid tournaments, if a store objects). Missing keys default to enabled.
+          // Remote kill switches so a feature can be turned off without an app release.
+          // Covers anything store-policy, payment, or abuse risk might force off on short
+          // notice. Missing keys default to enabled.
           features: {
             paidTournaments: process.env.FEATURE_PAID_TOURNAMENTS !== "false",
+            // Paystack checkout for a subscription upgrade -- real money, external payment
+            // redirect, the kind of flow a store review can object to.
+            subscriptionUpgrade: process.env.FEATURE_SUBSCRIPTION_UPGRADE !== "false",
+            // Paystack checkout for booking a coach -- same payment/store risk as above.
+            coachBooking: process.env.FEATURE_COACH_BOOKING !== "false",
+            // Player-to-player messaging -- user-generated content with abuse risk; an off
+            // switch means we don't need a release to respond to a spike in reports.
+            chat: process.env.FEATURE_CHAT !== "false",
           },
           supabase: {
             url: process.env.SUPABASE_URL,
