@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { NIGERIA_STATES } from "@/lib/nigeria-states";
 import { BOARD_THEMES, normalizePreferences, type BoardThemeId } from "@/lib/preferences";
 
 const PreferencesSchema = z.object({
@@ -24,7 +25,7 @@ export const getMySettings = createServerFn({ method: "GET" })
     const { data: profile, error } = await db
       .from("profiles")
       .select(
-        "username, country, is_guest, subscription_tier, subscription_status, subscription_renews_at, preferences, email_notify_moves, vacation_until",
+        "username, country, state, terms_accepted_at, is_guest, subscription_tier, subscription_status, subscription_renews_at, preferences, email_notify_moves, vacation_until",
       )
       .eq("id", context.userId)
       .maybeSingle();
@@ -33,6 +34,8 @@ export const getMySettings = createServerFn({ method: "GET" })
     return {
       username: profile.username,
       country: profile.country,
+      state: profile.state,
+      termsAcceptedAt: profile.terms_accepted_at,
       isGuest: profile.is_guest,
       tier: profile.subscription_tier,
       subscriptionStatus: profile.subscription_status,
@@ -72,14 +75,17 @@ export const updateMyAccount = createServerFn({ method: "POST" })
     z
       .object({
         country: z.string().length(2).toUpperCase().optional(),
+        // Only meaningful for Nigeria today; cleared if the player's country isn't 'NG'.
+        state: z.enum(NIGERIA_STATES).nullable().optional(),
         emailOnMoves: z.boolean().optional(),
       })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     const db = await admin();
-    const patch: { country?: string; email_notify_moves?: boolean } = {};
+    const patch: { country?: string; state?: string | null; email_notify_moves?: boolean } = {};
     if (data.country) patch.country = data.country;
+    if (data.state !== undefined) patch.state = data.state;
     if (data.emailOnMoves !== undefined) patch.email_notify_moves = data.emailOnMoves;
     if (Object.keys(patch).length === 0) return { ok: true };
     const { error } = await db.from("profiles").update(patch).eq("id", context.userId);
