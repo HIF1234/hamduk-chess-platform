@@ -8,5 +8,16 @@
         "20:25:3C:63:86:B3:05:5E:2B:8A:EB:E1:56:EC:55:FB:FA:10:A2:06:D2:7E:B4:C5:13:67:73:B2:AB:27:DF:48"
       ]
     }
+  },
+  {
+    "relation": ["delegate_permission/common.get_login_creds"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "ng.com.hamduk.chess",
+      "sha256_cert_fingerprints": [
+        "20:25:3C:63:86:B3:05:5E:2B:8A:EB:E1:56:EC:55:FB:FA:10:A2:06:D2:7E:B4:C5:13:67:73:B2:AB:27:DF:48",
+        "6D:DD:2B:82:45:E0:A1:1F:B0:80:E6:FC:00:94:83:33:F1:8C:5E:48:08:1A:CB:3B:9D:1C:B6:25:79:0C:31:A2"
+      ]
+    }
   }
 ]
