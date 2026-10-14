@@ -18,6 +18,20 @@ export const Route = createFileRoute("/api/app/v1/config")({
           apiVersion: APP_API_VERSION,
           // Raise to force old apps to update after a breaking change.
           minAppVersion: process.env.APP_MIN_VERSION ?? "1.0.0",
+          // Optional: set when a newer version exists but isn't required yet. The app shows
+          // a small dismissible banner instead of blocking, when this is above its own version.
+          latestAppVersion: process.env.APP_LATEST_VERSION ?? null,
+          // Server-controlled downtime notice. Shown as a banner; offline features (bots,
+          // puzzles, local play) keep working underneath it.
+          maintenance: {
+            enabled: process.env.MAINTENANCE_ENABLED === "true",
+            message: process.env.MAINTENANCE_MESSAGE ?? "We're upgrading. Back soon.",
+          },
+          // Remote kill switches so a feature can be turned off without an app release
+          // (e.g. paid tournaments, if a store objects). Missing keys default to enabled.
+          features: {
+            paidTournaments: process.env.FEATURE_PAID_TOURNAMENTS !== "false",
+          },
           supabase: {
             url: process.env.SUPABASE_URL,
             // The publishable (anon) key; it's already public in the website's bundle.
