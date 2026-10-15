@@ -22,6 +22,8 @@ export const createChallenge = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    const { assertOnlinePlayAllowed } = await import("./guardian.functions");
+    await assertOnlinePlayAllowed(context.userId);
     const db = await admin();
     const { data: row, error } = await db
       .from("game_challenges")
@@ -43,6 +45,8 @@ export const acceptChallenge = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    const { assertOnlinePlayAllowed } = await import("./guardian.functions");
+    await assertOnlinePlayAllowed(context.userId);
     const { acceptChallengeFor } = await import("@/lib/challenges.server");
     return acceptChallengeFor(data.id, context.userId);
   });

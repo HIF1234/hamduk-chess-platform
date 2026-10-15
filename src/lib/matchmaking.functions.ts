@@ -21,6 +21,8 @@ export const findOrJoinMatch = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    const { assertOnlinePlayAllowed } = await import("./guardian.functions");
+    await assertOnlinePlayAllowed(context.userId);
     const { supabase } = context;
     const startFen = data.variant === "chess960" ? chess960StartFen() : null;
     const { data: gameId, error } = await supabase.rpc("find_or_join_match", {
