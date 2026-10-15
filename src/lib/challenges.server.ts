@@ -21,6 +21,9 @@ export async function acceptChallengeFor(
   if (new Date(ch.expires_at) < new Date()) throw new Error("This challenge has expired.");
   if (ch.creator_id === userId)
     throw new Error("Send this link to a friend — you can't accept your own challenge.");
+  if (ch.target_user_id && ch.target_user_id !== userId)
+    throw new Error("This challenge was sent to someone else.");
+  if (ch.declined) throw new Error("This challenge was declined.");
 
   const creatorWhite =
     ch.creator_color === "white"

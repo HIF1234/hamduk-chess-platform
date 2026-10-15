@@ -185,7 +185,7 @@ export async function getChallengeForApp(ctx: AppContext, input: unknown) {
   const { data: ch } = await s
     .from("game_challenges")
     .select(
-      "id, creator_id, time_control, variant, creator_color, rated, game_id, accepted_by, expires_at",
+      "id, creator_id, time_control, variant, creator_color, rated, game_id, accepted_by, expires_at, target_user_id, declined",
     )
     .eq("id", data.id)
     .maybeSingle();
@@ -276,6 +276,28 @@ export async function listLiveGames(_ctx: AppContext | null) {
       black: who.get(g.black_id) ?? null,
     })),
   };
+}
+
+/** "214 playing, 37 looking for 5 min": shown above the time-control tiles once there are
+ *  enough players for the numbers to mean anything (the client decides the threshold). */
+export async function getLiveCounts(_ctx: AppContext | null) {
+  const s = await admin();
+  const [{ count: activeGames }, { data: queueRows }] = await Promise.all([
+    s.from("games").select("id", { count: "exact", head: true }).eq("status", "active").eq("is_correspondence", false),
+    s.from("matchmaking_queue").select("time_control"),
+  ]);
+  const looking: Record<string, number> = {};
+  for (const r of queueRows ?? []) looking[r.time_control] = (looking[r.time_control] ?? 0) + 1;
+  return { playing: (activeGames ?? 0) * 2, looking };
+}
+
+/** The single live game to show on a "TV" view -- whichever public game has the most
+ *  spectators right now (falls back to the most recently active one). */
+export async function getTopLiveGame(_ctx: AppContext | null) {
+  const { games } = await listLiveGames(null);
+  if (games.length === 0) return { game: null };
+  const top = [...games].sort((a, b) => (b.spectator_count ?? 0) - (a.spectator_count ?? 0))[0];
+  return { game: top };
 }
 
 /** A player's public profile by username, same data as the website's /profile/{username}. */

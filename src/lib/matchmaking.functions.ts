@@ -17,6 +17,9 @@ export const findOrJoinMatch = createServerFn({ method: "POST" })
       .object({
         timeControl: TimeControl,
         variant: Variant.default("standard"),
+        rated: z.boolean().default(true),
+        // The search sheet widens 50 -> 100 -> 200 -> 400 -> "anyone" (1000) as it waits.
+        ratingWindow: z.number().int().min(50).max(1000).default(200),
       })
       .parse(d),
   )
@@ -27,9 +30,10 @@ export const findOrJoinMatch = createServerFn({ method: "POST" })
     const startFen = data.variant === "chess960" ? chess960StartFen() : null;
     const { data: gameId, error } = await supabase.rpc("find_or_join_match", {
       p_time_control: data.timeControl,
-      p_rating_window: 200,
+      p_rating_window: data.ratingWindow,
       p_variant: data.variant,
       p_start_fen: startFen ?? undefined,
+      p_rated: data.rated,
     });
     if (error) throw new Error(error.message);
     return { gameId: gameId as string | null };

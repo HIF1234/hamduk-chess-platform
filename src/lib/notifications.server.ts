@@ -18,7 +18,8 @@ export type NotificationType =
   | "announcement"
   | "game_comment"
   | "puzzle_review"
-  | "challenge_accepted";
+  | "challenge_accepted"
+  | "challenge_received";
 
 export async function notify(
   userId: string,

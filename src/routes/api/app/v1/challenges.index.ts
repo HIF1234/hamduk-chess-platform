@@ -13,6 +13,11 @@ export const Route = createFileRoute("/api/app/v1/challenges/")({
         const { id } = await createChallenge({ data: (await body(request)) as never });
         return { id, url: `${SITE}/challenge/${id}` };
       }),
+      /** Open challenges anyone can accept. */
+      GET: appEndpoint(async () => {
+        const { listOpenChallenges } = await import("@/lib/challenges.functions");
+        return listOpenChallenges();
+      }),
     },
   },
 });
