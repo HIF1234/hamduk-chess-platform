@@ -3542,10 +3542,12 @@ export type Database = {
           rating: number
           referral_code: string | null
           referred_by: string | null
+          state: string | null
           subscription_renews_at: string | null
           subscription_status: string
           subscription_tier: Database["public"]["Enums"]["subscription_tier_enum"]
           suspended_until: string | null
+          terms_accepted_at: string | null
           username: string
           vacation_days_used: number
           vacation_until: string | null
@@ -3578,10 +3580,12 @@ export type Database = {
           rating?: number
           referral_code?: string | null
           referred_by?: string | null
+          state?: string | null
           subscription_renews_at?: string | null
           subscription_status?: string
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
           suspended_until?: string | null
+          terms_accepted_at?: string | null
           username: string
           vacation_days_used?: number
           vacation_until?: string | null
@@ -3614,10 +3618,12 @@ export type Database = {
           rating?: number
           referral_code?: string | null
           referred_by?: string | null
+          state?: string | null
           subscription_renews_at?: string | null
           subscription_status?: string
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
           suspended_until?: string | null
+          terms_accepted_at?: string | null
           username?: string
           vacation_days_used?: number
           vacation_until?: string | null

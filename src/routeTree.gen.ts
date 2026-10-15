@@ -99,6 +99,7 @@ import { Route as ForumsThreadThreadIdRouteImport } from './routes/forums.thread
 import { Route as PuzzlesBattleIndexRouteImport } from './routes/puzzles.battle.index'
 import { Route as PuzzlesBattleIdRouteImport } from './routes/puzzles.battle.$id'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
+import { Route as ApiAppV1AccountRouteImport } from './routes/api/app/v1/account'
 import { Route as ApiAppV1BotGamesRouteImport } from './routes/api/app/v1/bot-games'
 import { Route as ApiAppV1ConfigRouteImport } from './routes/api/app/v1/config'
 import { Route as ApiAppV1DevicesRouteImport } from './routes/api/app/v1/devices'
@@ -627,6 +628,11 @@ const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
   path: '/puzzles/daily/$date',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1AccountRoute = ApiAppV1AccountRouteImport.update({
+  id: '/api/app/v1/account',
+  path: '/api/app/v1/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1BotGamesRoute = ApiAppV1BotGamesRouteImport.update({
   id: '/api/app/v1/bot-games',
   path: '/api/app/v1/bot-games',
@@ -1132,6 +1138,7 @@ export interface FileRoutesByFullPath {
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
   '/puzzles/battle/': typeof PuzzlesBattleIndexRoute
+  '/api/app/v1/account': typeof ApiAppV1AccountRoute
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
@@ -1300,6 +1307,7 @@ export interface FileRoutesByTo {
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users': typeof AdminUsersIndexRoute
   '/puzzles/battle': typeof PuzzlesBattleIndexRoute
+  '/api/app/v1/account': typeof ApiAppV1AccountRoute
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
@@ -1470,6 +1478,7 @@ export interface FileRoutesById {
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
   '/puzzles/battle/': typeof PuzzlesBattleIndexRoute
+  '/api/app/v1/account': typeof ApiAppV1AccountRoute
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
@@ -1641,6 +1650,7 @@ export interface FileRouteTypes {
     | '/puzzles/daily/$date'
     | '/admin/users/'
     | '/puzzles/battle/'
+    | '/api/app/v1/account'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
@@ -1809,6 +1819,7 @@ export interface FileRouteTypes {
     | '/puzzles/daily/$date'
     | '/admin/users'
     | '/puzzles/battle'
+    | '/api/app/v1/account'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
@@ -1978,6 +1989,7 @@ export interface FileRouteTypes {
     | '/puzzles/daily/$date'
     | '/admin/users/'
     | '/puzzles/battle/'
+    | '/api/app/v1/account'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
@@ -2133,6 +2145,7 @@ export interface RootRouteChildren {
   PuzzlesBattleIdRoute: typeof PuzzlesBattleIdRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   PuzzlesBattleIndexRoute: typeof PuzzlesBattleIndexRoute
+  ApiAppV1AccountRoute: typeof ApiAppV1AccountRoute
   ApiAppV1BotGamesRoute: typeof ApiAppV1BotGamesRoute
   ApiAppV1ConfigRoute: typeof ApiAppV1ConfigRoute
   ApiAppV1DevicesRoute: typeof ApiAppV1DevicesRoute
@@ -2812,6 +2825,13 @@ declare module '@tanstack/react-router' {
       path: '/puzzles/daily/$date'
       fullPath: '/puzzles/daily/$date'
       preLoaderRoute: typeof PuzzlesDailyDateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/account': {
+      id: '/api/app/v1/account'
+      path: '/api/app/v1/account'
+      fullPath: '/api/app/v1/account'
+      preLoaderRoute: typeof ApiAppV1AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/app/v1/bot-games': {
@@ -3662,6 +3682,7 @@ const rootRouteChildren: RootRouteChildren = {
   PuzzlesBattleIdRoute: PuzzlesBattleIdRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   PuzzlesBattleIndexRoute: PuzzlesBattleIndexRoute,
+  ApiAppV1AccountRoute: ApiAppV1AccountRoute,
   ApiAppV1BotGamesRoute: ApiAppV1BotGamesRoute,
   ApiAppV1ConfigRoute: ApiAppV1ConfigRoute,
   ApiAppV1DevicesRoute: ApiAppV1DevicesRoute,
