@@ -7,7 +7,7 @@ import type { authenticateRequest } from "@/integrations/supabase/auth-middlewar
 export type AppContext = Awaited<ReturnType<typeof authenticateRequest>>;
 
 const GAME_FIELDS =
-  "id, white_id, black_id, status, result, end_reason, winner_id, fen, pgn, ply, time_control, variant, chess960_start_fen, rated, initial_sec, increment_sec, time_white_ms, time_black_ms, last_clock_update, draw_offer_by, takeback_offer_by, is_correspondence, move_deadline, created_at, ended_at";
+  "id, white_id, black_id, status, result, end_reason, winner_id, fen, pgn, ply, time_control, variant, chess960_start_fen, rated, initial_sec, increment_sec, time_white_ms, time_black_ms, last_clock_update, draw_offer_by, takeback_offer_by, is_correspondence, move_deadline, created_at, ended_at, white_rating_delta, black_rating_delta";
 
 async function admin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
