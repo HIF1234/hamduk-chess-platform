@@ -109,6 +109,7 @@ import { Route as ApiAppV1LeaderboardRouteImport } from './routes/api/app/v1/lea
 import { Route as ApiAppV1MeRouteImport } from './routes/api/app/v1/me'
 import { Route as ApiAppV1OpenapiDotjsonRouteImport } from './routes/api/app/v1/openapi[.]json'
 import { Route as ApiAppV1PingRouteImport } from './routes/api/app/v1/ping'
+import { Route as ApiAppV1PresenceRouteImport } from './routes/api/app/v1/presence'
 import { Route as ApiAppV1ReportRouteImport } from './routes/api/app/v1/report'
 import { Route as ApiAppV1SeekRouteImport } from './routes/api/app/v1/seek'
 import { Route as ApiAppV1SpectateRouteImport } from './routes/api/app/v1/spectate'
@@ -121,6 +122,8 @@ import { Route as ApiAppV1ChallengesIdRouteImport } from './routes/api/app/v1/ch
 import { Route as ApiAppV1CoachesIndexRouteImport } from './routes/api/app/v1/coaches.index'
 import { Route as ApiAppV1CoachesIdRouteImport } from './routes/api/app/v1/coaches.$id'
 import { Route as ApiAppV1CoachingSessionsRouteImport } from './routes/api/app/v1/coaching.sessions'
+import { Route as ApiAppV1CorrespondenceIndexRouteImport } from './routes/api/app/v1/correspondence.index'
+import { Route as ApiAppV1CorrespondenceVacationRouteImport } from './routes/api/app/v1/correspondence.vacation'
 import { Route as ApiAppV1GamesIndexRouteImport } from './routes/api/app/v1/games.index'
 import { Route as ApiAppV1GamesIdRouteImport } from './routes/api/app/v1/games.$id'
 import { Route as ApiAppV1NotificationsIndexRouteImport } from './routes/api/app/v1/notifications.index'
@@ -137,6 +140,8 @@ import { Route as ApiAppV1SocialFollowRouteImport } from './routes/api/app/v1/so
 import { Route as ApiAppV1SocialFriendsRouteImport } from './routes/api/app/v1/social.friends'
 import { Route as ApiAppV1SocialMessagesRouteImport } from './routes/api/app/v1/social.messages'
 import { Route as ApiAppV1SocialUnblockRouteImport } from './routes/api/app/v1/social.unblock'
+import { Route as ApiAppV1SpectateTvRouteImport } from './routes/api/app/v1/spectate.tv'
+import { Route as ApiAppV1StatsLiveRouteImport } from './routes/api/app/v1/stats.live'
 import { Route as ApiAppV1SubscriptionCheckoutRouteImport } from './routes/api/app/v1/subscription.checkout'
 import { Route as ApiAppV1TournamentsIndexRouteImport } from './routes/api/app/v1/tournaments.index'
 import { Route as ApiAppV1TournamentsIdRouteImport } from './routes/api/app/v1/tournaments.$id'
@@ -144,6 +149,7 @@ import { Route as ApiAppV1TutorialsIndexRouteImport } from './routes/api/app/v1/
 import { Route as ApiAppV1TutorialsIdRouteImport } from './routes/api/app/v1/tutorials.$id'
 import { Route as ApiAppV1VideosIndexRouteImport } from './routes/api/app/v1/videos.index'
 import { Route as ApiAppV1VideosProgressRouteImport } from './routes/api/app/v1/videos.progress'
+import { Route as ApiAppV1VoiceTranscribeRouteImport } from './routes/api/app/v1/voice.transcribe'
 import { Route as ApiPublicV1ClassesSessionRouteImport } from './routes/api/public/v1/classes.session'
 import { Route as ApiPublicV1CorrespondenceSweepRouteImport } from './routes/api/public/v1/correspondence.sweep'
 import { Route as ApiPublicV1EmbedTokenRouteImport } from './routes/api/public/v1/embed.token'
@@ -151,6 +157,7 @@ import { Route as ApiPublicV1TournamentsSweepRouteImport } from './routes/api/pu
 import { Route as ApiPublicV1WebhooksIdRouteImport } from './routes/api/public/v1/webhooks.$id'
 import { Route as ApiPublicV1WebhooksRetrySweepRouteImport } from './routes/api/public/v1/webhooks.retry-sweep'
 import { Route as ApiAppV1ChallengesIdAcceptRouteImport } from './routes/api/app/v1/challenges.$id.accept'
+import { Route as ApiAppV1ChallengesIdDeclineRouteImport } from './routes/api/app/v1/challenges.$id.decline'
 import { Route as ApiAppV1CoachesIdBookRouteImport } from './routes/api/app/v1/coaches.$id.book'
 import { Route as ApiAppV1GamesIdAbortRouteImport } from './routes/api/app/v1/games.$id.abort'
 import { Route as ApiAppV1GamesIdAwayRouteImport } from './routes/api/app/v1/games.$id.away'
@@ -682,6 +689,11 @@ const ApiAppV1PingRoute = ApiAppV1PingRouteImport.update({
   path: '/api/app/v1/ping',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1PresenceRoute = ApiAppV1PresenceRouteImport.update({
+  id: '/api/app/v1/presence',
+  path: '/api/app/v1/presence',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1ReportRoute = ApiAppV1ReportRouteImport.update({
   id: '/api/app/v1/report',
   path: '/api/app/v1/report',
@@ -743,6 +755,18 @@ const ApiAppV1CoachingSessionsRoute =
   ApiAppV1CoachingSessionsRouteImport.update({
     id: '/api/app/v1/coaching/sessions',
     path: '/api/app/v1/coaching/sessions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAppV1CorrespondenceIndexRoute =
+  ApiAppV1CorrespondenceIndexRouteImport.update({
+    id: '/api/app/v1/correspondence/',
+    path: '/api/app/v1/correspondence/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAppV1CorrespondenceVacationRoute =
+  ApiAppV1CorrespondenceVacationRouteImport.update({
+    id: '/api/app/v1/correspondence/vacation',
+    path: '/api/app/v1/correspondence/vacation',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiAppV1GamesIndexRoute = ApiAppV1GamesIndexRouteImport.update({
@@ -827,6 +851,16 @@ const ApiAppV1SocialUnblockRoute = ApiAppV1SocialUnblockRouteImport.update({
   path: '/api/app/v1/social/unblock',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1SpectateTvRoute = ApiAppV1SpectateTvRouteImport.update({
+  id: '/tv',
+  path: '/tv',
+  getParentRoute: () => ApiAppV1SpectateRoute,
+} as any)
+const ApiAppV1StatsLiveRoute = ApiAppV1StatsLiveRouteImport.update({
+  id: '/api/app/v1/stats/live',
+  path: '/api/app/v1/stats/live',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1SubscriptionCheckoutRoute =
   ApiAppV1SubscriptionCheckoutRouteImport.update({
     id: '/api/app/v1/subscription/checkout',
@@ -862,6 +896,11 @@ const ApiAppV1VideosIndexRoute = ApiAppV1VideosIndexRouteImport.update({
 const ApiAppV1VideosProgressRoute = ApiAppV1VideosProgressRouteImport.update({
   id: '/api/app/v1/videos/progress',
   path: '/api/app/v1/videos/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1VoiceTranscribeRoute = ApiAppV1VoiceTranscribeRouteImport.update({
+  id: '/api/app/v1/voice/transcribe',
+  path: '/api/app/v1/voice/transcribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicV1ClassesSessionRoute =
@@ -902,6 +941,12 @@ const ApiAppV1ChallengesIdAcceptRoute =
   ApiAppV1ChallengesIdAcceptRouteImport.update({
     id: '/accept',
     path: '/accept',
+    getParentRoute: () => ApiAppV1ChallengesIdRoute,
+  } as any)
+const ApiAppV1ChallengesIdDeclineRoute =
+  ApiAppV1ChallengesIdDeclineRouteImport.update({
+    id: '/decline',
+    path: '/decline',
     getParentRoute: () => ApiAppV1ChallengesIdRoute,
   } as any)
 const ApiAppV1CoachesIdBookRoute = ApiAppV1CoachesIdBookRouteImport.update({
@@ -1173,9 +1218,10 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/ping': typeof ApiAppV1PingRoute
+  '/api/app/v1/presence': typeof ApiAppV1PresenceRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
-  '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
+  '/api/app/v1/spectate': typeof ApiAppV1SpectateRouteWithChildren
   '/api/app/v1/username-available': typeof ApiAppV1UsernameAvailableRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
@@ -1183,6 +1229,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/coaches/$id': typeof ApiAppV1CoachesIdRouteWithChildren
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
+  '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
@@ -1197,10 +1244,13 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/social/friends': typeof ApiAppV1SocialFriendsRouteWithChildren
   '/api/app/v1/social/messages': typeof ApiAppV1SocialMessagesRouteWithChildren
   '/api/app/v1/social/unblock': typeof ApiAppV1SocialUnblockRoute
+  '/api/app/v1/spectate/tv': typeof ApiAppV1SpectateTvRoute
+  '/api/app/v1/stats/live': typeof ApiAppV1StatsLiveRoute
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/app/v1/tutorials/$id': typeof ApiAppV1TutorialsIdRoute
   '/api/app/v1/videos/progress': typeof ApiAppV1VideosProgressRoute
+  '/api/app/v1/voice/transcribe': typeof ApiAppV1VoiceTranscribeRoute
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
@@ -1209,12 +1259,14 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
   '/api/app/v1/challenges/': typeof ApiAppV1ChallengesIndexRoute
   '/api/app/v1/coaches/': typeof ApiAppV1CoachesIndexRoute
+  '/api/app/v1/correspondence/': typeof ApiAppV1CorrespondenceIndexRoute
   '/api/app/v1/games/': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications/': typeof ApiAppV1NotificationsIndexRoute
   '/api/app/v1/tournaments/': typeof ApiAppV1TournamentsIndexRoute
   '/api/app/v1/tutorials/': typeof ApiAppV1TutorialsIndexRoute
   '/api/app/v1/videos/': typeof ApiAppV1VideosIndexRoute
   '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
+  '/api/app/v1/challenges/$id/decline': typeof ApiAppV1ChallengesIdDeclineRoute
   '/api/app/v1/coaches/$id/book': typeof ApiAppV1CoachesIdBookRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
   '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
@@ -1346,9 +1398,10 @@ export interface FileRoutesByTo {
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/ping': typeof ApiAppV1PingRoute
+  '/api/app/v1/presence': typeof ApiAppV1PresenceRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
-  '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
+  '/api/app/v1/spectate': typeof ApiAppV1SpectateRouteWithChildren
   '/api/app/v1/username-available': typeof ApiAppV1UsernameAvailableRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
@@ -1356,6 +1409,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/coaches/$id': typeof ApiAppV1CoachesIdRouteWithChildren
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
+  '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
@@ -1370,10 +1424,13 @@ export interface FileRoutesByTo {
   '/api/app/v1/social/friends': typeof ApiAppV1SocialFriendsRouteWithChildren
   '/api/app/v1/social/messages': typeof ApiAppV1SocialMessagesRouteWithChildren
   '/api/app/v1/social/unblock': typeof ApiAppV1SocialUnblockRoute
+  '/api/app/v1/spectate/tv': typeof ApiAppV1SpectateTvRoute
+  '/api/app/v1/stats/live': typeof ApiAppV1StatsLiveRoute
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/app/v1/tutorials/$id': typeof ApiAppV1TutorialsIdRoute
   '/api/app/v1/videos/progress': typeof ApiAppV1VideosProgressRoute
+  '/api/app/v1/voice/transcribe': typeof ApiAppV1VoiceTranscribeRoute
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
@@ -1382,12 +1439,14 @@ export interface FileRoutesByTo {
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
   '/api/app/v1/challenges': typeof ApiAppV1ChallengesIndexRoute
   '/api/app/v1/coaches': typeof ApiAppV1CoachesIndexRoute
+  '/api/app/v1/correspondence': typeof ApiAppV1CorrespondenceIndexRoute
   '/api/app/v1/games': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications': typeof ApiAppV1NotificationsIndexRoute
   '/api/app/v1/tournaments': typeof ApiAppV1TournamentsIndexRoute
   '/api/app/v1/tutorials': typeof ApiAppV1TutorialsIndexRoute
   '/api/app/v1/videos': typeof ApiAppV1VideosIndexRoute
   '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
+  '/api/app/v1/challenges/$id/decline': typeof ApiAppV1ChallengesIdDeclineRoute
   '/api/app/v1/coaches/$id/book': typeof ApiAppV1CoachesIdBookRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
   '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
@@ -1521,9 +1580,10 @@ export interface FileRoutesById {
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/ping': typeof ApiAppV1PingRoute
+  '/api/app/v1/presence': typeof ApiAppV1PresenceRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
-  '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
+  '/api/app/v1/spectate': typeof ApiAppV1SpectateRouteWithChildren
   '/api/app/v1/username-available': typeof ApiAppV1UsernameAvailableRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
@@ -1531,6 +1591,7 @@ export interface FileRoutesById {
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/coaches/$id': typeof ApiAppV1CoachesIdRouteWithChildren
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
+  '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
@@ -1545,10 +1606,13 @@ export interface FileRoutesById {
   '/api/app/v1/social/friends': typeof ApiAppV1SocialFriendsRouteWithChildren
   '/api/app/v1/social/messages': typeof ApiAppV1SocialMessagesRouteWithChildren
   '/api/app/v1/social/unblock': typeof ApiAppV1SocialUnblockRoute
+  '/api/app/v1/spectate/tv': typeof ApiAppV1SpectateTvRoute
+  '/api/app/v1/stats/live': typeof ApiAppV1StatsLiveRoute
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/app/v1/tutorials/$id': typeof ApiAppV1TutorialsIdRoute
   '/api/app/v1/videos/progress': typeof ApiAppV1VideosProgressRoute
+  '/api/app/v1/voice/transcribe': typeof ApiAppV1VoiceTranscribeRoute
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/correspondence/sweep': typeof ApiPublicV1CorrespondenceSweepRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
@@ -1557,12 +1621,14 @@ export interface FileRoutesById {
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
   '/api/app/v1/challenges/': typeof ApiAppV1ChallengesIndexRoute
   '/api/app/v1/coaches/': typeof ApiAppV1CoachesIndexRoute
+  '/api/app/v1/correspondence/': typeof ApiAppV1CorrespondenceIndexRoute
   '/api/app/v1/games/': typeof ApiAppV1GamesIndexRoute
   '/api/app/v1/notifications/': typeof ApiAppV1NotificationsIndexRoute
   '/api/app/v1/tournaments/': typeof ApiAppV1TournamentsIndexRoute
   '/api/app/v1/tutorials/': typeof ApiAppV1TutorialsIndexRoute
   '/api/app/v1/videos/': typeof ApiAppV1VideosIndexRoute
   '/api/app/v1/challenges/$id/accept': typeof ApiAppV1ChallengesIdAcceptRoute
+  '/api/app/v1/challenges/$id/decline': typeof ApiAppV1ChallengesIdDeclineRoute
   '/api/app/v1/coaches/$id/book': typeof ApiAppV1CoachesIdBookRoute
   '/api/app/v1/games/$id/abort': typeof ApiAppV1GamesIdAbortRoute
   '/api/app/v1/games/$id/away': typeof ApiAppV1GamesIdAwayRoute
@@ -1697,6 +1763,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/ping'
+    | '/api/app/v1/presence'
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
@@ -1707,6 +1774,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/challenges/$id'
     | '/api/app/v1/coaches/$id'
     | '/api/app/v1/coaching/sessions'
+    | '/api/app/v1/correspondence/vacation'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/profile/$username'
@@ -1721,10 +1789,13 @@ export interface FileRouteTypes {
     | '/api/app/v1/social/friends'
     | '/api/app/v1/social/messages'
     | '/api/app/v1/social/unblock'
+    | '/api/app/v1/spectate/tv'
+    | '/api/app/v1/stats/live'
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/app/v1/tutorials/$id'
     | '/api/app/v1/videos/progress'
+    | '/api/app/v1/voice/transcribe'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
@@ -1733,12 +1804,14 @@ export interface FileRouteTypes {
     | '/api/public/v1/webhooks/retry-sweep'
     | '/api/app/v1/challenges/'
     | '/api/app/v1/coaches/'
+    | '/api/app/v1/correspondence/'
     | '/api/app/v1/games/'
     | '/api/app/v1/notifications/'
     | '/api/app/v1/tournaments/'
     | '/api/app/v1/tutorials/'
     | '/api/app/v1/videos/'
     | '/api/app/v1/challenges/$id/accept'
+    | '/api/app/v1/challenges/$id/decline'
     | '/api/app/v1/coaches/$id/book'
     | '/api/app/v1/games/$id/abort'
     | '/api/app/v1/games/$id/away'
@@ -1870,6 +1943,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/ping'
+    | '/api/app/v1/presence'
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
@@ -1880,6 +1954,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/challenges/$id'
     | '/api/app/v1/coaches/$id'
     | '/api/app/v1/coaching/sessions'
+    | '/api/app/v1/correspondence/vacation'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/profile/$username'
@@ -1894,10 +1969,13 @@ export interface FileRouteTypes {
     | '/api/app/v1/social/friends'
     | '/api/app/v1/social/messages'
     | '/api/app/v1/social/unblock'
+    | '/api/app/v1/spectate/tv'
+    | '/api/app/v1/stats/live'
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/app/v1/tutorials/$id'
     | '/api/app/v1/videos/progress'
+    | '/api/app/v1/voice/transcribe'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
@@ -1906,12 +1984,14 @@ export interface FileRouteTypes {
     | '/api/public/v1/webhooks/retry-sweep'
     | '/api/app/v1/challenges'
     | '/api/app/v1/coaches'
+    | '/api/app/v1/correspondence'
     | '/api/app/v1/games'
     | '/api/app/v1/notifications'
     | '/api/app/v1/tournaments'
     | '/api/app/v1/tutorials'
     | '/api/app/v1/videos'
     | '/api/app/v1/challenges/$id/accept'
+    | '/api/app/v1/challenges/$id/decline'
     | '/api/app/v1/coaches/$id/book'
     | '/api/app/v1/games/$id/abort'
     | '/api/app/v1/games/$id/away'
@@ -2044,6 +2124,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/ping'
+    | '/api/app/v1/presence'
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
@@ -2054,6 +2135,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/challenges/$id'
     | '/api/app/v1/coaches/$id'
     | '/api/app/v1/coaching/sessions'
+    | '/api/app/v1/correspondence/vacation'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/profile/$username'
@@ -2068,10 +2150,13 @@ export interface FileRouteTypes {
     | '/api/app/v1/social/friends'
     | '/api/app/v1/social/messages'
     | '/api/app/v1/social/unblock'
+    | '/api/app/v1/spectate/tv'
+    | '/api/app/v1/stats/live'
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/app/v1/tutorials/$id'
     | '/api/app/v1/videos/progress'
+    | '/api/app/v1/voice/transcribe'
     | '/api/public/v1/classes/session'
     | '/api/public/v1/correspondence/sweep'
     | '/api/public/v1/embed/token'
@@ -2080,12 +2165,14 @@ export interface FileRouteTypes {
     | '/api/public/v1/webhooks/retry-sweep'
     | '/api/app/v1/challenges/'
     | '/api/app/v1/coaches/'
+    | '/api/app/v1/correspondence/'
     | '/api/app/v1/games/'
     | '/api/app/v1/notifications/'
     | '/api/app/v1/tournaments/'
     | '/api/app/v1/tutorials/'
     | '/api/app/v1/videos/'
     | '/api/app/v1/challenges/$id/accept'
+    | '/api/app/v1/challenges/$id/decline'
     | '/api/app/v1/coaches/$id/book'
     | '/api/app/v1/games/$id/abort'
     | '/api/app/v1/games/$id/away'
@@ -2204,9 +2291,10 @@ export interface RootRouteChildren {
   ApiAppV1MeRoute: typeof ApiAppV1MeRoute
   ApiAppV1OpenapiDotjsonRoute: typeof ApiAppV1OpenapiDotjsonRoute
   ApiAppV1PingRoute: typeof ApiAppV1PingRoute
+  ApiAppV1PresenceRoute: typeof ApiAppV1PresenceRoute
   ApiAppV1ReportRoute: typeof ApiAppV1ReportRouteWithChildren
   ApiAppV1SeekRoute: typeof ApiAppV1SeekRoute
-  ApiAppV1SpectateRoute: typeof ApiAppV1SpectateRoute
+  ApiAppV1SpectateRoute: typeof ApiAppV1SpectateRouteWithChildren
   ApiAppV1UsernameAvailableRoute: typeof ApiAppV1UsernameAvailableRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
   ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRouteWithChildren
@@ -2214,6 +2302,7 @@ export interface RootRouteChildren {
   ApiAppV1ChallengesIdRoute: typeof ApiAppV1ChallengesIdRouteWithChildren
   ApiAppV1CoachesIdRoute: typeof ApiAppV1CoachesIdRouteWithChildren
   ApiAppV1CoachingSessionsRoute: typeof ApiAppV1CoachingSessionsRouteWithChildren
+  ApiAppV1CorrespondenceVacationRoute: typeof ApiAppV1CorrespondenceVacationRoute
   ApiAppV1GamesIdRoute: typeof ApiAppV1GamesIdRouteWithChildren
   ApiAppV1NotificationsReadRoute: typeof ApiAppV1NotificationsReadRoute
   ApiAppV1ProfileUsernameRoute: typeof ApiAppV1ProfileUsernameRoute
@@ -2227,15 +2316,18 @@ export interface RootRouteChildren {
   ApiAppV1SocialFriendsRoute: typeof ApiAppV1SocialFriendsRouteWithChildren
   ApiAppV1SocialMessagesRoute: typeof ApiAppV1SocialMessagesRouteWithChildren
   ApiAppV1SocialUnblockRoute: typeof ApiAppV1SocialUnblockRoute
+  ApiAppV1StatsLiveRoute: typeof ApiAppV1StatsLiveRoute
   ApiAppV1SubscriptionCheckoutRoute: typeof ApiAppV1SubscriptionCheckoutRoute
   ApiAppV1TournamentsIdRoute: typeof ApiAppV1TournamentsIdRouteWithChildren
   ApiAppV1TutorialsIdRoute: typeof ApiAppV1TutorialsIdRoute
   ApiAppV1VideosProgressRoute: typeof ApiAppV1VideosProgressRoute
+  ApiAppV1VoiceTranscribeRoute: typeof ApiAppV1VoiceTranscribeRoute
   ApiPublicV1ClassesSessionRoute: typeof ApiPublicV1ClassesSessionRouteWithChildren
   ApiPublicV1CorrespondenceSweepRoute: typeof ApiPublicV1CorrespondenceSweepRoute
   ApiPublicV1EmbedTokenRoute: typeof ApiPublicV1EmbedTokenRouteWithChildren
   ApiAppV1ChallengesIndexRoute: typeof ApiAppV1ChallengesIndexRoute
   ApiAppV1CoachesIndexRoute: typeof ApiAppV1CoachesIndexRoute
+  ApiAppV1CorrespondenceIndexRoute: typeof ApiAppV1CorrespondenceIndexRoute
   ApiAppV1GamesIndexRoute: typeof ApiAppV1GamesIndexRoute
   ApiAppV1NotificationsIndexRoute: typeof ApiAppV1NotificationsIndexRoute
   ApiAppV1TournamentsIndexRoute: typeof ApiAppV1TournamentsIndexRoute
@@ -2950,6 +3042,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/presence': {
+      id: '/api/app/v1/presence'
+      path: '/api/app/v1/presence'
+      fullPath: '/api/app/v1/presence'
+      preLoaderRoute: typeof ApiAppV1PresenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/report': {
       id: '/api/app/v1/report'
       path: '/api/app/v1/report'
@@ -3032,6 +3131,20 @@ declare module '@tanstack/react-router' {
       path: '/api/app/v1/coaching/sessions'
       fullPath: '/api/app/v1/coaching/sessions'
       preLoaderRoute: typeof ApiAppV1CoachingSessionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/correspondence/': {
+      id: '/api/app/v1/correspondence/'
+      path: '/api/app/v1/correspondence'
+      fullPath: '/api/app/v1/correspondence/'
+      preLoaderRoute: typeof ApiAppV1CorrespondenceIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/correspondence/vacation': {
+      id: '/api/app/v1/correspondence/vacation'
+      path: '/api/app/v1/correspondence/vacation'
+      fullPath: '/api/app/v1/correspondence/vacation'
+      preLoaderRoute: typeof ApiAppV1CorrespondenceVacationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/app/v1/games/': {
@@ -3146,6 +3259,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1SocialUnblockRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/spectate/tv': {
+      id: '/api/app/v1/spectate/tv'
+      path: '/tv'
+      fullPath: '/api/app/v1/spectate/tv'
+      preLoaderRoute: typeof ApiAppV1SpectateTvRouteImport
+      parentRoute: typeof ApiAppV1SpectateRoute
+    }
+    '/api/app/v1/stats/live': {
+      id: '/api/app/v1/stats/live'
+      path: '/api/app/v1/stats/live'
+      fullPath: '/api/app/v1/stats/live'
+      preLoaderRoute: typeof ApiAppV1StatsLiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/subscription/checkout': {
       id: '/api/app/v1/subscription/checkout'
       path: '/api/app/v1/subscription/checkout'
@@ -3195,6 +3322,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1VideosProgressRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/voice/transcribe': {
+      id: '/api/app/v1/voice/transcribe'
+      path: '/api/app/v1/voice/transcribe'
+      fullPath: '/api/app/v1/voice/transcribe'
+      preLoaderRoute: typeof ApiAppV1VoiceTranscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/classes/session': {
       id: '/api/public/v1/classes/session'
       path: '/api/public/v1/classes/session'
@@ -3242,6 +3376,13 @@ declare module '@tanstack/react-router' {
       path: '/accept'
       fullPath: '/api/app/v1/challenges/$id/accept'
       preLoaderRoute: typeof ApiAppV1ChallengesIdAcceptRouteImport
+      parentRoute: typeof ApiAppV1ChallengesIdRoute
+    }
+    '/api/app/v1/challenges/$id/decline': {
+      id: '/api/app/v1/challenges/$id/decline'
+      path: '/decline'
+      fullPath: '/api/app/v1/challenges/$id/decline'
+      preLoaderRoute: typeof ApiAppV1ChallengesIdDeclineRouteImport
       parentRoute: typeof ApiAppV1ChallengesIdRoute
     }
     '/api/app/v1/coaches/$id/book': {
@@ -3507,6 +3648,17 @@ const ApiAppV1ReportRouteWithChildren = ApiAppV1ReportRoute._addFileChildren(
   ApiAppV1ReportRouteChildren,
 )
 
+interface ApiAppV1SpectateRouteChildren {
+  ApiAppV1SpectateTvRoute: typeof ApiAppV1SpectateTvRoute
+}
+
+const ApiAppV1SpectateRouteChildren: ApiAppV1SpectateRouteChildren = {
+  ApiAppV1SpectateTvRoute: ApiAppV1SpectateTvRoute,
+}
+
+const ApiAppV1SpectateRouteWithChildren =
+  ApiAppV1SpectateRoute._addFileChildren(ApiAppV1SpectateRouteChildren)
+
 interface ApiPublicV1TournamentsRouteChildren {
   ApiPublicV1TournamentsSweepRoute: typeof ApiPublicV1TournamentsSweepRoute
   ApiPublicV1TournamentsIdStandingsRoute: typeof ApiPublicV1TournamentsIdStandingsRoute
@@ -3539,10 +3691,12 @@ const ApiPublicV1WebhooksRouteWithChildren =
 
 interface ApiAppV1ChallengesIdRouteChildren {
   ApiAppV1ChallengesIdAcceptRoute: typeof ApiAppV1ChallengesIdAcceptRoute
+  ApiAppV1ChallengesIdDeclineRoute: typeof ApiAppV1ChallengesIdDeclineRoute
 }
 
 const ApiAppV1ChallengesIdRouteChildren: ApiAppV1ChallengesIdRouteChildren = {
   ApiAppV1ChallengesIdAcceptRoute: ApiAppV1ChallengesIdAcceptRoute,
+  ApiAppV1ChallengesIdDeclineRoute: ApiAppV1ChallengesIdDeclineRoute,
 }
 
 const ApiAppV1ChallengesIdRouteWithChildren =
@@ -3773,9 +3927,10 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1MeRoute: ApiAppV1MeRoute,
   ApiAppV1OpenapiDotjsonRoute: ApiAppV1OpenapiDotjsonRoute,
   ApiAppV1PingRoute: ApiAppV1PingRoute,
+  ApiAppV1PresenceRoute: ApiAppV1PresenceRoute,
   ApiAppV1ReportRoute: ApiAppV1ReportRouteWithChildren,
   ApiAppV1SeekRoute: ApiAppV1SeekRoute,
-  ApiAppV1SpectateRoute: ApiAppV1SpectateRoute,
+  ApiAppV1SpectateRoute: ApiAppV1SpectateRouteWithChildren,
   ApiAppV1UsernameAvailableRoute: ApiAppV1UsernameAvailableRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
   ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRouteWithChildren,
@@ -3783,6 +3938,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1ChallengesIdRoute: ApiAppV1ChallengesIdRouteWithChildren,
   ApiAppV1CoachesIdRoute: ApiAppV1CoachesIdRouteWithChildren,
   ApiAppV1CoachingSessionsRoute: ApiAppV1CoachingSessionsRouteWithChildren,
+  ApiAppV1CorrespondenceVacationRoute: ApiAppV1CorrespondenceVacationRoute,
   ApiAppV1GamesIdRoute: ApiAppV1GamesIdRouteWithChildren,
   ApiAppV1NotificationsReadRoute: ApiAppV1NotificationsReadRoute,
   ApiAppV1ProfileUsernameRoute: ApiAppV1ProfileUsernameRoute,
@@ -3796,15 +3952,18 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1SocialFriendsRoute: ApiAppV1SocialFriendsRouteWithChildren,
   ApiAppV1SocialMessagesRoute: ApiAppV1SocialMessagesRouteWithChildren,
   ApiAppV1SocialUnblockRoute: ApiAppV1SocialUnblockRoute,
+  ApiAppV1StatsLiveRoute: ApiAppV1StatsLiveRoute,
   ApiAppV1SubscriptionCheckoutRoute: ApiAppV1SubscriptionCheckoutRoute,
   ApiAppV1TournamentsIdRoute: ApiAppV1TournamentsIdRouteWithChildren,
   ApiAppV1TutorialsIdRoute: ApiAppV1TutorialsIdRoute,
   ApiAppV1VideosProgressRoute: ApiAppV1VideosProgressRoute,
+  ApiAppV1VoiceTranscribeRoute: ApiAppV1VoiceTranscribeRoute,
   ApiPublicV1ClassesSessionRoute: ApiPublicV1ClassesSessionRouteWithChildren,
   ApiPublicV1CorrespondenceSweepRoute: ApiPublicV1CorrespondenceSweepRoute,
   ApiPublicV1EmbedTokenRoute: ApiPublicV1EmbedTokenRouteWithChildren,
   ApiAppV1ChallengesIndexRoute: ApiAppV1ChallengesIndexRoute,
   ApiAppV1CoachesIndexRoute: ApiAppV1CoachesIndexRoute,
+  ApiAppV1CorrespondenceIndexRoute: ApiAppV1CorrespondenceIndexRoute,
   ApiAppV1GamesIndexRoute: ApiAppV1GamesIndexRoute,
   ApiAppV1NotificationsIndexRoute: ApiAppV1NotificationsIndexRoute,
   ApiAppV1TournamentsIndexRoute: ApiAppV1TournamentsIndexRoute,

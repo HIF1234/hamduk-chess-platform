@@ -1,4 +1,4 @@
-import type { LanguageModel } from "ai";
+import type { LanguageModel, TranscriptionModel } from "ai";
 
 // Server-only AI access. Chess analysis itself (evals, best moves, game review) runs
 // in the player's browser with Stockfish and costs nothing; AI only writes the
@@ -14,6 +14,19 @@ export async function aiModel(): Promise<LanguageModel> {
     return google(process.env.GOOGLE_AI_MODEL || "gemini-3.6-flash");
   }
   return process.env.AI_GATEWAY_MODEL || "google/gemini-3.6-flash";
+}
+
+// For "say move aloud": a GROQ_API_KEY calls Groq's hosted Whisper directly (their generous
+// free tier). Without it, falls back to the Gateway's own openai/whisper-1 -- the Gateway
+// has no groq/* transcription models of its own (checked against its live /v1/models).
+export async function transcriptionModel(): Promise<TranscriptionModel> {
+  const groqKey = process.env.GROQ_API_KEY;
+  if (groqKey) {
+    const { createGroq } = await import("@ai-sdk/groq");
+    const groq = createGroq({ apiKey: groqKey });
+    return groq.transcription(process.env.GROQ_TRANSCRIPTION_MODEL || "whisper-large-v3-turbo");
+  }
+  return "openai/whisper-1";
 }
 
 /** Maps provider failures to a message the player can act on. */
