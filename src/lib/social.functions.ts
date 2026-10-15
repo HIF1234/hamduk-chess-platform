@@ -199,6 +199,35 @@ async function isBlocked(a: string, b: string) {
   return !!data;
 }
 
+// ---------- QUICK CHAT ----------
+// Free text is restricted to friends who are both adults; everyone else (strangers, minors)
+// can only send one of these preset phrases -- enforced here, not just hidden in the UI.
+export const QUICK_CHAT_PHRASES = [
+  "Good luck, have fun!",
+  "Good game!",
+  "Well played!",
+  "Thanks!",
+  "Sorry!",
+  "One moment please.",
+  "Nice move!",
+  "Good luck next time!",
+];
+
+async function canFreeText(a: string, b: string) {
+  const [{ data: friend }, { data: profiles }] = await Promise.all([
+    supabaseAdmin
+      .from("friends")
+      .select("status")
+      .or(`and(requester_id.eq.${a},addressee_id.eq.${b}),and(requester_id.eq.${b},addressee_id.eq.${a})`)
+      .eq("status", "accepted")
+      .maybeSingle(),
+    supabaseAdmin.from("profiles").select("id, age_bracket").in("id", [a, b]),
+  ]);
+  if (!friend) return false;
+  const bothAdults = (profiles ?? []).every((p) => (p.age_bracket ?? "18_plus") === "18_plus");
+  return bothAdults && (profiles?.length ?? 0) === 2;
+}
+
 // ---------- RELATION STATE (for profile page) ----------
 export const getRelation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -296,6 +325,9 @@ export const sendMessage = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     if (data.recipientId === userId) throw new Error("Cannot message yourself");
     if (await isBlocked(userId, data.recipientId)) throw new Error("You can't message this player");
+    if (!(await canFreeText(userId, data.recipientId)) && !QUICK_CHAT_PHRASES.includes(data.content.trim())) {
+      throw new Error("Free text is only for friends who are both adults. Try a quick chat phrase instead.");
+    }
     const { data: msg, error } = await supabase
       .from("messages")
       .insert({
@@ -378,7 +410,7 @@ export const getConversation = createServerFn({ method: "POST" })
       .select("id, username")
       .eq("username", data.username)
       .maybeSingle();
-    if (!other) return { other: null, messages: [] };
+    if (!other) return { other: null, messages: [], canFreeText: false, quickChatPhrases: QUICK_CHAT_PHRASES };
 
     const { data: msgs, error } = await supabase
       .from("messages")
@@ -398,7 +430,12 @@ export const getConversation = createServerFn({ method: "POST" })
       .eq("recipient_id", userId)
       .eq("read", false);
 
-    return { other, messages: msgs ?? [] };
+    return {
+      other,
+      messages: msgs ?? [],
+      canFreeText: await canFreeText(userId, other.id),
+      quickChatPhrases: QUICK_CHAT_PHRASES,
+    };
   });
 
 // ---------- ACTIVITY FEED ----------
