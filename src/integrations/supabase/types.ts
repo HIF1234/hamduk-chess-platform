@@ -3539,6 +3539,7 @@ export type Database = {
           id: string
           is_guest: boolean
           is_org: boolean
+          language: string | null
           last_active_at: string
           losses: number
           paystack_customer_code: string | null
@@ -3547,6 +3548,7 @@ export type Database = {
           rating: number
           referral_code: string | null
           referred_by: string | null
+          starting_rating: number | null
           state: string | null
           subscription_renews_at: string | null
           subscription_status: string
@@ -3582,6 +3584,7 @@ export type Database = {
           id: string
           is_guest?: boolean
           is_org?: boolean
+          language?: string | null
           last_active_at?: string
           losses?: number
           paystack_customer_code?: string | null
@@ -3590,6 +3593,7 @@ export type Database = {
           rating?: number
           referral_code?: string | null
           referred_by?: string | null
+          starting_rating?: number | null
           state?: string | null
           subscription_renews_at?: string | null
           subscription_status?: string
@@ -3625,6 +3629,7 @@ export type Database = {
           id?: string
           is_guest?: boolean
           is_org?: boolean
+          language?: string | null
           last_active_at?: string
           losses?: number
           paystack_customer_code?: string | null
@@ -3633,6 +3638,7 @@ export type Database = {
           rating?: number
           referral_code?: string | null
           referred_by?: string | null
+          starting_rating?: number | null
           state?: string | null
           subscription_renews_at?: string | null
           subscription_status?: string

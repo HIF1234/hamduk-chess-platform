@@ -108,6 +108,7 @@ import { Route as ApiAppV1GuardianConsentRouteImport } from './routes/api/app/v1
 import { Route as ApiAppV1LeaderboardRouteImport } from './routes/api/app/v1/leaderboard'
 import { Route as ApiAppV1MeRouteImport } from './routes/api/app/v1/me'
 import { Route as ApiAppV1OpenapiDotjsonRouteImport } from './routes/api/app/v1/openapi[.]json'
+import { Route as ApiAppV1PingRouteImport } from './routes/api/app/v1/ping'
 import { Route as ApiAppV1ReportRouteImport } from './routes/api/app/v1/report'
 import { Route as ApiAppV1SeekRouteImport } from './routes/api/app/v1/seek'
 import { Route as ApiAppV1SpectateRouteImport } from './routes/api/app/v1/spectate'
@@ -676,6 +677,11 @@ const ApiAppV1OpenapiDotjsonRoute = ApiAppV1OpenapiDotjsonRouteImport.update({
   path: '/api/app/v1/openapi.json',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1PingRoute = ApiAppV1PingRouteImport.update({
+  id: '/api/app/v1/ping',
+  path: '/api/app/v1/ping',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1ReportRoute = ApiAppV1ReportRouteImport.update({
   id: '/api/app/v1/report',
   path: '/api/app/v1/report',
@@ -1166,6 +1172,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
+  '/api/app/v1/ping': typeof ApiAppV1PingRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
   '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
@@ -1338,6 +1345,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
+  '/api/app/v1/ping': typeof ApiAppV1PingRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
   '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
@@ -1512,6 +1520,7 @@ export interface FileRoutesById {
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
+  '/api/app/v1/ping': typeof ApiAppV1PingRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
   '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
@@ -1687,6 +1696,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
+    | '/api/app/v1/ping'
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
@@ -1859,6 +1869,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
+    | '/api/app/v1/ping'
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
@@ -2032,6 +2043,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
+    | '/api/app/v1/ping'
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
@@ -2191,6 +2203,7 @@ export interface RootRouteChildren {
   ApiAppV1LeaderboardRoute: typeof ApiAppV1LeaderboardRoute
   ApiAppV1MeRoute: typeof ApiAppV1MeRoute
   ApiAppV1OpenapiDotjsonRoute: typeof ApiAppV1OpenapiDotjsonRoute
+  ApiAppV1PingRoute: typeof ApiAppV1PingRoute
   ApiAppV1ReportRoute: typeof ApiAppV1ReportRouteWithChildren
   ApiAppV1SeekRoute: typeof ApiAppV1SeekRoute
   ApiAppV1SpectateRoute: typeof ApiAppV1SpectateRoute
@@ -2928,6 +2941,13 @@ declare module '@tanstack/react-router' {
       path: '/api/app/v1/openapi.json'
       fullPath: '/api/app/v1/openapi.json'
       preLoaderRoute: typeof ApiAppV1OpenapiDotjsonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/ping': {
+      id: '/api/app/v1/ping'
+      path: '/api/app/v1/ping'
+      fullPath: '/api/app/v1/ping'
+      preLoaderRoute: typeof ApiAppV1PingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/app/v1/report': {
@@ -3752,6 +3772,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1LeaderboardRoute: ApiAppV1LeaderboardRoute,
   ApiAppV1MeRoute: ApiAppV1MeRoute,
   ApiAppV1OpenapiDotjsonRoute: ApiAppV1OpenapiDotjsonRoute,
+  ApiAppV1PingRoute: ApiAppV1PingRoute,
   ApiAppV1ReportRoute: ApiAppV1ReportRouteWithChildren,
   ApiAppV1SeekRoute: ApiAppV1SeekRoute,
   ApiAppV1SpectateRoute: ApiAppV1SpectateRoute,
