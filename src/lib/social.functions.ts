@@ -211,6 +211,7 @@ export const QUICK_CHAT_PHRASES = [
   "One moment please.",
   "Nice move!",
   "Good luck next time!",
+  "Rematch?",
 ];
 
 async function canFreeText(a: string, b: string) {
@@ -325,8 +326,13 @@ export const sendMessage = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     if (data.recipientId === userId) throw new Error("Cannot message yourself");
     if (await isBlocked(userId, data.recipientId)) throw new Error("You can't message this player");
-    if (!(await canFreeText(userId, data.recipientId)) && !QUICK_CHAT_PHRASES.includes(data.content.trim())) {
-      throw new Error("Free text is only for friends who are both adults. Try a quick chat phrase instead.");
+    if (
+      !(await canFreeText(userId, data.recipientId)) &&
+      !QUICK_CHAT_PHRASES.includes(data.content.trim())
+    ) {
+      throw new Error(
+        "Free text is only for friends who are both adults. Try a quick chat phrase instead.",
+      );
     }
     const { data: msg, error } = await supabase
       .from("messages")
@@ -410,7 +416,14 @@ export const getConversation = createServerFn({ method: "POST" })
       .select("id, username")
       .eq("username", data.username)
       .maybeSingle();
-    if (!other) return { other: null, messages: [], canFreeText: false, quickChatPhrases: QUICK_CHAT_PHRASES };
+    if (!other) {
+      return {
+        other: null,
+        messages: [],
+        canFreeText: false,
+        quickChatPhrases: QUICK_CHAT_PHRASES,
+      };
+    }
 
     const { data: msgs, error } = await supabase
       .from("messages")
