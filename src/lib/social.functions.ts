@@ -256,12 +256,21 @@ export const getMyFriends = createServerFn({ method: "GET" })
         .in("id", otherIds);
       for (const p of ps ?? []) profiles[p.id] = { username: p.username, rating: p.rating };
     }
+    const acceptedIds = (rows ?? [])
+      .filter((r) => r.status === "accepted")
+      .map((r) => (r.requester_id === userId ? r.addressee_id : r.requester_id));
+    let online = new Set<string>();
+    if (acceptedIds.length) {
+      const { redis } = await import("./redis.server");
+      const flags = await redis.mget<(string | null)[]>(...acceptedIds.map((id) => `presence:${id}`));
+      online = new Set(acceptedIds.filter((_, i) => flags[i]));
+    }
     return {
       accepted: (rows ?? [])
         .filter((r) => r.status === "accepted")
         .map((r) => {
           const otherId = r.requester_id === userId ? r.addressee_id : r.requester_id;
-          return { id: r.id, userId: otherId, ...profiles[otherId] };
+          return { id: r.id, userId: otherId, online: online.has(otherId), ...profiles[otherId] };
         }),
       incoming: (rows ?? [])
         .filter((r) => r.status === "pending" && r.addressee_id === userId)

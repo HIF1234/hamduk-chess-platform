@@ -10,7 +10,7 @@ const TypeEnum = z.enum(["swiss", "arena", "round_robin", "knockout"]);
  *  app's /api/app/v1/tournaments route doesn't duplicate it. */
 export const listTournaments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async () => {
+  .handler(async ({ context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("tournaments")
@@ -23,14 +23,21 @@ export const listTournaments = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     const rows = data ?? [];
     const counts: Record<string, number> = {};
+    const joined = new Set<string>();
     if (rows.length) {
       const { data: players } = await supabaseAdmin
         .from("tournament_players")
-        .select("tournament_id")
+        .select("tournament_id, user_id")
         .in("tournament_id", rows.map((r) => r.id));
-      for (const p of players ?? []) counts[p.tournament_id] = (counts[p.tournament_id] ?? 0) + 1;
+      for (const p of players ?? []) {
+        counts[p.tournament_id] = (counts[p.tournament_id] ?? 0) + 1;
+        if (p.user_id === context.userId) joined.add(p.tournament_id);
+      }
     }
-    return { tournaments: rows, counts };
+    return {
+      tournaments: rows.map((r) => ({ ...r, joined: joined.has(r.id) })),
+      counts,
+    };
   });
 
 /** Tournament + standings + this round's pairings/boards + the caller's own entry, if any --
