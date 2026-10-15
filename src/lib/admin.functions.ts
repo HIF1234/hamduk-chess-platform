@@ -250,6 +250,48 @@ export const revokeSubscription = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/**
+ * Marks a player's claimed FIDE/national title as checked (or un-checks a mistaken grant).
+ * Verification itself happens off-platform: staff look up the player's submitted FIDE id at
+ * ratings.fide.com and confirm it carries the claimed title, same idea as chess.com's process
+ * minus the ID-document collection. Only a verified title ever appears on a player bar.
+ */
+export const setFideTitleVerified = createServerFn({ method: "POST" })
+  .middleware([requireAdminRole("moderator")])
+  .inputValidator((d) =>
+    z
+      .object({
+        userId: z.string().uuid(),
+        verified: z.boolean(),
+        reason: z.string().max(500).optional(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { logAdminAction } = await import("@/lib/admin.server");
+    const { data: before } = await supabaseAdmin
+      .from("profiles")
+      .select("id, username, fide_title, fide_id, fide_title_verified")
+      .eq("id", data.userId)
+      .maybeSingle();
+    if (!before) throw new Error("User not found");
+    if (!before.fide_title) throw new Error("This account has no claimed title to verify");
+    const patch = { fide_title_verified: data.verified };
+    const { error } = await supabaseAdmin.from("profiles").update(patch).eq("id", data.userId);
+    if (error) throw new Error(error.message);
+    await logAdminAction({
+      adminId: context.userId,
+      action: data.verified ? "fide_title.verify" : "fide_title.unverify",
+      targetTable: "profiles",
+      targetId: data.userId,
+      before,
+      after: patch,
+      reason: data.reason ?? null,
+    });
+    return { ok: true };
+  });
+
 /** super_admin only — hard delete, cascades through FKs. */
 export const deleteUserAccount = createServerFn({ method: "POST" })
   .middleware([requireAdminRole("super_admin")])

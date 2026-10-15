@@ -3543,7 +3543,9 @@ export type Database = {
           daily_puzzle_emailed_on: string | null
           draws: number
           email_notify_moves: boolean
+          fide_id: string | null
           fide_title: string | null
+          fide_title_verified: boolean
           first_move_ban_stage: number
           first_move_strikes: number
           flag_reason: string | null
@@ -3589,7 +3591,9 @@ export type Database = {
           daily_puzzle_emailed_on?: string | null
           draws?: number
           email_notify_moves?: boolean
+          fide_id?: string | null
           fide_title?: string | null
+          fide_title_verified?: boolean
           first_move_ban_stage?: number
           first_move_strikes?: number
           flag_reason?: string | null
@@ -3635,7 +3639,9 @@ export type Database = {
           daily_puzzle_emailed_on?: string | null
           draws?: number
           email_notify_moves?: boolean
+          fide_id?: string | null
           fide_title?: string | null
+          fide_title_verified?: boolean
           first_move_ban_stage?: number
           first_move_strikes?: number
           flag_reason?: string | null

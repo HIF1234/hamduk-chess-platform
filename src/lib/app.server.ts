@@ -30,7 +30,7 @@ async function names(ids: string[]) {
   const s = await admin();
   const { data } = await s
     .from("profiles")
-    .select("id, username, rating, country, fide_title, subscription_tier")
+    .select("id, username, rating, country, fide_title, fide_title_verified, subscription_tier")
     .in("id", [...new Set(ids)]);
   return new Map(
     (data ?? []).map((p) => [
@@ -39,7 +39,9 @@ async function names(ids: string[]) {
         username: p.username,
         rating: p.rating,
         country: p.country,
-        fideTitle: p.fide_title,
+        // Only a verified claim is shown to anyone but the player themselves (see
+        // fide_title_verified's own migration) -- an unchecked "GM" claim is worse than none.
+        fideTitle: p.fide_title_verified ? p.fide_title : null,
         subscriptionTier: p.subscription_tier,
       },
     ]),

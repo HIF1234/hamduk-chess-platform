@@ -14,6 +14,7 @@ import {
   revokeAdminRole,
   revokeSubscription,
   setAdminRole,
+  setFideTitleVerified,
   unbanUser,
   resetUserMfa,
 } from "@/lib/admin.functions";
@@ -31,7 +32,9 @@ export const Route = createFileRoute("/admin/users/$userId")({
   }),
   component: AdminUserDetail,
   errorComponent: ({ error }) => (
-    <div className="p-4 text-sm text-destructive">{error instanceof Error ? error.message : String(error)}</div>
+    <div className="p-4 text-sm text-destructive">
+      {error instanceof Error ? error.message : String(error)}
+    </div>
   ),
   notFoundComponent: () => (
     <div className="p-4 text-sm text-muted-foreground">Account not found</div>
@@ -143,6 +146,15 @@ function AdminUserDetail() {
     },
     onError: (e: Error) => toast.error(e.message),
   });
+  const verifyTitle = useMutation({
+    mutationFn: (verified: boolean) =>
+      setFideTitleVerified({ data: { userId, verified, reason: reason || undefined } }),
+    onSuccess: (_r, verified) => {
+      toast.success(verified ? "Title verified" : "Title un-verified");
+      refresh();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   if (detail.isLoading) return <EmptyState>Loading account…</EmptyState>;
   if (!detail.data) return <EmptyState>Account not found.</EmptyState>;
@@ -193,6 +205,24 @@ function AdminUserDetail() {
               <dd>{d.profile.country ?? "—"}</dd>
             </div>
             <div>
+              <dt className="text-xs text-muted-foreground">Claimed title</dt>
+              <dd>
+                {d.profile.fide_title ? (
+                  <>
+                    {d.profile.fide_title}
+                    {d.profile.fide_id
+                      ? ` · FIDE id ${d.profile.fide_id}`
+                      : " · no FIDE id given"}{" "}
+                    <Pill tone={d.profile.fide_title_verified ? "good" : "warn"}>
+                      {d.profile.fide_title_verified ? "verified" : "pending"}
+                    </Pill>
+                  </>
+                ) : (
+                  "—"
+                )}
+              </dd>
+            </div>
+            <div>
               <dt className="text-xs text-muted-foreground">Last active</dt>
               <dd>{when(d.profile.last_active_at)}</dd>
             </div>
@@ -216,7 +246,9 @@ function AdminUserDetail() {
               <dt className="text-xs text-muted-foreground">First-move no-show strikes</dt>
               <dd>
                 {d.profile.first_move_strikes}
-                {d.profile.first_move_ban_stage > 0 ? ` (stage ${d.profile.first_move_ban_stage})` : ""}
+                {d.profile.first_move_ban_stage > 0
+                  ? ` (stage ${d.profile.first_move_ban_stage})`
+                  : ""}
               </dd>
             </div>
           </dl>
@@ -294,6 +326,19 @@ function AdminUserDetail() {
                 Override
               </button>
             </div>
+
+            {d.profile.fide_title ? (
+              <button
+                type="button"
+                onClick={() => verifyTitle.mutate(!d.profile.fide_title_verified)}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+              >
+                <ShieldCheck className="h-4 w-4" />
+                {d.profile.fide_title_verified
+                  ? `Un-verify ${d.profile.fide_title} claim`
+                  : `Verify ${d.profile.fide_title} claim`}
+              </button>
+            ) : null}
 
             <div className="flex gap-2">
               <select
