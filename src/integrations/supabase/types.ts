@@ -2742,10 +2742,12 @@ export type Database = {
           created_at: string
           creator_color: string
           creator_id: string
+          declined: boolean
           expires_at: string
           game_id: string | null
           id: string
           rated: boolean
+          target_user_id: string | null
           time_control: string
           variant: string
         }
@@ -2754,10 +2756,12 @@ export type Database = {
           created_at?: string
           creator_color?: string
           creator_id: string
+          declined?: boolean
           expires_at?: string
           game_id?: string | null
           id?: string
           rated?: boolean
+          target_user_id?: string | null
           time_control: string
           variant?: string
         }
@@ -2766,10 +2770,12 @@ export type Database = {
           created_at?: string
           creator_color?: string
           creator_id?: string
+          declined?: boolean
           expires_at?: string
           game_id?: string | null
           id?: string
           rated?: boolean
+          target_user_id?: string | null
           time_control?: string
           variant?: string
         }
@@ -2793,6 +2799,13 @@ export type Database = {
             columns: ["game_id"]
             isOneToOne: false
             referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_challenges_target_user_id_fkey"
+            columns: ["target_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3111,6 +3124,7 @@ export type Database = {
         Row: {
           is_priority: boolean
           joined_at: string
+          rated: boolean
           rating: number
           region: string
           time_control: string
@@ -3120,6 +3134,7 @@ export type Database = {
         Insert: {
           is_priority?: boolean
           joined_at?: string
+          rated?: boolean
           rating: number
           region?: string
           time_control: string
@@ -3129,6 +3144,7 @@ export type Database = {
         Update: {
           is_priority?: boolean
           joined_at?: string
+          rated?: boolean
           rating?: number
           region?: string
           time_control?: string
@@ -3527,6 +3543,7 @@ export type Database = {
           daily_puzzle_emailed_on: string | null
           draws: number
           email_notify_moves: boolean
+          fide_title: string | null
           first_move_ban_stage: number
           first_move_strikes: number
           flag_reason: string | null
@@ -3572,6 +3589,7 @@ export type Database = {
           daily_puzzle_emailed_on?: string | null
           draws?: number
           email_notify_moves?: boolean
+          fide_title?: string | null
           first_move_ban_stage?: number
           first_move_strikes?: number
           flag_reason?: string | null
@@ -3617,6 +3635,7 @@ export type Database = {
           daily_puzzle_emailed_on?: string | null
           draws?: number
           email_notify_moves?: boolean
+          fide_title?: string | null
           first_move_ban_stage?: number
           first_move_strikes?: number
           flag_reason?: string | null
@@ -5002,16 +5021,28 @@ export type Database = {
         }[]
       }
       explorer_add: { Args: { p_rows: Json }; Returns: undefined }
-      find_or_join_match: {
-        Args: {
-          p_rating_window?: number
-          p_region?: string
-          p_start_fen?: string
-          p_time_control: string
-          p_variant?: string
-        }
-        Returns: string
-      }
+      find_or_join_match:
+        | {
+            Args: {
+              p_rating_window?: number
+              p_region?: string
+              p_start_fen?: string
+              p_time_control: string
+              p_variant?: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_rated?: boolean
+              p_rating_window?: number
+              p_region?: string
+              p_start_fen?: string
+              p_time_control: string
+              p_variant?: string
+            }
+            Returns: string
+          }
       forum_bump_views: { Args: { p_thread: string }; Returns: undefined }
       free_daily_puzzle_limit: { Args: never; Returns: number }
       guest_cleanup_prepare: {

@@ -26,7 +26,7 @@ export const getMySettings = createServerFn({ method: "GET" })
     const { data: profile, error } = await db
       .from("profiles")
       .select(
-        "username, country, state, language, terms_accepted_at, is_guest, subscription_tier, subscription_status, subscription_renews_at, preferences, email_notify_moves, vacation_until",
+        "username, country, state, language, terms_accepted_at, is_guest, subscription_tier, subscription_status, subscription_renews_at, preferences, email_notify_moves, vacation_until, fide_title",
       )
       .eq("id", context.userId)
       .maybeSingle();
@@ -45,6 +45,7 @@ export const getMySettings = createServerFn({ method: "GET" })
       emailOnMoves: profile.email_notify_moves,
       vacationUntil: profile.vacation_until,
       preferences: normalizePreferences(profile.preferences),
+      fideTitle: profile.fide_title,
     };
   });
 
@@ -81,16 +82,30 @@ export const updateMyAccount = createServerFn({ method: "POST" })
         state: z.enum(NIGERIA_STATES).nullable().optional(),
         language: z.enum(LANGUAGES).optional(),
         emailOnMoves: z.boolean().optional(),
+        // Self-reported, like country/state -- restricted to the real FIDE/national-title
+        // abbreviations (not free text), same idea as chess.com's. No FIDE-database
+        // verification against the claim; null clears it.
+        fideTitle: z
+          .enum(["GM", "WGM", "IM", "WIM", "FM", "WFM", "CM", "WCM", "NM", "WNM"])
+          .nullable()
+          .optional(),
       })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     const db = await admin();
-    const patch: { country?: string; state?: string | null; language?: string; email_notify_moves?: boolean } = {};
+    const patch: {
+      country?: string;
+      state?: string | null;
+      language?: string;
+      email_notify_moves?: boolean;
+      fide_title?: string | null;
+    } = {};
     if (data.country) patch.country = data.country;
     if (data.state !== undefined) patch.state = data.state;
     if (data.language) patch.language = data.language;
     if (data.emailOnMoves !== undefined) patch.email_notify_moves = data.emailOnMoves;
+    if (data.fideTitle !== undefined) patch.fide_title = data.fideTitle;
     if (Object.keys(patch).length === 0) return { ok: true };
     const { error } = await db.from("profiles").update(patch).eq("id", context.userId);
     if (error) throw new Error(error.message);

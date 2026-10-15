@@ -15,15 +15,34 @@ async function admin() {
 }
 
 async function names(ids: string[]) {
-  if (!ids.length)
-    return new Map<string, { username: string; rating: number; country: string | null }>();
+  if (!ids.length) {
+    return new Map<
+      string,
+      {
+        username: string;
+        rating: number;
+        country: string | null;
+        fideTitle: string | null;
+        subscriptionTier: string;
+      }
+    >();
+  }
   const s = await admin();
   const { data } = await s
     .from("profiles")
-    .select("id, username, rating, country")
+    .select("id, username, rating, country, fide_title, subscription_tier")
     .in("id", [...new Set(ids)]);
   return new Map(
-    (data ?? []).map((p) => [p.id, { username: p.username, rating: p.rating, country: p.country }]),
+    (data ?? []).map((p) => [
+      p.id,
+      {
+        username: p.username,
+        rating: p.rating,
+        country: p.country,
+        fideTitle: p.fide_title,
+        subscriptionTier: p.subscription_tier,
+      },
+    ]),
   );
 }
 
@@ -283,7 +302,11 @@ export async function listLiveGames(_ctx: AppContext | null) {
 export async function getLiveCounts(_ctx: AppContext | null) {
   const s = await admin();
   const [{ count: activeGames }, { data: queueRows }] = await Promise.all([
-    s.from("games").select("id", { count: "exact", head: true }).eq("status", "active").eq("is_correspondence", false),
+    s
+      .from("games")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "active")
+      .eq("is_correspondence", false),
     s.from("matchmaking_queue").select("time_control"),
   ]);
   const looking: Record<string, number> = {};
