@@ -3518,6 +3518,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          age_bracket: string | null
           banned_at: string | null
           banned_by: string | null
           banned_reason: string | null
@@ -3531,6 +3532,10 @@ export type Database = {
           flag_reason: string | null
           flagged_for_review: boolean
           games_played: number
+          guardian_approved_at: string | null
+          guardian_email: string | null
+          guardian_email_sent_at: string | null
+          guardian_token: string | null
           id: string
           is_guest: boolean
           is_org: boolean
@@ -3556,6 +3561,7 @@ export type Database = {
           wins: number
         }
         Insert: {
+          age_bracket?: string | null
           banned_at?: string | null
           banned_by?: string | null
           banned_reason?: string | null
@@ -3569,6 +3575,10 @@ export type Database = {
           flag_reason?: string | null
           flagged_for_review?: boolean
           games_played?: number
+          guardian_approved_at?: string | null
+          guardian_email?: string | null
+          guardian_email_sent_at?: string | null
+          guardian_token?: string | null
           id: string
           is_guest?: boolean
           is_org?: boolean
@@ -3594,6 +3604,7 @@ export type Database = {
           wins?: number
         }
         Update: {
+          age_bracket?: string | null
           banned_at?: string | null
           banned_by?: string | null
           banned_reason?: string | null
@@ -3607,6 +3618,10 @@ export type Database = {
           flag_reason?: string | null
           flagged_for_review?: boolean
           games_played?: number
+          guardian_approved_at?: string | null
+          guardian_email?: string | null
+          guardian_email_sent_at?: string | null
+          guardian_token?: string | null
           id?: string
           is_guest?: boolean
           is_org?: boolean
@@ -5034,6 +5049,7 @@ export type Database = {
         }[]
       }
       mfa_ok: { Args: never; Returns: boolean }
+      online_play_allowed: { Args: { p_user_id: string }; Returns: boolean }
       puzzle_battle_answer: {
         Args: {
           p_battle: string

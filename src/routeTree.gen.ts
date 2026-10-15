@@ -63,6 +63,7 @@ import { Route as EndgameIndexRouteImport } from './routes/endgame.index'
 import { Route as EndgameIdRouteImport } from './routes/endgame.$id'
 import { Route as ForumsIndexRouteImport } from './routes/forums.index'
 import { Route as ForumsCategoryRouteImport } from './routes/forums.$category'
+import { Route as GuardianApproveTokenRouteImport } from './routes/guardian-approve.$token'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as LearnTutorialIdRouteImport } from './routes/learn.$tutorialId'
 import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
@@ -103,12 +104,14 @@ import { Route as ApiAppV1AccountRouteImport } from './routes/api/app/v1/account
 import { Route as ApiAppV1BotGamesRouteImport } from './routes/api/app/v1/bot-games'
 import { Route as ApiAppV1ConfigRouteImport } from './routes/api/app/v1/config'
 import { Route as ApiAppV1DevicesRouteImport } from './routes/api/app/v1/devices'
+import { Route as ApiAppV1GuardianConsentRouteImport } from './routes/api/app/v1/guardian-consent'
 import { Route as ApiAppV1LeaderboardRouteImport } from './routes/api/app/v1/leaderboard'
 import { Route as ApiAppV1MeRouteImport } from './routes/api/app/v1/me'
 import { Route as ApiAppV1OpenapiDotjsonRouteImport } from './routes/api/app/v1/openapi[.]json'
 import { Route as ApiAppV1ReportRouteImport } from './routes/api/app/v1/report'
 import { Route as ApiAppV1SeekRouteImport } from './routes/api/app/v1/seek'
 import { Route as ApiAppV1SpectateRouteImport } from './routes/api/app/v1/spectate'
+import { Route as ApiAppV1UsernameAvailableRouteImport } from './routes/api/app/v1/username-available'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 import { Route as ApiPublicV1TournamentsRouteImport } from './routes/api/public/v1/tournaments'
 import { Route as ApiPublicV1WebhooksRouteImport } from './routes/api/public/v1/webhooks'
@@ -448,6 +451,11 @@ const ForumsCategoryRoute = ForumsCategoryRouteImport.update({
   path: '/forums/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuardianApproveTokenRoute = GuardianApproveTokenRouteImport.update({
+  id: '/guardian-approve/$token',
+  path: '/guardian-approve/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LearnIndexRoute = LearnIndexRouteImport.update({
   id: '/learn/',
   path: '/learn/',
@@ -648,6 +656,11 @@ const ApiAppV1DevicesRoute = ApiAppV1DevicesRouteImport.update({
   path: '/api/app/v1/devices',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1GuardianConsentRoute = ApiAppV1GuardianConsentRouteImport.update({
+  id: '/api/app/v1/guardian-consent',
+  path: '/api/app/v1/guardian-consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1LeaderboardRoute = ApiAppV1LeaderboardRouteImport.update({
   id: '/api/app/v1/leaderboard',
   path: '/api/app/v1/leaderboard',
@@ -678,6 +691,12 @@ const ApiAppV1SpectateRoute = ApiAppV1SpectateRouteImport.update({
   path: '/api/app/v1/spectate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1UsernameAvailableRoute =
+  ApiAppV1UsernameAvailableRouteImport.update({
+    id: '/api/app/v1/username-available',
+    path: '/api/app/v1/username-available',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicPaystackWebhookRoute =
   ApiPublicPaystackWebhookRouteImport.update({
     id: '/api/public/paystack/webhook',
@@ -1095,6 +1114,7 @@ export interface FileRoutesByFullPath {
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
   '/forums/$category': typeof ForumsCategoryRoute
+  '/guardian-approve/$token': typeof GuardianApproveTokenRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -1142,12 +1162,14 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
+  '/api/app/v1/guardian-consent': typeof ApiAppV1GuardianConsentRoute
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
   '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
+  '/api/app/v1/username-available': typeof ApiAppV1UsernameAvailableRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
@@ -1264,6 +1286,7 @@ export interface FileRoutesByTo {
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
   '/forums/$category': typeof ForumsCategoryRoute
+  '/guardian-approve/$token': typeof GuardianApproveTokenRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -1311,12 +1334,14 @@ export interface FileRoutesByTo {
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
+  '/api/app/v1/guardian-consent': typeof ApiAppV1GuardianConsentRoute
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
   '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
+  '/api/app/v1/username-available': typeof ApiAppV1UsernameAvailableRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
@@ -1435,6 +1460,7 @@ export interface FileRoutesById {
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
   '/forums/$category': typeof ForumsCategoryRoute
+  '/guardian-approve/$token': typeof GuardianApproveTokenRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -1482,12 +1508,14 @@ export interface FileRoutesById {
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
+  '/api/app/v1/guardian-consent': typeof ApiAppV1GuardianConsentRoute
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
   '/api/app/v1/spectate': typeof ApiAppV1SpectateRoute
+  '/api/app/v1/username-available': typeof ApiAppV1UsernameAvailableRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
@@ -1607,6 +1635,7 @@ export interface FileRouteTypes {
     | '/coaching/dashboard'
     | '/endgame/$id'
     | '/forums/$category'
+    | '/guardian-approve/$token'
     | '/learn/$tutorialId'
     | '/lessons/$id'
     | '/news/$slug'
@@ -1654,12 +1683,14 @@ export interface FileRouteTypes {
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
+    | '/api/app/v1/guardian-consent'
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
+    | '/api/app/v1/username-available'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
@@ -1776,6 +1807,7 @@ export interface FileRouteTypes {
     | '/coaching/dashboard'
     | '/endgame/$id'
     | '/forums/$category'
+    | '/guardian-approve/$token'
     | '/learn/$tutorialId'
     | '/lessons/$id'
     | '/news/$slug'
@@ -1823,12 +1855,14 @@ export interface FileRouteTypes {
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
+    | '/api/app/v1/guardian-consent'
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
+    | '/api/app/v1/username-available'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
@@ -1946,6 +1980,7 @@ export interface FileRouteTypes {
     | '/coaching/dashboard'
     | '/endgame/$id'
     | '/forums/$category'
+    | '/guardian-approve/$token'
     | '/learn/$tutorialId'
     | '/lessons/$id'
     | '/news/$slug'
@@ -1993,12 +2028,14 @@ export interface FileRouteTypes {
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
+    | '/api/app/v1/guardian-consent'
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
+    | '/api/app/v1/username-available'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
@@ -2105,6 +2142,7 @@ export interface RootRouteChildren {
   CoachingDashboardRoute: typeof CoachingDashboardRoute
   EndgameIdRoute: typeof EndgameIdRoute
   ForumsCategoryRoute: typeof ForumsCategoryRoute
+  GuardianApproveTokenRoute: typeof GuardianApproveTokenRoute
   LearnTutorialIdRoute: typeof LearnTutorialIdRoute
   LessonsIdRoute: typeof LessonsIdRoute
   NewsSlugRoute: typeof NewsSlugRoute
@@ -2149,12 +2187,14 @@ export interface RootRouteChildren {
   ApiAppV1BotGamesRoute: typeof ApiAppV1BotGamesRoute
   ApiAppV1ConfigRoute: typeof ApiAppV1ConfigRoute
   ApiAppV1DevicesRoute: typeof ApiAppV1DevicesRoute
+  ApiAppV1GuardianConsentRoute: typeof ApiAppV1GuardianConsentRoute
   ApiAppV1LeaderboardRoute: typeof ApiAppV1LeaderboardRoute
   ApiAppV1MeRoute: typeof ApiAppV1MeRoute
   ApiAppV1OpenapiDotjsonRoute: typeof ApiAppV1OpenapiDotjsonRoute
   ApiAppV1ReportRoute: typeof ApiAppV1ReportRouteWithChildren
   ApiAppV1SeekRoute: typeof ApiAppV1SeekRoute
   ApiAppV1SpectateRoute: typeof ApiAppV1SpectateRoute
+  ApiAppV1UsernameAvailableRoute: typeof ApiAppV1UsernameAvailableRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
   ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRouteWithChildren
   ApiPublicV1WebhooksRoute: typeof ApiPublicV1WebhooksRouteWithChildren
@@ -2575,6 +2615,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForumsCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guardian-approve/$token': {
+      id: '/guardian-approve/$token'
+      path: '/guardian-approve/$token'
+      fullPath: '/guardian-approve/$token'
+      preLoaderRoute: typeof GuardianApproveTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/learn/': {
       id: '/learn/'
       path: '/learn'
@@ -2855,6 +2902,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1DevicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/guardian-consent': {
+      id: '/api/app/v1/guardian-consent'
+      path: '/api/app/v1/guardian-consent'
+      fullPath: '/api/app/v1/guardian-consent'
+      preLoaderRoute: typeof ApiAppV1GuardianConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/leaderboard': {
       id: '/api/app/v1/leaderboard'
       path: '/api/app/v1/leaderboard'
@@ -2895,6 +2949,13 @@ declare module '@tanstack/react-router' {
       path: '/api/app/v1/spectate'
       fullPath: '/api/app/v1/spectate'
       preLoaderRoute: typeof ApiAppV1SpectateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/username-available': {
+      id: '/api/app/v1/username-available'
+      path: '/api/app/v1/username-available'
+      fullPath: '/api/app/v1/username-available'
+      preLoaderRoute: typeof ApiAppV1UsernameAvailableRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/paystack/webhook': {
@@ -3642,6 +3703,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoachingDashboardRoute: CoachingDashboardRoute,
   EndgameIdRoute: EndgameIdRoute,
   ForumsCategoryRoute: ForumsCategoryRoute,
+  GuardianApproveTokenRoute: GuardianApproveTokenRoute,
   LearnTutorialIdRoute: LearnTutorialIdRoute,
   LessonsIdRoute: LessonsIdRoute,
   NewsSlugRoute: NewsSlugRoute,
@@ -3686,12 +3748,14 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1BotGamesRoute: ApiAppV1BotGamesRoute,
   ApiAppV1ConfigRoute: ApiAppV1ConfigRoute,
   ApiAppV1DevicesRoute: ApiAppV1DevicesRoute,
+  ApiAppV1GuardianConsentRoute: ApiAppV1GuardianConsentRoute,
   ApiAppV1LeaderboardRoute: ApiAppV1LeaderboardRoute,
   ApiAppV1MeRoute: ApiAppV1MeRoute,
   ApiAppV1OpenapiDotjsonRoute: ApiAppV1OpenapiDotjsonRoute,
   ApiAppV1ReportRoute: ApiAppV1ReportRouteWithChildren,
   ApiAppV1SeekRoute: ApiAppV1SeekRoute,
   ApiAppV1SpectateRoute: ApiAppV1SpectateRoute,
+  ApiAppV1UsernameAvailableRoute: ApiAppV1UsernameAvailableRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
   ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRouteWithChildren,
   ApiPublicV1WebhooksRoute: ApiPublicV1WebhooksRouteWithChildren,
