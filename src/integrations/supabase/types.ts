@@ -3885,6 +3885,27 @@ export type Database = {
         }
         Relationships: []
       }
+      puzzle_streak_scores: {
+        Row: {
+          id: string
+          played_at: string
+          streak: number
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          played_at?: string
+          streak?: number
+          user_id: string
+        }
+        Update: {
+          id?: string
+          played_at?: string
+          streak?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       puzzles: {
         Row: {
           approved: boolean

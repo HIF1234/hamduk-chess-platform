@@ -181,6 +181,9 @@ import { Route as ApiAppV1PuzzlesStormLeaderboardRouteImport } from './routes/ap
 import { Route as ApiAppV1PuzzlesStormStatsRouteImport } from './routes/api/app/v1/puzzles.storm.stats'
 import { Route as ApiAppV1PuzzlesStormStreamRouteImport } from './routes/api/app/v1/puzzles.storm.stream'
 import { Route as ApiAppV1PuzzlesStormSubmitRouteImport } from './routes/api/app/v1/puzzles.storm.submit'
+import { Route as ApiAppV1PuzzlesStreakStatsRouteImport } from './routes/api/app/v1/puzzles.streak.stats'
+import { Route as ApiAppV1PuzzlesStreakStreamRouteImport } from './routes/api/app/v1/puzzles.streak.stream'
+import { Route as ApiAppV1PuzzlesStreakSubmitRouteImport } from './routes/api/app/v1/puzzles.streak.submit'
 import { Route as ApiAppV1SocialFriendsRemoveRouteImport } from './routes/api/app/v1/social.friends.remove'
 import { Route as ApiAppV1SocialFriendsRequestRouteImport } from './routes/api/app/v1/social.friends.request'
 import { Route as ApiAppV1SocialFriendsRespondRouteImport } from './routes/api/app/v1/social.friends.respond'
@@ -1086,6 +1089,24 @@ const ApiAppV1PuzzlesStormSubmitRoute =
     path: '/api/app/v1/puzzles/storm/submit',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiAppV1PuzzlesStreakStatsRoute =
+  ApiAppV1PuzzlesStreakStatsRouteImport.update({
+    id: '/api/app/v1/puzzles/streak/stats',
+    path: '/api/app/v1/puzzles/streak/stats',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAppV1PuzzlesStreakStreamRoute =
+  ApiAppV1PuzzlesStreakStreamRouteImport.update({
+    id: '/api/app/v1/puzzles/streak/stream',
+    path: '/api/app/v1/puzzles/streak/stream',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAppV1PuzzlesStreakSubmitRoute =
+  ApiAppV1PuzzlesStreakSubmitRouteImport.update({
+    id: '/api/app/v1/puzzles/streak/submit',
+    path: '/api/app/v1/puzzles/streak/submit',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAppV1SocialFriendsRemoveRoute =
   ApiAppV1SocialFriendsRemoveRouteImport.update({
     id: '/remove',
@@ -1373,6 +1394,9 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/puzzles/storm/stats': typeof ApiAppV1PuzzlesStormStatsRoute
   '/api/app/v1/puzzles/storm/stream': typeof ApiAppV1PuzzlesStormStreamRoute
   '/api/app/v1/puzzles/storm/submit': typeof ApiAppV1PuzzlesStormSubmitRoute
+  '/api/app/v1/puzzles/streak/stats': typeof ApiAppV1PuzzlesStreakStatsRoute
+  '/api/app/v1/puzzles/streak/stream': typeof ApiAppV1PuzzlesStreakStreamRoute
+  '/api/app/v1/puzzles/streak/submit': typeof ApiAppV1PuzzlesStreakSubmitRoute
   '/api/app/v1/social/friends/remove': typeof ApiAppV1SocialFriendsRemoveRoute
   '/api/app/v1/social/friends/request': typeof ApiAppV1SocialFriendsRequestRoute
   '/api/app/v1/social/friends/respond': typeof ApiAppV1SocialFriendsRespondRoute
@@ -1565,6 +1589,9 @@ export interface FileRoutesByTo {
   '/api/app/v1/puzzles/storm/stats': typeof ApiAppV1PuzzlesStormStatsRoute
   '/api/app/v1/puzzles/storm/stream': typeof ApiAppV1PuzzlesStormStreamRoute
   '/api/app/v1/puzzles/storm/submit': typeof ApiAppV1PuzzlesStormSubmitRoute
+  '/api/app/v1/puzzles/streak/stats': typeof ApiAppV1PuzzlesStreakStatsRoute
+  '/api/app/v1/puzzles/streak/stream': typeof ApiAppV1PuzzlesStreakStreamRoute
+  '/api/app/v1/puzzles/streak/submit': typeof ApiAppV1PuzzlesStreakSubmitRoute
   '/api/app/v1/social/friends/remove': typeof ApiAppV1SocialFriendsRemoveRoute
   '/api/app/v1/social/friends/request': typeof ApiAppV1SocialFriendsRequestRoute
   '/api/app/v1/social/friends/respond': typeof ApiAppV1SocialFriendsRespondRoute
@@ -1759,6 +1786,9 @@ export interface FileRoutesById {
   '/api/app/v1/puzzles/storm/stats': typeof ApiAppV1PuzzlesStormStatsRoute
   '/api/app/v1/puzzles/storm/stream': typeof ApiAppV1PuzzlesStormStreamRoute
   '/api/app/v1/puzzles/storm/submit': typeof ApiAppV1PuzzlesStormSubmitRoute
+  '/api/app/v1/puzzles/streak/stats': typeof ApiAppV1PuzzlesStreakStatsRoute
+  '/api/app/v1/puzzles/streak/stream': typeof ApiAppV1PuzzlesStreakStreamRoute
+  '/api/app/v1/puzzles/streak/submit': typeof ApiAppV1PuzzlesStreakSubmitRoute
   '/api/app/v1/social/friends/remove': typeof ApiAppV1SocialFriendsRemoveRoute
   '/api/app/v1/social/friends/request': typeof ApiAppV1SocialFriendsRequestRoute
   '/api/app/v1/social/friends/respond': typeof ApiAppV1SocialFriendsRespondRoute
@@ -1954,6 +1984,9 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/storm/stats'
     | '/api/app/v1/puzzles/storm/stream'
     | '/api/app/v1/puzzles/storm/submit'
+    | '/api/app/v1/puzzles/streak/stats'
+    | '/api/app/v1/puzzles/streak/stream'
+    | '/api/app/v1/puzzles/streak/submit'
     | '/api/app/v1/social/friends/remove'
     | '/api/app/v1/social/friends/request'
     | '/api/app/v1/social/friends/respond'
@@ -2146,6 +2179,9 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/storm/stats'
     | '/api/app/v1/puzzles/storm/stream'
     | '/api/app/v1/puzzles/storm/submit'
+    | '/api/app/v1/puzzles/streak/stats'
+    | '/api/app/v1/puzzles/streak/stream'
+    | '/api/app/v1/puzzles/streak/submit'
     | '/api/app/v1/social/friends/remove'
     | '/api/app/v1/social/friends/request'
     | '/api/app/v1/social/friends/respond'
@@ -2339,6 +2375,9 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/storm/stats'
     | '/api/app/v1/puzzles/storm/stream'
     | '/api/app/v1/puzzles/storm/submit'
+    | '/api/app/v1/puzzles/streak/stats'
+    | '/api/app/v1/puzzles/streak/stream'
+    | '/api/app/v1/puzzles/streak/submit'
     | '/api/app/v1/social/friends/remove'
     | '/api/app/v1/social/friends/request'
     | '/api/app/v1/social/friends/respond'
@@ -2498,6 +2537,9 @@ export interface RootRouteChildren {
   ApiAppV1PuzzlesStormStatsRoute: typeof ApiAppV1PuzzlesStormStatsRoute
   ApiAppV1PuzzlesStormStreamRoute: typeof ApiAppV1PuzzlesStormStreamRoute
   ApiAppV1PuzzlesStormSubmitRoute: typeof ApiAppV1PuzzlesStormSubmitRoute
+  ApiAppV1PuzzlesStreakStatsRoute: typeof ApiAppV1PuzzlesStreakStatsRoute
+  ApiAppV1PuzzlesStreakStreamRoute: typeof ApiAppV1PuzzlesStreakStreamRoute
+  ApiAppV1PuzzlesStreakSubmitRoute: typeof ApiAppV1PuzzlesStreakSubmitRoute
   ApiAppV1SocialRelationUserIdRoute: typeof ApiAppV1SocialRelationUserIdRoute
   ApiAppV1VideosIdUrlRoute: typeof ApiAppV1VideosIdUrlRoute
   ApiPublicV1UsersUsernameGamesRoute: typeof ApiPublicV1UsersUsernameGamesRoute
@@ -3710,6 +3752,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PuzzlesStormSubmitRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/puzzles/streak/stats': {
+      id: '/api/app/v1/puzzles/streak/stats'
+      path: '/api/app/v1/puzzles/streak/stats'
+      fullPath: '/api/app/v1/puzzles/streak/stats'
+      preLoaderRoute: typeof ApiAppV1PuzzlesStreakStatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/puzzles/streak/stream': {
+      id: '/api/app/v1/puzzles/streak/stream'
+      path: '/api/app/v1/puzzles/streak/stream'
+      fullPath: '/api/app/v1/puzzles/streak/stream'
+      preLoaderRoute: typeof ApiAppV1PuzzlesStreakStreamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/puzzles/streak/submit': {
+      id: '/api/app/v1/puzzles/streak/submit'
+      path: '/api/app/v1/puzzles/streak/submit'
+      fullPath: '/api/app/v1/puzzles/streak/submit'
+      preLoaderRoute: typeof ApiAppV1PuzzlesStreakSubmitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/social/friends/remove': {
       id: '/api/app/v1/social/friends/remove'
       path: '/remove'
@@ -4245,6 +4308,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1PuzzlesStormStatsRoute: ApiAppV1PuzzlesStormStatsRoute,
   ApiAppV1PuzzlesStormStreamRoute: ApiAppV1PuzzlesStormStreamRoute,
   ApiAppV1PuzzlesStormSubmitRoute: ApiAppV1PuzzlesStormSubmitRoute,
+  ApiAppV1PuzzlesStreakStatsRoute: ApiAppV1PuzzlesStreakStatsRoute,
+  ApiAppV1PuzzlesStreakStreamRoute: ApiAppV1PuzzlesStreakStreamRoute,
+  ApiAppV1PuzzlesStreakSubmitRoute: ApiAppV1PuzzlesStreakSubmitRoute,
   ApiAppV1SocialRelationUserIdRoute: ApiAppV1SocialRelationUserIdRoute,
   ApiAppV1VideosIdUrlRoute: ApiAppV1VideosIdUrlRoute,
   ApiPublicV1UsersUsernameGamesRoute: ApiPublicV1UsersUsernameGamesRoute,
