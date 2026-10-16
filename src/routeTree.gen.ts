@@ -133,6 +133,7 @@ import { Route as ApiAppV1PuzzlesDailyRouteImport } from './routes/api/app/v1/pu
 import { Route as ApiAppV1PuzzlesNextRouteImport } from './routes/api/app/v1/puzzles.next'
 import { Route as ApiAppV1PuzzlesPackRouteImport } from './routes/api/app/v1/puzzles.pack'
 import { Route as ApiAppV1PuzzlesSyncRouteImport } from './routes/api/app/v1/puzzles.sync'
+import { Route as ApiAppV1PuzzlesThemeStatsRouteImport } from './routes/api/app/v1/puzzles.theme-stats'
 import { Route as ApiAppV1ReportReasonsRouteImport } from './routes/api/app/v1/report.reasons'
 import { Route as ApiAppV1SocialBlockRouteImport } from './routes/api/app/v1/social.block'
 import { Route as ApiAppV1SocialFeedRouteImport } from './routes/api/app/v1/social.feed'
@@ -816,6 +817,12 @@ const ApiAppV1PuzzlesSyncRoute = ApiAppV1PuzzlesSyncRouteImport.update({
   path: '/api/app/v1/puzzles/sync',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1PuzzlesThemeStatsRoute =
+  ApiAppV1PuzzlesThemeStatsRouteImport.update({
+    id: '/api/app/v1/puzzles/theme-stats',
+    path: '/api/app/v1/puzzles/theme-stats',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAppV1ReportReasonsRoute = ApiAppV1ReportReasonsRouteImport.update({
   id: '/reasons',
   path: '/reasons',
@@ -1237,6 +1244,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/puzzles/theme-stats': typeof ApiAppV1PuzzlesThemeStatsRoute
   '/api/app/v1/report/reasons': typeof ApiAppV1ReportReasonsRoute
   '/api/app/v1/social/block': typeof ApiAppV1SocialBlockRoute
   '/api/app/v1/social/feed': typeof ApiAppV1SocialFeedRoute
@@ -1417,6 +1425,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/puzzles/theme-stats': typeof ApiAppV1PuzzlesThemeStatsRoute
   '/api/app/v1/report/reasons': typeof ApiAppV1ReportReasonsRoute
   '/api/app/v1/social/block': typeof ApiAppV1SocialBlockRoute
   '/api/app/v1/social/feed': typeof ApiAppV1SocialFeedRoute
@@ -1599,6 +1608,7 @@ export interface FileRoutesById {
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
+  '/api/app/v1/puzzles/theme-stats': typeof ApiAppV1PuzzlesThemeStatsRoute
   '/api/app/v1/report/reasons': typeof ApiAppV1ReportReasonsRoute
   '/api/app/v1/social/block': typeof ApiAppV1SocialBlockRoute
   '/api/app/v1/social/feed': typeof ApiAppV1SocialFeedRoute
@@ -1782,6 +1792,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/puzzles/theme-stats'
     | '/api/app/v1/report/reasons'
     | '/api/app/v1/social/block'
     | '/api/app/v1/social/feed'
@@ -1962,6 +1973,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/puzzles/theme-stats'
     | '/api/app/v1/report/reasons'
     | '/api/app/v1/social/block'
     | '/api/app/v1/social/feed'
@@ -2143,6 +2155,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
+    | '/api/app/v1/puzzles/theme-stats'
     | '/api/app/v1/report/reasons'
     | '/api/app/v1/social/block'
     | '/api/app/v1/social/feed'
@@ -2310,6 +2323,7 @@ export interface RootRouteChildren {
   ApiAppV1PuzzlesNextRoute: typeof ApiAppV1PuzzlesNextRoute
   ApiAppV1PuzzlesPackRoute: typeof ApiAppV1PuzzlesPackRoute
   ApiAppV1PuzzlesSyncRoute: typeof ApiAppV1PuzzlesSyncRoute
+  ApiAppV1PuzzlesThemeStatsRoute: typeof ApiAppV1PuzzlesThemeStatsRoute
   ApiAppV1SocialBlockRoute: typeof ApiAppV1SocialBlockRoute
   ApiAppV1SocialFeedRoute: typeof ApiAppV1SocialFeedRoute
   ApiAppV1SocialFollowRoute: typeof ApiAppV1SocialFollowRoute
@@ -3210,6 +3224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PuzzlesSyncRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/puzzles/theme-stats': {
+      id: '/api/app/v1/puzzles/theme-stats'
+      path: '/api/app/v1/puzzles/theme-stats'
+      fullPath: '/api/app/v1/puzzles/theme-stats'
+      preLoaderRoute: typeof ApiAppV1PuzzlesThemeStatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/report/reasons': {
       id: '/api/app/v1/report/reasons'
       path: '/reasons'
@@ -3946,6 +3967,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1PuzzlesNextRoute: ApiAppV1PuzzlesNextRoute,
   ApiAppV1PuzzlesPackRoute: ApiAppV1PuzzlesPackRoute,
   ApiAppV1PuzzlesSyncRoute: ApiAppV1PuzzlesSyncRoute,
+  ApiAppV1PuzzlesThemeStatsRoute: ApiAppV1PuzzlesThemeStatsRoute,
   ApiAppV1SocialBlockRoute: ApiAppV1SocialBlockRoute,
   ApiAppV1SocialFeedRoute: ApiAppV1SocialFeedRoute,
   ApiAppV1SocialFollowRoute: ApiAppV1SocialFollowRoute,

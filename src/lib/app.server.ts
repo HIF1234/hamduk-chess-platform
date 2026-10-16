@@ -133,6 +133,43 @@ export async function getPuzzlePack(ctx: AppContext, input: unknown) {
   return { rating, puzzles: puzzles ?? [], maxPack: cap, remainingToday };
 }
 
+/**
+ * This player's per-theme accuracy ("Forks 72%, back rank 41%"), weakest first -- same
+ * source (puzzle_ratings, one row per puzzle this player has ever solved/attempted) as the
+ * web's getMyThemeProgress, so the numbers match if they ever look at both.
+ */
+export async function getPuzzleThemeStats(ctx: AppContext) {
+  const s = await admin();
+  const { data: ratings, error } = await s
+    .from("puzzle_ratings")
+    .select("puzzle_id, success")
+    .eq("user_id", ctx.userId);
+  if (error) throw error;
+  if (!ratings || ratings.length === 0) return { themes: [] };
+
+  const ids = ratings.map((r) => r.puzzle_id as string);
+  const { data: puzzles } = await s.from("puzzles").select("id, themes").in("id", ids);
+  const themesById = new Map<string, string[]>();
+  for (const p of puzzles ?? []) themesById.set(p.id as string, (p.themes ?? []) as string[]);
+
+  const agg = new Map<string, { attempted: number; solved: number }>();
+  for (const r of ratings) {
+    for (const t of themesById.get(r.puzzle_id as string) ?? []) {
+      const cur = agg.get(t) ?? { attempted: 0, solved: 0 };
+      cur.attempted += 1;
+      if (r.success) cur.solved += 1;
+      agg.set(t, cur);
+    }
+  }
+  const themes = Array.from(agg, ([theme, v]) => ({
+    theme,
+    attempted: v.attempted,
+    solved: v.solved,
+    accuracy: Math.round((v.solved / v.attempted) * 100),
+  })).sort((a, b) => a.accuracy - b.accuracy);
+  return { themes };
+}
+
 /** Uploads puzzle attempts made offline, oldest first. Stops at the free daily limit. */
 export async function syncPuzzleAttempts(ctx: AppContext, input: unknown) {
   const data = z
