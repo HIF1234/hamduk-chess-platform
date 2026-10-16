@@ -375,3 +375,189 @@ export async function getPublicProfile(_ctx: AppContext | null, input: unknown) 
   const { getProfileByUsername } = await import("@/lib/profile.functions");
   return getProfileByUsername({ data: input });
 }
+
+// ---------------------------------------------------------------- Puzzle Storm
+// Mirrors storm.functions.ts (web-only, never exposed on /api/app/v1): same rules (3
+// minutes, +1 per solve, no penalty for a miss besides losing the puzzle), same
+// puzzle_storm_scores table and Redis leaderboards, so a score means the same thing on
+// either platform. Duplicated as plain functions here rather than calling the web's
+// createServerFn exports directly: those require requireSupabaseAuth, which expects a
+// session cookie the mobile app's Bearer-token requests don't have.
+
+const STORM_DURATION_SEC = 180;
+
+async function assertPlusOrGold(userId: string) {
+  const s = await admin();
+  const { data } = await s
+    .from("profiles")
+    .select("subscription_tier")
+    .eq("id", userId)
+    .maybeSingle();
+  const tier = (data?.subscription_tier ?? "free") as "free" | "plus" | "gold";
+  if (tier === "free") throw new Error("Puzzle Storm is a Plus / Gold feature. Upgrade to play.");
+  return tier;
+}
+
+/** Plus/Gold — an unseen-friendly puzzle stream for one storm run. */
+export async function getStormStream(ctx: AppContext, input: unknown) {
+  await assertPlusOrGold(ctx.userId);
+  const data = z
+    .object({
+      count: z.coerce.number().int().min(5).max(60).default(40),
+      minRating: z.coerce.number().int().min(400).max(3000).default(700),
+      maxRating: z.coerce.number().int().min(400).max(3000).default(1800),
+    })
+    .parse(input ?? {});
+  const s = await admin();
+  const { data: rows, error } = await s
+    .from("puzzles")
+    .select("id, fen, solution, themes, rating")
+    .eq("approved", true)
+    .gte("rating", data.minRating)
+    .lte("rating", data.maxRating)
+    .limit(data.count * 3);
+  if (error) throw error;
+  const list = rows ?? [];
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
+  }
+  const trimmed = list.slice(0, data.count).sort((a, b) => (a.rating ?? 0) - (b.rating ?? 0));
+  return { puzzles: trimmed, durationSec: STORM_DURATION_SEC };
+}
+
+/** Plus/Gold — persist a finished run, update the Redis leaderboards. */
+export async function submitStormRun(ctx: AppContext, input: unknown) {
+  await assertPlusOrGold(ctx.userId);
+  const data = z
+    .object({
+      score: z.number().int().min(0).max(500),
+      solved: z.number().int().min(0).max(500),
+      mistakes: z.number().int().min(0).max(50),
+      durationSec: z.number().int().min(10).max(600).default(STORM_DURATION_SEC),
+    })
+    .parse(input);
+  const { error } = await ctx.supabase.from("puzzle_storm_scores").insert({
+    user_id: ctx.userId,
+    score: data.score,
+    solved: data.solved,
+    mistakes: data.mistakes,
+    duration_sec: data.durationSec,
+    mode: "3min",
+  });
+  if (error) throw error;
+
+  let dailyRank: number | null = null;
+  let allTimeRank: number | null = null;
+  try {
+    const { redis } = await import("@/lib/redis.server");
+    const today = new Date().toISOString().slice(0, 10);
+    const dailyKey = `storm:lb:daily:${today}`;
+    const allKey = `storm:lb:alltime`;
+    const [curDaily, curAll] = await Promise.all([
+      redis.zscore(dailyKey, ctx.userId),
+      redis.zscore(allKey, ctx.userId),
+    ]);
+    if (curDaily == null || data.score > Number(curDaily)) {
+      await redis.zadd(dailyKey, { score: data.score, member: ctx.userId });
+      await redis.expire(dailyKey, 60 * 60 * 48);
+    }
+    if (curAll == null || data.score > Number(curAll)) {
+      await redis.zadd(allKey, { score: data.score, member: ctx.userId });
+    }
+    const [dRank, aRank] = await Promise.all([
+      redis.zrevrank(dailyKey, ctx.userId),
+      redis.zrevrank(allKey, ctx.userId),
+    ]);
+    dailyRank = dRank == null ? null : Number(dRank) + 1;
+    allTimeRank = aRank == null ? null : Number(aRank) + 1;
+  } catch (e) {
+    console.warn("storm leaderboard skipped:", e);
+  }
+
+  const s = await admin();
+  const { data: best } = await s
+    .from("puzzle_storm_scores")
+    .select("score")
+    .eq("user_id", ctx.userId)
+    .order("score", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  return {
+    score: data.score,
+    rank: { daily: dailyRank, allTime: allTimeRank },
+    personalBest: best?.score ?? data.score,
+  };
+}
+
+/** Top N scores (daily resets at UTC midnight, or all-time), username-hydrated. */
+export async function getStormLeaderboard(_ctx: AppContext, input: unknown) {
+  const data = z
+    .object({
+      scope: z.enum(["daily", "alltime"]).default("daily"),
+      limit: z.coerce.number().int().min(1).max(50).default(20),
+    })
+    .parse(input ?? {});
+  let pairs: Array<{ user_id: string; score: number }> = [];
+  try {
+    const { redis } = await import("@/lib/redis.server");
+    const today = new Date().toISOString().slice(0, 10);
+    const key = data.scope === "daily" ? `storm:lb:daily:${today}` : `storm:lb:alltime`;
+    const raw = (await redis.zrange(key, 0, data.limit - 1, { rev: true, withScores: true })) as (
+      | string
+      | number
+    )[];
+    for (let i = 0; i < raw.length; i += 2)
+      pairs.push({ user_id: String(raw[i]), score: Number(raw[i + 1]) });
+  } catch (e) {
+    console.warn("storm leaderboard read skipped, falling back to db:", e);
+  }
+  const s = await admin();
+  if (pairs.length === 0) {
+    const since =
+      data.scope === "daily"
+        ? new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+        : new Date(0).toISOString();
+    const { data: rows } = await s
+      .from("puzzle_storm_scores")
+      .select("user_id, score")
+      .gte("played_at", since)
+      .order("score", { ascending: false })
+      .limit(data.limit * 4);
+    const best = new Map<string, number>();
+    for (const r of rows ?? []) {
+      if (!best.has(r.user_id) || (best.get(r.user_id) ?? 0) < r.score)
+        best.set(r.user_id, r.score);
+    }
+    pairs = Array.from(best.entries())
+      .map(([user_id, score]) => ({ user_id, score }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, data.limit);
+  }
+  if (pairs.length === 0) return { entries: [] };
+  const ids = pairs.map((p) => p.user_id);
+  const { data: profs } = await s.from("profiles").select("id, username").in("id", ids);
+  const byId = new Map((profs ?? []).map((p) => [p.id, p.username]));
+  return {
+    entries: pairs.map((p) => ({
+      userId: p.user_id,
+      username: byId.get(p.user_id) ?? "player",
+      score: p.score,
+    })),
+  };
+}
+
+/** This player's recent runs and personal best. */
+export async function getMyStormStats(ctx: AppContext) {
+  const s = await admin();
+  const { data: rows } = await s
+    .from("puzzle_storm_scores")
+    .select("score, solved, mistakes, played_at")
+    .eq("user_id", ctx.userId)
+    .order("played_at", { ascending: false })
+    .limit(20);
+  const list = rows ?? [];
+  const best = list.reduce((m, r) => Math.max(m, r.score), 0);
+  return { best, runs: list.length, recent: list };
+}
