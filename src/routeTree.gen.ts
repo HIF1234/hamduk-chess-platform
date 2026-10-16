@@ -173,6 +173,10 @@ import { Route as ApiAppV1GamesIdRematchRouteImport } from './routes/api/app/v1/
 import { Route as ApiAppV1GamesIdResignRouteImport } from './routes/api/app/v1/games.$id.resign'
 import { Route as ApiAppV1GamesIdTakebackRouteImport } from './routes/api/app/v1/games.$id.takeback'
 import { Route as ApiAppV1PuzzlesIdAttemptRouteImport } from './routes/api/app/v1/puzzles.$id.attempt'
+import { Route as ApiAppV1PuzzlesBattleIdRouteImport } from './routes/api/app/v1/puzzles.battle.$id'
+import { Route as ApiAppV1PuzzlesBattleCreateRouteImport } from './routes/api/app/v1/puzzles.battle.create'
+import { Route as ApiAppV1PuzzlesBattleFindRouteImport } from './routes/api/app/v1/puzzles.battle.find'
+import { Route as ApiAppV1PuzzlesBattleMineRouteImport } from './routes/api/app/v1/puzzles.battle.mine'
 import { Route as ApiAppV1PuzzlesStormLeaderboardRouteImport } from './routes/api/app/v1/puzzles.storm.leaderboard'
 import { Route as ApiAppV1PuzzlesStormStatsRouteImport } from './routes/api/app/v1/puzzles.storm.stats'
 import { Route as ApiAppV1PuzzlesStormStreamRouteImport } from './routes/api/app/v1/puzzles.storm.stream'
@@ -191,6 +195,9 @@ import { Route as ApiPublicV1TournamentsIdStandingsRouteImport } from './routes/
 import { Route as ApiPublicV1UsersUsernameGamesRouteImport } from './routes/api/public/v1/users.$username.games'
 import { Route as ApiPublicV1UsersUsernameRatingRouteImport } from './routes/api/public/v1/users.$username.rating'
 import { Route as ApiAppV1CoachingSessionsIdReviewRouteImport } from './routes/api/app/v1/coaching.sessions.$id.review'
+import { Route as ApiAppV1PuzzlesBattleIdAnswerRouteImport } from './routes/api/app/v1/puzzles.battle.$id.answer'
+import { Route as ApiAppV1PuzzlesBattleIdCancelRouteImport } from './routes/api/app/v1/puzzles.battle.$id.cancel'
+import { Route as ApiAppV1PuzzlesBattleIdJoinRouteImport } from './routes/api/app/v1/puzzles.battle.$id.join'
 import { Route as ApiPublicV1ClassesSessionIdSetPositionRouteImport } from './routes/api/public/v1/classes.session.$id.set-position'
 import { Route as ApiPublicV1ClassesSessionIdStudentsRouteImport } from './routes/api/public/v1/classes.session.$id.students'
 
@@ -1032,6 +1039,29 @@ const ApiAppV1PuzzlesIdAttemptRoute =
     path: '/api/app/v1/puzzles/$id/attempt',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiAppV1PuzzlesBattleIdRoute = ApiAppV1PuzzlesBattleIdRouteImport.update({
+  id: '/api/app/v1/puzzles/battle/$id',
+  path: '/api/app/v1/puzzles/battle/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1PuzzlesBattleCreateRoute =
+  ApiAppV1PuzzlesBattleCreateRouteImport.update({
+    id: '/api/app/v1/puzzles/battle/create',
+    path: '/api/app/v1/puzzles/battle/create',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAppV1PuzzlesBattleFindRoute =
+  ApiAppV1PuzzlesBattleFindRouteImport.update({
+    id: '/api/app/v1/puzzles/battle/find',
+    path: '/api/app/v1/puzzles/battle/find',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAppV1PuzzlesBattleMineRoute =
+  ApiAppV1PuzzlesBattleMineRouteImport.update({
+    id: '/api/app/v1/puzzles/battle/mine',
+    path: '/api/app/v1/puzzles/battle/mine',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAppV1PuzzlesStormLeaderboardRoute =
   ApiAppV1PuzzlesStormLeaderboardRouteImport.update({
     id: '/api/app/v1/puzzles/storm/leaderboard',
@@ -1138,6 +1168,24 @@ const ApiAppV1CoachingSessionsIdReviewRoute =
     id: '/$id/review',
     path: '/$id/review',
     getParentRoute: () => ApiAppV1CoachingSessionsRoute,
+  } as any)
+const ApiAppV1PuzzlesBattleIdAnswerRoute =
+  ApiAppV1PuzzlesBattleIdAnswerRouteImport.update({
+    id: '/answer',
+    path: '/answer',
+    getParentRoute: () => ApiAppV1PuzzlesBattleIdRoute,
+  } as any)
+const ApiAppV1PuzzlesBattleIdCancelRoute =
+  ApiAppV1PuzzlesBattleIdCancelRouteImport.update({
+    id: '/cancel',
+    path: '/cancel',
+    getParentRoute: () => ApiAppV1PuzzlesBattleIdRoute,
+  } as any)
+const ApiAppV1PuzzlesBattleIdJoinRoute =
+  ApiAppV1PuzzlesBattleIdJoinRouteImport.update({
+    id: '/join',
+    path: '/join',
+    getParentRoute: () => ApiAppV1PuzzlesBattleIdRoute,
   } as any)
 const ApiPublicV1ClassesSessionIdSetPositionRoute =
   ApiPublicV1ClassesSessionIdSetPositionRouteImport.update({
@@ -1317,6 +1365,10 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
+  '/api/app/v1/puzzles/battle/$id': typeof ApiAppV1PuzzlesBattleIdRouteWithChildren
+  '/api/app/v1/puzzles/battle/create': typeof ApiAppV1PuzzlesBattleCreateRoute
+  '/api/app/v1/puzzles/battle/find': typeof ApiAppV1PuzzlesBattleFindRoute
+  '/api/app/v1/puzzles/battle/mine': typeof ApiAppV1PuzzlesBattleMineRoute
   '/api/app/v1/puzzles/storm/leaderboard': typeof ApiAppV1PuzzlesStormLeaderboardRoute
   '/api/app/v1/puzzles/storm/stats': typeof ApiAppV1PuzzlesStormStatsRoute
   '/api/app/v1/puzzles/storm/stream': typeof ApiAppV1PuzzlesStormStreamRoute
@@ -1335,6 +1387,9 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
   '/api/app/v1/coaching/sessions/$id/review': typeof ApiAppV1CoachingSessionsIdReviewRoute
+  '/api/app/v1/puzzles/battle/$id/answer': typeof ApiAppV1PuzzlesBattleIdAnswerRoute
+  '/api/app/v1/puzzles/battle/$id/cancel': typeof ApiAppV1PuzzlesBattleIdCancelRoute
+  '/api/app/v1/puzzles/battle/$id/join': typeof ApiAppV1PuzzlesBattleIdJoinRoute
   '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
   '/api/public/v1/classes/session/$id/students': typeof ApiPublicV1ClassesSessionIdStudentsRoute
 }
@@ -1502,6 +1557,10 @@ export interface FileRoutesByTo {
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
+  '/api/app/v1/puzzles/battle/$id': typeof ApiAppV1PuzzlesBattleIdRouteWithChildren
+  '/api/app/v1/puzzles/battle/create': typeof ApiAppV1PuzzlesBattleCreateRoute
+  '/api/app/v1/puzzles/battle/find': typeof ApiAppV1PuzzlesBattleFindRoute
+  '/api/app/v1/puzzles/battle/mine': typeof ApiAppV1PuzzlesBattleMineRoute
   '/api/app/v1/puzzles/storm/leaderboard': typeof ApiAppV1PuzzlesStormLeaderboardRoute
   '/api/app/v1/puzzles/storm/stats': typeof ApiAppV1PuzzlesStormStatsRoute
   '/api/app/v1/puzzles/storm/stream': typeof ApiAppV1PuzzlesStormStreamRoute
@@ -1520,6 +1579,9 @@ export interface FileRoutesByTo {
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
   '/api/app/v1/coaching/sessions/$id/review': typeof ApiAppV1CoachingSessionsIdReviewRoute
+  '/api/app/v1/puzzles/battle/$id/answer': typeof ApiAppV1PuzzlesBattleIdAnswerRoute
+  '/api/app/v1/puzzles/battle/$id/cancel': typeof ApiAppV1PuzzlesBattleIdCancelRoute
+  '/api/app/v1/puzzles/battle/$id/join': typeof ApiAppV1PuzzlesBattleIdJoinRoute
   '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
   '/api/public/v1/classes/session/$id/students': typeof ApiPublicV1ClassesSessionIdStudentsRoute
 }
@@ -1689,6 +1751,10 @@ export interface FileRoutesById {
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
+  '/api/app/v1/puzzles/battle/$id': typeof ApiAppV1PuzzlesBattleIdRouteWithChildren
+  '/api/app/v1/puzzles/battle/create': typeof ApiAppV1PuzzlesBattleCreateRoute
+  '/api/app/v1/puzzles/battle/find': typeof ApiAppV1PuzzlesBattleFindRoute
+  '/api/app/v1/puzzles/battle/mine': typeof ApiAppV1PuzzlesBattleMineRoute
   '/api/app/v1/puzzles/storm/leaderboard': typeof ApiAppV1PuzzlesStormLeaderboardRoute
   '/api/app/v1/puzzles/storm/stats': typeof ApiAppV1PuzzlesStormStatsRoute
   '/api/app/v1/puzzles/storm/stream': typeof ApiAppV1PuzzlesStormStreamRoute
@@ -1707,6 +1773,9 @@ export interface FileRoutesById {
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
   '/api/app/v1/coaching/sessions/$id/review': typeof ApiAppV1CoachingSessionsIdReviewRoute
+  '/api/app/v1/puzzles/battle/$id/answer': typeof ApiAppV1PuzzlesBattleIdAnswerRoute
+  '/api/app/v1/puzzles/battle/$id/cancel': typeof ApiAppV1PuzzlesBattleIdCancelRoute
+  '/api/app/v1/puzzles/battle/$id/join': typeof ApiAppV1PuzzlesBattleIdJoinRoute
   '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
   '/api/public/v1/classes/session/$id/students': typeof ApiPublicV1ClassesSessionIdStudentsRoute
 }
@@ -1877,6 +1946,10 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
     | '/api/app/v1/puzzles/$id/attempt'
+    | '/api/app/v1/puzzles/battle/$id'
+    | '/api/app/v1/puzzles/battle/create'
+    | '/api/app/v1/puzzles/battle/find'
+    | '/api/app/v1/puzzles/battle/mine'
     | '/api/app/v1/puzzles/storm/leaderboard'
     | '/api/app/v1/puzzles/storm/stats'
     | '/api/app/v1/puzzles/storm/stream'
@@ -1895,6 +1968,9 @@ export interface FileRouteTypes {
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
     | '/api/app/v1/coaching/sessions/$id/review'
+    | '/api/app/v1/puzzles/battle/$id/answer'
+    | '/api/app/v1/puzzles/battle/$id/cancel'
+    | '/api/app/v1/puzzles/battle/$id/join'
     | '/api/public/v1/classes/session/$id/set-position'
     | '/api/public/v1/classes/session/$id/students'
   fileRoutesByTo: FileRoutesByTo
@@ -2062,6 +2138,10 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
     | '/api/app/v1/puzzles/$id/attempt'
+    | '/api/app/v1/puzzles/battle/$id'
+    | '/api/app/v1/puzzles/battle/create'
+    | '/api/app/v1/puzzles/battle/find'
+    | '/api/app/v1/puzzles/battle/mine'
     | '/api/app/v1/puzzles/storm/leaderboard'
     | '/api/app/v1/puzzles/storm/stats'
     | '/api/app/v1/puzzles/storm/stream'
@@ -2080,6 +2160,9 @@ export interface FileRouteTypes {
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
     | '/api/app/v1/coaching/sessions/$id/review'
+    | '/api/app/v1/puzzles/battle/$id/answer'
+    | '/api/app/v1/puzzles/battle/$id/cancel'
+    | '/api/app/v1/puzzles/battle/$id/join'
     | '/api/public/v1/classes/session/$id/set-position'
     | '/api/public/v1/classes/session/$id/students'
   id:
@@ -2248,6 +2331,10 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
     | '/api/app/v1/puzzles/$id/attempt'
+    | '/api/app/v1/puzzles/battle/$id'
+    | '/api/app/v1/puzzles/battle/create'
+    | '/api/app/v1/puzzles/battle/find'
+    | '/api/app/v1/puzzles/battle/mine'
     | '/api/app/v1/puzzles/storm/leaderboard'
     | '/api/app/v1/puzzles/storm/stats'
     | '/api/app/v1/puzzles/storm/stream'
@@ -2266,6 +2353,9 @@ export interface FileRouteTypes {
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
     | '/api/app/v1/coaching/sessions/$id/review'
+    | '/api/app/v1/puzzles/battle/$id/answer'
+    | '/api/app/v1/puzzles/battle/$id/cancel'
+    | '/api/app/v1/puzzles/battle/$id/join'
     | '/api/public/v1/classes/session/$id/set-position'
     | '/api/public/v1/classes/session/$id/students'
   fileRoutesById: FileRoutesById
@@ -2400,6 +2490,10 @@ export interface RootRouteChildren {
   ApiAppV1TutorialsIndexRoute: typeof ApiAppV1TutorialsIndexRoute
   ApiAppV1VideosIndexRoute: typeof ApiAppV1VideosIndexRoute
   ApiAppV1PuzzlesIdAttemptRoute: typeof ApiAppV1PuzzlesIdAttemptRoute
+  ApiAppV1PuzzlesBattleIdRoute: typeof ApiAppV1PuzzlesBattleIdRouteWithChildren
+  ApiAppV1PuzzlesBattleCreateRoute: typeof ApiAppV1PuzzlesBattleCreateRoute
+  ApiAppV1PuzzlesBattleFindRoute: typeof ApiAppV1PuzzlesBattleFindRoute
+  ApiAppV1PuzzlesBattleMineRoute: typeof ApiAppV1PuzzlesBattleMineRoute
   ApiAppV1PuzzlesStormLeaderboardRoute: typeof ApiAppV1PuzzlesStormLeaderboardRoute
   ApiAppV1PuzzlesStormStatsRoute: typeof ApiAppV1PuzzlesStormStatsRoute
   ApiAppV1PuzzlesStormStreamRoute: typeof ApiAppV1PuzzlesStormStreamRoute
@@ -3560,6 +3654,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PuzzlesIdAttemptRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/puzzles/battle/$id': {
+      id: '/api/app/v1/puzzles/battle/$id'
+      path: '/api/app/v1/puzzles/battle/$id'
+      fullPath: '/api/app/v1/puzzles/battle/$id'
+      preLoaderRoute: typeof ApiAppV1PuzzlesBattleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/puzzles/battle/create': {
+      id: '/api/app/v1/puzzles/battle/create'
+      path: '/api/app/v1/puzzles/battle/create'
+      fullPath: '/api/app/v1/puzzles/battle/create'
+      preLoaderRoute: typeof ApiAppV1PuzzlesBattleCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/puzzles/battle/find': {
+      id: '/api/app/v1/puzzles/battle/find'
+      path: '/api/app/v1/puzzles/battle/find'
+      fullPath: '/api/app/v1/puzzles/battle/find'
+      preLoaderRoute: typeof ApiAppV1PuzzlesBattleFindRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/puzzles/battle/mine': {
+      id: '/api/app/v1/puzzles/battle/mine'
+      path: '/api/app/v1/puzzles/battle/mine'
+      fullPath: '/api/app/v1/puzzles/battle/mine'
+      preLoaderRoute: typeof ApiAppV1PuzzlesBattleMineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/puzzles/storm/leaderboard': {
       id: '/api/app/v1/puzzles/storm/leaderboard'
       path: '/api/app/v1/puzzles/storm/leaderboard'
@@ -3685,6 +3807,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/app/v1/coaching/sessions/$id/review'
       preLoaderRoute: typeof ApiAppV1CoachingSessionsIdReviewRouteImport
       parentRoute: typeof ApiAppV1CoachingSessionsRoute
+    }
+    '/api/app/v1/puzzles/battle/$id/answer': {
+      id: '/api/app/v1/puzzles/battle/$id/answer'
+      path: '/answer'
+      fullPath: '/api/app/v1/puzzles/battle/$id/answer'
+      preLoaderRoute: typeof ApiAppV1PuzzlesBattleIdAnswerRouteImport
+      parentRoute: typeof ApiAppV1PuzzlesBattleIdRoute
+    }
+    '/api/app/v1/puzzles/battle/$id/cancel': {
+      id: '/api/app/v1/puzzles/battle/$id/cancel'
+      path: '/cancel'
+      fullPath: '/api/app/v1/puzzles/battle/$id/cancel'
+      preLoaderRoute: typeof ApiAppV1PuzzlesBattleIdCancelRouteImport
+      parentRoute: typeof ApiAppV1PuzzlesBattleIdRoute
+    }
+    '/api/app/v1/puzzles/battle/$id/join': {
+      id: '/api/app/v1/puzzles/battle/$id/join'
+      path: '/join'
+      fullPath: '/api/app/v1/puzzles/battle/$id/join'
+      preLoaderRoute: typeof ApiAppV1PuzzlesBattleIdJoinRouteImport
+      parentRoute: typeof ApiAppV1PuzzlesBattleIdRoute
     }
     '/api/public/v1/classes/session/$id/set-position': {
       id: '/api/public/v1/classes/session/$id/set-position'
@@ -3946,6 +4089,24 @@ const ApiPublicV1EmbedTokenRouteWithChildren =
     ApiPublicV1EmbedTokenRouteChildren,
   )
 
+interface ApiAppV1PuzzlesBattleIdRouteChildren {
+  ApiAppV1PuzzlesBattleIdAnswerRoute: typeof ApiAppV1PuzzlesBattleIdAnswerRoute
+  ApiAppV1PuzzlesBattleIdCancelRoute: typeof ApiAppV1PuzzlesBattleIdCancelRoute
+  ApiAppV1PuzzlesBattleIdJoinRoute: typeof ApiAppV1PuzzlesBattleIdJoinRoute
+}
+
+const ApiAppV1PuzzlesBattleIdRouteChildren: ApiAppV1PuzzlesBattleIdRouteChildren =
+  {
+    ApiAppV1PuzzlesBattleIdAnswerRoute: ApiAppV1PuzzlesBattleIdAnswerRoute,
+    ApiAppV1PuzzlesBattleIdCancelRoute: ApiAppV1PuzzlesBattleIdCancelRoute,
+    ApiAppV1PuzzlesBattleIdJoinRoute: ApiAppV1PuzzlesBattleIdJoinRoute,
+  }
+
+const ApiAppV1PuzzlesBattleIdRouteWithChildren =
+  ApiAppV1PuzzlesBattleIdRoute._addFileChildren(
+    ApiAppV1PuzzlesBattleIdRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -4076,6 +4237,10 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1TutorialsIndexRoute: ApiAppV1TutorialsIndexRoute,
   ApiAppV1VideosIndexRoute: ApiAppV1VideosIndexRoute,
   ApiAppV1PuzzlesIdAttemptRoute: ApiAppV1PuzzlesIdAttemptRoute,
+  ApiAppV1PuzzlesBattleIdRoute: ApiAppV1PuzzlesBattleIdRouteWithChildren,
+  ApiAppV1PuzzlesBattleCreateRoute: ApiAppV1PuzzlesBattleCreateRoute,
+  ApiAppV1PuzzlesBattleFindRoute: ApiAppV1PuzzlesBattleFindRoute,
+  ApiAppV1PuzzlesBattleMineRoute: ApiAppV1PuzzlesBattleMineRoute,
   ApiAppV1PuzzlesStormLeaderboardRoute: ApiAppV1PuzzlesStormLeaderboardRoute,
   ApiAppV1PuzzlesStormStatsRoute: ApiAppV1PuzzlesStormStatsRoute,
   ApiAppV1PuzzlesStormStreamRoute: ApiAppV1PuzzlesStormStreamRoute,
