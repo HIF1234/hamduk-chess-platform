@@ -108,13 +108,18 @@ export async function getPuzzlePack(ctx: AppContext, input: unknown) {
     })
     .parse(input ?? {});
   const s = await admin();
-  const [{ data: me }, { data: stats }] = await Promise.all([
-    s.from("profiles").select("subscription_tier, is_guest").eq("id", ctx.userId).maybeSingle(),
-    s.from("user_puzzle_stats").select("rating").eq("user_id", ctx.userId).maybeSingle(),
-  ]);
+  const [{ data: me }, { data: stats }, { data: attemptedToday }, { data: dailyLimit }] =
+    await Promise.all([
+      s.from("profiles").select("subscription_tier, is_guest").eq("id", ctx.userId).maybeSingle(),
+      s.from("user_puzzle_stats").select("rating").eq("user_id", ctx.userId).maybeSingle(),
+      s.rpc("puzzles_attempted_today", { p_user: ctx.userId }),
+      s.rpc("free_daily_puzzle_limit"),
+    ]);
+  const isFree = !me?.subscription_tier || me.subscription_tier === "free";
   // Free players can only score 20 a day anyway, so a small pack is enough.
-  const cap = me?.subscription_tier && me.subscription_tier !== "free" ? 500 : 30;
+  const cap = isFree ? 30 : 500;
   const rating = stats?.rating ?? 1200;
+  const remainingToday = isFree ? Math.max(0, (dailyLimit ?? 20) - (attemptedToday ?? 0)) : null;
   // Theme packs use a wider band so rarer themes still fill a pack.
   const band = data.theme ? { below: 400, above: 500 } : { below: 250, above: 350 };
   const { data: puzzles, error } = await s.rpc("puzzle_pack", {
@@ -125,7 +130,7 @@ export async function getPuzzlePack(ctx: AppContext, input: unknown) {
     p_theme: data.theme,
   });
   if (error) throw error;
-  return { rating, puzzles: puzzles ?? [], maxPack: cap };
+  return { rating, puzzles: puzzles ?? [], maxPack: cap, remainingToday };
 }
 
 /** Uploads puzzle attempts made offline, oldest first. Stops at the free daily limit. */
@@ -152,6 +157,8 @@ export async function syncPuzzleAttempts(ctx: AppContext, input: unknown) {
     delta?: number;
   }[] = [];
   let limited = false;
+  // Free-tier only; stays null for Plus/Gold (unlimited, nothing to announce).
+  let remainingToday: number | null = null;
   for (const a of data.attempts) {
     if (limited) {
       results.push({ puzzleId: a.puzzleId, status: "limit" });
@@ -166,7 +173,8 @@ export async function syncPuzzleAttempts(ctx: AppContext, input: unknown) {
       limited = error.message.includes("daily_puzzle_limit");
       results.push({ puzzleId: a.puzzleId, status: limited ? "limit" : "error" });
     } else {
-      const r = res as { rating: number; delta: number };
+      const r = res as { rating: number; delta: number; remaining_today: number | null };
+      remainingToday = r.remaining_today;
       results.push({ puzzleId: a.puzzleId, status: "recorded", rating: r.rating, delta: r.delta });
     }
   }
@@ -174,7 +182,7 @@ export async function syncPuzzleAttempts(ctx: AppContext, input: unknown) {
     const { checkAchievements } = await import("@/lib/achievements.server");
     await checkAchievements(ctx.userId, ["puzzles"]);
   }
-  return { results };
+  return { results, remainingToday };
 }
 
 export async function listNotifications(ctx: AppContext, input: unknown) {
