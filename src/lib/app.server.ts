@@ -678,7 +678,8 @@ export async function getMyBeatenBots(ctx: AppContext) {
     .from("bot_games")
     .select("bot_id")
     .eq("user_id", ctx.userId)
-    .eq("result", "win");
+    .eq("result", "win")
+    .eq("assisted", false);
   if (error) throw error;
   const beaten = [...new Set((data ?? []).map((r) => r.bot_id as string))];
   return { beaten };

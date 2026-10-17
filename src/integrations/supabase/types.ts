@@ -1742,6 +1742,7 @@ export type Database = {
       }
       bot_games: {
         Row: {
+          assisted: boolean
           bot_id: string
           bot_rating: number
           created_at: string
@@ -1755,6 +1756,7 @@ export type Database = {
           variant: string
         }
         Insert: {
+          assisted?: boolean
           bot_id: string
           bot_rating: number
           created_at?: string
@@ -1768,6 +1770,7 @@ export type Database = {
           variant?: string
         }
         Update: {
+          assisted?: boolean
           bot_id?: string
           bot_rating?: number
           created_at?: string

@@ -44,6 +44,7 @@ export const recordBotGame = createServerFn({ method: "POST" })
         playerColor: z.enum(["white", "black"]).default("white"),
         endReason: z.string().max(40).optional(),
         ply: z.number().int().min(0).max(2000).default(0),
+        assisted: z.boolean().default(false),
       })
       .parse(d),
   )
@@ -78,6 +79,7 @@ export const recordBotGame = createServerFn({ method: "POST" })
       ply: data.ply,
       time_control: data.timeControl,
       variant: data.variant,
+      assisted: data.assisted,
     });
     if (gameError) throw new Error(gameError.message);
     {
