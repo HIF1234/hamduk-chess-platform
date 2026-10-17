@@ -179,6 +179,41 @@ export async function getPuzzleThemeStats(ctx: AppContext) {
   return { themes };
 }
 
+/**
+ * This player's currently-missed puzzles (puzzle_ratings.success = false, i.e. their most
+ * recent attempt at that puzzle was wrong), most recently missed first, with the date of
+ * that miss -- for a "Your misses" retry list. No web equivalent exists to mirror; this is
+ * genuinely new on both platforms.
+ */
+export async function getPuzzleMisses(ctx: AppContext) {
+  const s = await admin();
+  const { data: ratings, error } = await s
+    .from("puzzle_ratings")
+    .select("puzzle_id, updated_at")
+    .eq("user_id", ctx.userId)
+    .eq("success", false)
+    .order("updated_at", { ascending: false })
+    .limit(50);
+  if (error) throw error;
+  if (!ratings || ratings.length === 0) return { misses: [] };
+
+  const ids = ratings.map((r) => r.puzzle_id as string);
+  const { data: puzzles, error: pErr } = await s
+    .from("puzzles")
+    .select("id, fen, solution, themes, rating")
+    .in("id", ids);
+  if (pErr) throw pErr;
+  const byId = new Map((puzzles ?? []).map((p) => [p.id as string, p]));
+  const misses = ratings
+    .map((r) => {
+      const p = byId.get(r.puzzle_id as string);
+      if (!p) return null;
+      return { ...p, missedAt: r.updated_at };
+    })
+    .filter((m) => m !== null);
+  return { misses };
+}
+
 /** Uploads puzzle attempts made offline, oldest first. Stops at the free daily limit. */
 export async function syncPuzzleAttempts(ctx: AppContext, input: unknown) {
   const data = z

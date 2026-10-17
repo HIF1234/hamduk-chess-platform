@@ -130,6 +130,7 @@ import { Route as ApiAppV1NotificationsIndexRouteImport } from './routes/api/app
 import { Route as ApiAppV1NotificationsReadRouteImport } from './routes/api/app/v1/notifications.read'
 import { Route as ApiAppV1ProfileUsernameRouteImport } from './routes/api/app/v1/profile.$username'
 import { Route as ApiAppV1PuzzlesDailyRouteImport } from './routes/api/app/v1/puzzles.daily'
+import { Route as ApiAppV1PuzzlesMissesRouteImport } from './routes/api/app/v1/puzzles.misses'
 import { Route as ApiAppV1PuzzlesNextRouteImport } from './routes/api/app/v1/puzzles.next'
 import { Route as ApiAppV1PuzzlesPackRouteImport } from './routes/api/app/v1/puzzles.pack'
 import { Route as ApiAppV1PuzzlesSyncRouteImport } from './routes/api/app/v1/puzzles.sync'
@@ -816,6 +817,11 @@ const ApiAppV1PuzzlesDailyRoute = ApiAppV1PuzzlesDailyRouteImport.update({
   path: '/api/app/v1/puzzles/daily',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1PuzzlesMissesRoute = ApiAppV1PuzzlesMissesRouteImport.update({
+  id: '/api/app/v1/puzzles/misses',
+  path: '/api/app/v1/puzzles/misses',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1PuzzlesNextRoute = ApiAppV1PuzzlesNextRouteImport.update({
   id: '/api/app/v1/puzzles/next',
   path: '/api/app/v1/puzzles/next',
@@ -1338,6 +1344,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
+  '/api/app/v1/puzzles/misses': typeof ApiAppV1PuzzlesMissesRoute
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
@@ -1533,6 +1540,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
+  '/api/app/v1/puzzles/misses': typeof ApiAppV1PuzzlesMissesRoute
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
@@ -1730,6 +1738,7 @@ export interface FileRoutesById {
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
+  '/api/app/v1/puzzles/misses': typeof ApiAppV1PuzzlesMissesRoute
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
   '/api/app/v1/puzzles/sync': typeof ApiAppV1PuzzlesSyncRoute
@@ -1928,6 +1937,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
+    | '/api/app/v1/puzzles/misses'
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
@@ -2123,6 +2133,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
+    | '/api/app/v1/puzzles/misses'
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
@@ -2319,6 +2330,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
+    | '/api/app/v1/puzzles/misses'
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
     | '/api/app/v1/puzzles/sync'
@@ -2501,6 +2513,7 @@ export interface RootRouteChildren {
   ApiAppV1NotificationsReadRoute: typeof ApiAppV1NotificationsReadRoute
   ApiAppV1ProfileUsernameRoute: typeof ApiAppV1ProfileUsernameRoute
   ApiAppV1PuzzlesDailyRoute: typeof ApiAppV1PuzzlesDailyRoute
+  ApiAppV1PuzzlesMissesRoute: typeof ApiAppV1PuzzlesMissesRoute
   ApiAppV1PuzzlesNextRoute: typeof ApiAppV1PuzzlesNextRoute
   ApiAppV1PuzzlesPackRoute: typeof ApiAppV1PuzzlesPackRoute
   ApiAppV1PuzzlesSyncRoute: typeof ApiAppV1PuzzlesSyncRoute
@@ -3395,6 +3408,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PuzzlesDailyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/puzzles/misses': {
+      id: '/api/app/v1/puzzles/misses'
+      path: '/api/app/v1/puzzles/misses'
+      fullPath: '/api/app/v1/puzzles/misses'
+      preLoaderRoute: typeof ApiAppV1PuzzlesMissesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/puzzles/next': {
       id: '/api/app/v1/puzzles/next'
       path: '/api/app/v1/puzzles/next'
@@ -4272,6 +4292,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1NotificationsReadRoute: ApiAppV1NotificationsReadRoute,
   ApiAppV1ProfileUsernameRoute: ApiAppV1ProfileUsernameRoute,
   ApiAppV1PuzzlesDailyRoute: ApiAppV1PuzzlesDailyRoute,
+  ApiAppV1PuzzlesMissesRoute: ApiAppV1PuzzlesMissesRoute,
   ApiAppV1PuzzlesNextRoute: ApiAppV1PuzzlesNextRoute,
   ApiAppV1PuzzlesPackRoute: ApiAppV1PuzzlesPackRoute,
   ApiAppV1PuzzlesSyncRoute: ApiAppV1PuzzlesSyncRoute,
