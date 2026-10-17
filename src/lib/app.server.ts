@@ -666,3 +666,20 @@ export async function getMyStormStats(ctx: AppContext) {
   const best = list.reduce((m, r) => Math.max(m, r.score), 0);
   return { best, runs: list.length, recent: list };
 }
+
+/**
+ * The bot ladder: which bots this player has ever beaten (a win, any time control).
+ * Mobile derives "unlocked" from this against its own ordered bot list (ratings ascending,
+ * same order bot-personas.ts already defines) -- no separate unlock state to keep in sync.
+ */
+export async function getMyBeatenBots(ctx: AppContext) {
+  const s = await admin();
+  const { data, error } = await s
+    .from("bot_games")
+    .select("bot_id")
+    .eq("user_id", ctx.userId)
+    .eq("result", "win");
+  if (error) throw error;
+  const beaten = [...new Set((data ?? []).map((r) => r.bot_id as string))];
+  return { beaten };
+}
