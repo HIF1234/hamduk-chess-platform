@@ -134,15 +134,19 @@ export async function getPuzzlePack(ctx: AppContext, input: unknown) {
 }
 
 /**
- * This player's per-theme accuracy ("Forks 72%, back rank 41%"), weakest first -- same
- * source (puzzle_ratings, one row per puzzle this player has ever solved/attempted) as the
- * web's getMyThemeProgress, so the numbers match if they ever look at both.
+ * This player's per-theme accuracy ("Forks 72%, back rank 41%") and spaced-repetition
+ * due count, weakest-accuracy first -- duplicates the web's getMyThemeProgress exactly
+ * (same puzzle_ratings columns, same attempted/solved/due semantics: one row per puzzle
+ * ever attempted, due = next_due_at already elapsed), so the numbers match if a player
+ * ever looks at both. The web splits this into two calls (pool stats + personal progress,
+ * merged client-side); this folds both into one since mobile only needs the personal half.
  */
 export async function getPuzzleThemeStats(ctx: AppContext) {
   const s = await admin();
+  const nowIso = new Date().toISOString();
   const { data: ratings, error } = await s
     .from("puzzle_ratings")
-    .select("puzzle_id, success")
+    .select("puzzle_id, attempts, success, next_due_at")
     .eq("user_id", ctx.userId);
   if (error) throw error;
   if (!ratings || ratings.length === 0) return { themes: [] };
@@ -152,12 +156,16 @@ export async function getPuzzleThemeStats(ctx: AppContext) {
   const themesById = new Map<string, string[]>();
   for (const p of puzzles ?? []) themesById.set(p.id as string, (p.themes ?? []) as string[]);
 
-  const agg = new Map<string, { attempted: number; solved: number }>();
+  const agg = new Map<string, { attempted: number; solved: number; due: number }>();
   for (const r of ratings) {
+    const attempted = (r.attempts as number) > 0 ? 1 : 0;
+    const solved = r.success ? 1 : 0;
+    const due = (r.next_due_at as string) <= nowIso ? 1 : 0;
     for (const t of themesById.get(r.puzzle_id as string) ?? []) {
-      const cur = agg.get(t) ?? { attempted: 0, solved: 0 };
-      cur.attempted += 1;
-      if (r.success) cur.solved += 1;
+      const cur = agg.get(t) ?? { attempted: 0, solved: 0, due: 0 };
+      cur.attempted += attempted;
+      cur.solved += solved;
+      cur.due += due;
       agg.set(t, cur);
     }
   }
@@ -165,7 +173,8 @@ export async function getPuzzleThemeStats(ctx: AppContext) {
     theme,
     attempted: v.attempted,
     solved: v.solved,
-    accuracy: Math.round((v.solved / v.attempted) * 100),
+    due: v.due,
+    accuracy: v.attempted > 0 ? Math.round((v.solved / v.attempted) * 100) : 0,
   })).sort((a, b) => a.accuracy - b.accuracy);
   return { themes };
 }
