@@ -3532,6 +3532,41 @@ export type Database = {
         }
         Relationships: []
       }
+      personal_puzzles: {
+        Row: {
+          best_move: string
+          created_at: string
+          fen: string
+          id: string
+          solved: boolean
+          user_id: string
+        }
+        Insert: {
+          best_move: string
+          created_at?: string
+          fen: string
+          id?: string
+          solved?: boolean
+          user_id: string
+        }
+        Update: {
+          best_move?: string
+          created_at?: string
+          fen?: string
+          id?: string
+          solved?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "personal_puzzles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           age_bracket: string | null

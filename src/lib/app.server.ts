@@ -214,6 +214,67 @@ export async function getPuzzleMisses(ctx: AppContext) {
   return { misses };
 }
 
+/**
+ * "Puzzles from your games": saves blunders the player found in an on-device review
+ * (lib/review/game_review.dart on mobile; no server-side review exists to hook into, so
+ * the client sends what it already computed). Separate table, not the public puzzles
+ * pool -- these never touch the rating ladder and are only ever shown to their own player.
+ * Dedups on (user, position, best move) so re-reviewing the same game is a no-op.
+ */
+export async function savePersonalPuzzlesFromReview(ctx: AppContext, input: unknown) {
+  const data = z
+    .object({
+      blunders: z
+        .array(z.object({ fen: z.string().min(10).max(120), bestMove: z.string().min(4).max(6) }))
+        .max(50),
+    })
+    .parse(input);
+  if (data.blunders.length === 0) return { added: 0 };
+  const s = await admin();
+  const rows = data.blunders.map((b) => ({
+    user_id: ctx.userId,
+    fen: b.fen,
+    best_move: b.bestMove,
+  }));
+  const { error } = await s
+    .from("personal_puzzles")
+    .upsert(rows, { onConflict: "user_id,fen,best_move", ignoreDuplicates: true });
+  if (error) throw error;
+  return { added: rows.length };
+}
+
+/** This player's unsolved "from your games" puzzles, most recent first. */
+export async function getPersonalPuzzles(ctx: AppContext) {
+  const s = await admin();
+  const { data, error } = await s
+    .from("personal_puzzles")
+    .select("id, fen, best_move, created_at")
+    .eq("user_id", ctx.userId)
+    .eq("solved", false)
+    .order("created_at", { ascending: false })
+    .limit(100);
+  if (error) throw error;
+  return { puzzles: data ?? [] };
+}
+
+/** Marks a "from your games" puzzle solved so it drops off the list. No rating impact. */
+export async function submitPersonalPuzzleAttempt(
+  ctx: AppContext,
+  puzzleId: string,
+  input: unknown,
+) {
+  const data = z.object({ success: z.boolean() }).parse(input);
+  if (!data.success) return { ok: true };
+  const s = await admin();
+  const { error } = await s
+    .from("personal_puzzles")
+    .update({ solved: true })
+    .eq("id", puzzleId)
+    .eq("user_id", ctx.userId);
+  if (error) throw error;
+  return { ok: true };
+}
+
 /** Uploads puzzle attempts made offline, oldest first. Stops at the free daily limit. */
 export async function syncPuzzleAttempts(ctx: AppContext, input: unknown) {
   const data = z

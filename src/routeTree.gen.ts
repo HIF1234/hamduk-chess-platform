@@ -130,6 +130,7 @@ import { Route as ApiAppV1NotificationsIndexRouteImport } from './routes/api/app
 import { Route as ApiAppV1NotificationsReadRouteImport } from './routes/api/app/v1/notifications.read'
 import { Route as ApiAppV1ProfileUsernameRouteImport } from './routes/api/app/v1/profile.$username'
 import { Route as ApiAppV1PuzzlesDailyRouteImport } from './routes/api/app/v1/puzzles.daily'
+import { Route as ApiAppV1PuzzlesFromGamesRouteImport } from './routes/api/app/v1/puzzles.from-games'
 import { Route as ApiAppV1PuzzlesMissesRouteImport } from './routes/api/app/v1/puzzles.misses'
 import { Route as ApiAppV1PuzzlesNextRouteImport } from './routes/api/app/v1/puzzles.next'
 import { Route as ApiAppV1PuzzlesPackRouteImport } from './routes/api/app/v1/puzzles.pack'
@@ -202,6 +203,7 @@ import { Route as ApiAppV1CoachingSessionsIdReviewRouteImport } from './routes/a
 import { Route as ApiAppV1PuzzlesBattleIdAnswerRouteImport } from './routes/api/app/v1/puzzles.battle.$id.answer'
 import { Route as ApiAppV1PuzzlesBattleIdCancelRouteImport } from './routes/api/app/v1/puzzles.battle.$id.cancel'
 import { Route as ApiAppV1PuzzlesBattleIdJoinRouteImport } from './routes/api/app/v1/puzzles.battle.$id.join'
+import { Route as ApiAppV1PuzzlesFromGamesIdAttemptRouteImport } from './routes/api/app/v1/puzzles.from-games.$id.attempt'
 import { Route as ApiPublicV1ClassesSessionIdSetPositionRouteImport } from './routes/api/public/v1/classes.session.$id.set-position'
 import { Route as ApiPublicV1ClassesSessionIdStudentsRouteImport } from './routes/api/public/v1/classes.session.$id.students'
 
@@ -817,6 +819,12 @@ const ApiAppV1PuzzlesDailyRoute = ApiAppV1PuzzlesDailyRouteImport.update({
   path: '/api/app/v1/puzzles/daily',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1PuzzlesFromGamesRoute =
+  ApiAppV1PuzzlesFromGamesRouteImport.update({
+    id: '/api/app/v1/puzzles/from-games',
+    path: '/api/app/v1/puzzles/from-games',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAppV1PuzzlesMissesRoute = ApiAppV1PuzzlesMissesRouteImport.update({
   id: '/api/app/v1/puzzles/misses',
   path: '/api/app/v1/puzzles/misses',
@@ -1214,6 +1222,12 @@ const ApiAppV1PuzzlesBattleIdJoinRoute =
     path: '/join',
     getParentRoute: () => ApiAppV1PuzzlesBattleIdRoute,
   } as any)
+const ApiAppV1PuzzlesFromGamesIdAttemptRoute =
+  ApiAppV1PuzzlesFromGamesIdAttemptRouteImport.update({
+    id: '/$id/attempt',
+    path: '/$id/attempt',
+    getParentRoute: () => ApiAppV1PuzzlesFromGamesRoute,
+  } as any)
 const ApiPublicV1ClassesSessionIdSetPositionRoute =
   ApiPublicV1ClassesSessionIdSetPositionRouteImport.update({
     id: '/$id/set-position',
@@ -1344,6 +1358,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
+  '/api/app/v1/puzzles/from-games': typeof ApiAppV1PuzzlesFromGamesRouteWithChildren
   '/api/app/v1/puzzles/misses': typeof ApiAppV1PuzzlesMissesRoute
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
@@ -1421,6 +1436,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/puzzles/battle/$id/answer': typeof ApiAppV1PuzzlesBattleIdAnswerRoute
   '/api/app/v1/puzzles/battle/$id/cancel': typeof ApiAppV1PuzzlesBattleIdCancelRoute
   '/api/app/v1/puzzles/battle/$id/join': typeof ApiAppV1PuzzlesBattleIdJoinRoute
+  '/api/app/v1/puzzles/from-games/$id/attempt': typeof ApiAppV1PuzzlesFromGamesIdAttemptRoute
   '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
   '/api/public/v1/classes/session/$id/students': typeof ApiPublicV1ClassesSessionIdStudentsRoute
 }
@@ -1540,6 +1556,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
+  '/api/app/v1/puzzles/from-games': typeof ApiAppV1PuzzlesFromGamesRouteWithChildren
   '/api/app/v1/puzzles/misses': typeof ApiAppV1PuzzlesMissesRoute
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
@@ -1617,6 +1634,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/puzzles/battle/$id/answer': typeof ApiAppV1PuzzlesBattleIdAnswerRoute
   '/api/app/v1/puzzles/battle/$id/cancel': typeof ApiAppV1PuzzlesBattleIdCancelRoute
   '/api/app/v1/puzzles/battle/$id/join': typeof ApiAppV1PuzzlesBattleIdJoinRoute
+  '/api/app/v1/puzzles/from-games/$id/attempt': typeof ApiAppV1PuzzlesFromGamesIdAttemptRoute
   '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
   '/api/public/v1/classes/session/$id/students': typeof ApiPublicV1ClassesSessionIdStudentsRoute
 }
@@ -1738,6 +1756,7 @@ export interface FileRoutesById {
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
+  '/api/app/v1/puzzles/from-games': typeof ApiAppV1PuzzlesFromGamesRouteWithChildren
   '/api/app/v1/puzzles/misses': typeof ApiAppV1PuzzlesMissesRoute
   '/api/app/v1/puzzles/next': typeof ApiAppV1PuzzlesNextRoute
   '/api/app/v1/puzzles/pack': typeof ApiAppV1PuzzlesPackRoute
@@ -1815,6 +1834,7 @@ export interface FileRoutesById {
   '/api/app/v1/puzzles/battle/$id/answer': typeof ApiAppV1PuzzlesBattleIdAnswerRoute
   '/api/app/v1/puzzles/battle/$id/cancel': typeof ApiAppV1PuzzlesBattleIdCancelRoute
   '/api/app/v1/puzzles/battle/$id/join': typeof ApiAppV1PuzzlesBattleIdJoinRoute
+  '/api/app/v1/puzzles/from-games/$id/attempt': typeof ApiAppV1PuzzlesFromGamesIdAttemptRoute
   '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
   '/api/public/v1/classes/session/$id/students': typeof ApiPublicV1ClassesSessionIdStudentsRoute
 }
@@ -1937,6 +1957,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
+    | '/api/app/v1/puzzles/from-games'
     | '/api/app/v1/puzzles/misses'
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
@@ -2014,6 +2035,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/battle/$id/answer'
     | '/api/app/v1/puzzles/battle/$id/cancel'
     | '/api/app/v1/puzzles/battle/$id/join'
+    | '/api/app/v1/puzzles/from-games/$id/attempt'
     | '/api/public/v1/classes/session/$id/set-position'
     | '/api/public/v1/classes/session/$id/students'
   fileRoutesByTo: FileRoutesByTo
@@ -2133,6 +2155,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
+    | '/api/app/v1/puzzles/from-games'
     | '/api/app/v1/puzzles/misses'
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
@@ -2210,6 +2233,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/battle/$id/answer'
     | '/api/app/v1/puzzles/battle/$id/cancel'
     | '/api/app/v1/puzzles/battle/$id/join'
+    | '/api/app/v1/puzzles/from-games/$id/attempt'
     | '/api/public/v1/classes/session/$id/set-position'
     | '/api/public/v1/classes/session/$id/students'
   id:
@@ -2330,6 +2354,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/notifications/read'
     | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
+    | '/api/app/v1/puzzles/from-games'
     | '/api/app/v1/puzzles/misses'
     | '/api/app/v1/puzzles/next'
     | '/api/app/v1/puzzles/pack'
@@ -2407,6 +2432,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/puzzles/battle/$id/answer'
     | '/api/app/v1/puzzles/battle/$id/cancel'
     | '/api/app/v1/puzzles/battle/$id/join'
+    | '/api/app/v1/puzzles/from-games/$id/attempt'
     | '/api/public/v1/classes/session/$id/set-position'
     | '/api/public/v1/classes/session/$id/students'
   fileRoutesById: FileRoutesById
@@ -2513,6 +2539,7 @@ export interface RootRouteChildren {
   ApiAppV1NotificationsReadRoute: typeof ApiAppV1NotificationsReadRoute
   ApiAppV1ProfileUsernameRoute: typeof ApiAppV1ProfileUsernameRoute
   ApiAppV1PuzzlesDailyRoute: typeof ApiAppV1PuzzlesDailyRoute
+  ApiAppV1PuzzlesFromGamesRoute: typeof ApiAppV1PuzzlesFromGamesRouteWithChildren
   ApiAppV1PuzzlesMissesRoute: typeof ApiAppV1PuzzlesMissesRoute
   ApiAppV1PuzzlesNextRoute: typeof ApiAppV1PuzzlesNextRoute
   ApiAppV1PuzzlesPackRoute: typeof ApiAppV1PuzzlesPackRoute
@@ -3408,6 +3435,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PuzzlesDailyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/puzzles/from-games': {
+      id: '/api/app/v1/puzzles/from-games'
+      path: '/api/app/v1/puzzles/from-games'
+      fullPath: '/api/app/v1/puzzles/from-games'
+      preLoaderRoute: typeof ApiAppV1PuzzlesFromGamesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/puzzles/misses': {
       id: '/api/app/v1/puzzles/misses'
       path: '/api/app/v1/puzzles/misses'
@@ -3912,6 +3946,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1PuzzlesBattleIdJoinRouteImport
       parentRoute: typeof ApiAppV1PuzzlesBattleIdRoute
     }
+    '/api/app/v1/puzzles/from-games/$id/attempt': {
+      id: '/api/app/v1/puzzles/from-games/$id/attempt'
+      path: '/$id/attempt'
+      fullPath: '/api/app/v1/puzzles/from-games/$id/attempt'
+      preLoaderRoute: typeof ApiAppV1PuzzlesFromGamesIdAttemptRouteImport
+      parentRoute: typeof ApiAppV1PuzzlesFromGamesRoute
+    }
     '/api/public/v1/classes/session/$id/set-position': {
       id: '/api/public/v1/classes/session/$id/set-position'
       path: '/$id/set-position'
@@ -4092,6 +4133,21 @@ const ApiAppV1GamesIdRouteChildren: ApiAppV1GamesIdRouteChildren = {
 const ApiAppV1GamesIdRouteWithChildren = ApiAppV1GamesIdRoute._addFileChildren(
   ApiAppV1GamesIdRouteChildren,
 )
+
+interface ApiAppV1PuzzlesFromGamesRouteChildren {
+  ApiAppV1PuzzlesFromGamesIdAttemptRoute: typeof ApiAppV1PuzzlesFromGamesIdAttemptRoute
+}
+
+const ApiAppV1PuzzlesFromGamesRouteChildren: ApiAppV1PuzzlesFromGamesRouteChildren =
+  {
+    ApiAppV1PuzzlesFromGamesIdAttemptRoute:
+      ApiAppV1PuzzlesFromGamesIdAttemptRoute,
+  }
+
+const ApiAppV1PuzzlesFromGamesRouteWithChildren =
+  ApiAppV1PuzzlesFromGamesRoute._addFileChildren(
+    ApiAppV1PuzzlesFromGamesRouteChildren,
+  )
 
 interface ApiAppV1SocialFriendsRouteChildren {
   ApiAppV1SocialFriendsRemoveRoute: typeof ApiAppV1SocialFriendsRemoveRoute
@@ -4292,6 +4348,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1NotificationsReadRoute: ApiAppV1NotificationsReadRoute,
   ApiAppV1ProfileUsernameRoute: ApiAppV1ProfileUsernameRoute,
   ApiAppV1PuzzlesDailyRoute: ApiAppV1PuzzlesDailyRoute,
+  ApiAppV1PuzzlesFromGamesRoute: ApiAppV1PuzzlesFromGamesRouteWithChildren,
   ApiAppV1PuzzlesMissesRoute: ApiAppV1PuzzlesMissesRoute,
   ApiAppV1PuzzlesNextRoute: ApiAppV1PuzzlesNextRoute,
   ApiAppV1PuzzlesPackRoute: ApiAppV1PuzzlesPackRoute,
