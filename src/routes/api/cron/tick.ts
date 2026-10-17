@@ -20,6 +20,10 @@ export const Route = createFileRoute("/api/cron/tick")({
             (await import("@/lib/weekly-report.server")).sendWeeklyReports(),
           dailyPuzzleEmails: async () =>
             (await import("@/lib/weekly-report.server")).sendDailyPuzzleEmails(),
+          dailyPuzzlePush: async () =>
+            (await import("@/lib/daily-puzzle-push.server")).sendDailyPuzzlePush(),
+          streakReminderPush: async () =>
+            (await import("@/lib/daily-puzzle-push.server")).sendStreakReminderPush(),
           guests: async () => (await import("@/lib/guests.server")).cleanupGuests(),
           sentinelSubmit: async () => (await import("@/lib/sentinel.server")).submitDueGames(),
           sentinelPoll: async () => (await import("@/lib/sentinel.server")).pollOpenJobs(),

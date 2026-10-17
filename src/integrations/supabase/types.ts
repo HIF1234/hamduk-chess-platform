@@ -3541,6 +3541,7 @@ export type Database = {
           country: string | null
           created_at: string
           daily_puzzle_emailed_on: string | null
+          daily_puzzle_pushed_on: string | null
           draws: number
           email_notify_moves: boolean
           fide_id: string | null
@@ -3569,6 +3570,7 @@ export type Database = {
           referred_by: string | null
           starting_rating: number | null
           state: string | null
+          streak_reminder_pushed_on: string | null
           subscription_renews_at: string | null
           subscription_status: string
           subscription_tier: Database["public"]["Enums"]["subscription_tier_enum"]
@@ -3589,6 +3591,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           daily_puzzle_emailed_on?: string | null
+          daily_puzzle_pushed_on?: string | null
           draws?: number
           email_notify_moves?: boolean
           fide_id?: string | null
@@ -3617,6 +3620,7 @@ export type Database = {
           referred_by?: string | null
           starting_rating?: number | null
           state?: string | null
+          streak_reminder_pushed_on?: string | null
           subscription_renews_at?: string | null
           subscription_status?: string
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
@@ -3637,6 +3641,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           daily_puzzle_emailed_on?: string | null
+          daily_puzzle_pushed_on?: string | null
           draws?: number
           email_notify_moves?: boolean
           fide_id?: string | null
@@ -3665,6 +3670,7 @@ export type Database = {
           referred_by?: string | null
           starting_rating?: number | null
           state?: string | null
+          streak_reminder_pushed_on?: string | null
           subscription_renews_at?: string | null
           subscription_status?: string
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
@@ -5047,6 +5053,12 @@ export type Database = {
           username: string
         }[]
       }
+      daily_puzzle_push_candidates: {
+        Args: { p_limit: number; p_today: string }
+        Returns: {
+          id: string
+        }[]
+      }
       explorer_add: { Args: { p_rows: Json }; Returns: undefined }
       find_or_join_match:
         | {
@@ -5202,6 +5214,13 @@ export type Database = {
           indefinite: boolean
           new_stage: number
           new_strikes: number
+        }[]
+      }
+      streak_reminder_push_candidates: {
+        Args: { p_limit: number; p_today: string }
+        Returns: {
+          current_streak: number
+          id: string
         }[]
       }
       submit_puzzle_attempt: {
