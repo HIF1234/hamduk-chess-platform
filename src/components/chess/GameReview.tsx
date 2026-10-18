@@ -23,7 +23,14 @@ type Props = {
   onClose: () => void;
 };
 
-export function GameReview({ startFen, sanMoves, orientation, depth = 14, gameId, onClose }: Props) {
+export function GameReview({
+  startFen,
+  sanMoves,
+  orientation,
+  depth = 14,
+  gameId,
+  onClose,
+}: Props) {
   const boardSquares = useBoardSquares();
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<GameReviewResult | null>(null);
@@ -39,7 +46,10 @@ export function GameReview({ startFen, sanMoves, orientation, depth = 14, gameId
     })
       .then((r) => setResult(r))
       .catch(() => {});
-    return () => { a.dispose(); analyzerRef.current = null; };
+    return () => {
+      a.dispose();
+      analyzerRef.current = null;
+    };
   }, [startFen, sanMoves, depth]);
 
   const opening = useMemo(() => {
@@ -63,8 +73,13 @@ export function GameReview({ startFen, sanMoves, orientation, depth = 14, gameId
       data: {
         gameId,
         depth: result.depth,
-        evalPerPly: result.moves.map((m) => Math.round(Math.max(-100000, Math.min(100000, m.evalAfter)))),
-        classifications: result.moves.map((m) => ({ ply: m.ply, classification: m.classification })),
+        evalPerPly: result.moves.map((m) =>
+          Math.round(Math.max(-100000, Math.min(100000, m.evalAfter))),
+        ),
+        classifications: result.moves.map((m) => ({
+          ply: m.ply,
+          classification: m.classification,
+        })),
         accuracyWhite: result.accuracyWhite,
         accuracyBlack: result.accuracyBlack,
         openingEco: opening?.eco ?? null,
@@ -83,11 +98,13 @@ export function GameReview({ startFen, sanMoves, orientation, depth = 14, gameId
     if (!result || selectedPly === 0) return undefined;
     const m = result.moves[selectedPly - 1];
     if (!m?.bestMove) return undefined;
-    return [{
-      startSquare: m.bestMove.slice(0, 2),
-      endSquare: m.bestMove.slice(2, 4),
-      color: "rgba(20, 130, 60, 0.75)",
-    }] as unknown as Array<{ startSquare: string; endSquare: string; color: string }>;
+    return [
+      {
+        startSquare: m.bestMove.slice(0, 2),
+        endSquare: m.bestMove.slice(2, 4),
+        color: "rgba(20, 130, 60, 0.75)",
+      },
+    ] as unknown as Array<{ startSquare: string; endSquare: string; color: string }>;
   }, [result, selectedPly]);
 
   return (
@@ -110,7 +127,9 @@ export function GameReview({ startFen, sanMoves, orientation, depth = 14, gameId
         {!result && (
           <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-8">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <p className="text-sm text-muted-foreground">Analyzing (depth {depth}) — {progress}%</p>
+            <p className="text-sm text-muted-foreground">
+              Analyzing (depth {depth}) — {progress}%
+            </p>
             <div className="h-2 w-full max-w-md overflow-hidden rounded-full bg-muted">
               <div className="h-full bg-primary transition-all" style={{ width: `${progress}%` }} />
             </div>
@@ -169,9 +188,13 @@ export function GameReview({ startFen, sanMoves, orientation, depth = 14, gameId
 
 function AccuracyCard({ label, value }: { label: string; value: number }) {
   const color =
-    value >= 90 ? "text-emerald-500" :
-    value >= 75 ? "text-primary" :
-    value >= 60 ? "text-yellow-500" : "text-orange-500";
+    value >= 90
+      ? "text-emerald-500"
+      : value >= 75
+        ? "text-primary"
+        : value >= 60
+          ? "text-yellow-500"
+          : "text-orange-500";
   return (
     <div className="rounded-lg border border-border bg-card p-3">
       <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
@@ -180,8 +203,18 @@ function AccuracyCard({ label, value }: { label: string; value: number }) {
   );
 }
 
-function EvalChart({ moves, selected, onSelect }: { moves: MoveReview[]; selected: number; onSelect: (i: number) => void }) {
-  const w = 560, h = 100, pad = 8;
+function EvalChart({
+  moves,
+  selected,
+  onSelect,
+}: {
+  moves: MoveReview[];
+  selected: number;
+  onSelect: (i: number) => void;
+}) {
+  const w = 560,
+    h = 100,
+    pad = 8;
   const clamp = (cp: number) => Math.max(-800, Math.min(800, cp));
   const points = moves.map((m, i) => {
     const x = pad + (i / Math.max(1, moves.length - 1)) * (w - pad * 2);
@@ -201,19 +234,40 @@ function EvalChart({ moves, selected, onSelect }: { moves: MoveReview[]; selecte
         <path d={area} className="fill-primary/30" />
         <path d={path} className="stroke-primary" strokeWidth={1.5} fill="none" />
         {selected > 0 && points[selected - 1] && (
-          <line x1={points[selected - 1].x} x2={points[selected - 1].x} y1={0} y2={h} className="stroke-accent" strokeWidth={1} />
+          <line
+            x1={points[selected - 1].x}
+            x2={points[selected - 1].x}
+            y1={0}
+            y2={h}
+            className="stroke-accent"
+            strokeWidth={1}
+          />
         )}
         {points.map((p) => (
-          <circle key={p.i} cx={p.x} cy={p.y} r={2}
+          <circle
+            key={p.i}
+            cx={p.x}
+            cy={p.y}
+            r={2}
             className={selected === p.i + 1 ? "fill-accent" : "fill-primary"}
-            onClick={() => onSelect(p.i + 1)} style={{ cursor: "pointer" }} />
+            onClick={() => onSelect(p.i + 1)}
+            style={{ cursor: "pointer" }}
+          />
         ))}
       </svg>
     </div>
   );
 }
 
-function MoveTable({ moves, selected, onSelect }: { moves: MoveReview[]; selected: number; onSelect: (i: number) => void }) {
+function MoveTable({
+  moves,
+  selected,
+  onSelect,
+}: {
+  moves: MoveReview[];
+  selected: number;
+  onSelect: (i: number) => void;
+}) {
   const rows: { num: number; w?: MoveReview; b?: MoveReview }[] = [];
   for (let i = 0; i < moves.length; i += 2) {
     rows.push({ num: i / 2 + 1, w: moves[i], b: moves[i + 1] });
@@ -228,7 +282,19 @@ function MoveTable({ moves, selected, onSelect }: { moves: MoveReview[]; selecte
   return (
     <div className="rounded-xl border border-border bg-card p-3">
       <div className="mb-3 space-y-1">
-        {(["blunder", "mistake", "inaccuracy", "good", "best", "book"] as const).map((k) => {
+        {(
+          [
+            "blunder",
+            "miss",
+            "mistake",
+            "inaccuracy",
+            "good",
+            "best",
+            "great",
+            "brilliant",
+            "book",
+          ] as const
+        ).map((k) => {
           const c = counts[k];
           if (!c) return null;
           const meta = CLASSIFICATION_META[k];
@@ -247,8 +313,16 @@ function MoveTable({ moves, selected, onSelect }: { moves: MoveReview[]; selecte
         {rows.map((r) => (
           <div key={r.num} className="flex items-center gap-1 py-0.5">
             <span className="w-8 text-right text-muted-foreground">{r.num}.</span>
-            <MoveCell m={r.w} selected={selected === r.num * 2 - 1} onClick={() => r.w && onSelect(r.num * 2 - 1)} />
-            <MoveCell m={r.b} selected={selected === r.num * 2} onClick={() => r.b && onSelect(r.num * 2)} />
+            <MoveCell
+              m={r.w}
+              selected={selected === r.num * 2 - 1}
+              onClick={() => r.w && onSelect(r.num * 2 - 1)}
+            />
+            <MoveCell
+              m={r.b}
+              selected={selected === r.num * 2}
+              onClick={() => r.b && onSelect(r.num * 2)}
+            />
           </div>
         ))}
       </div>
@@ -256,7 +330,15 @@ function MoveTable({ moves, selected, onSelect }: { moves: MoveReview[]; selecte
   );
 }
 
-function MoveCell({ m, selected, onClick }: { m?: MoveReview; selected: boolean; onClick: () => void }) {
+function MoveCell({
+  m,
+  selected,
+  onClick,
+}: {
+  m?: MoveReview;
+  selected: boolean;
+  onClick: () => void;
+}) {
   if (!m) return <span className="w-24" />;
   const meta = CLASSIFICATION_META[m.classification];
   return (

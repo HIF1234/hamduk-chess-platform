@@ -8,28 +8,29 @@ export type Classification =
   | "inaccuracy"
   | "mistake"
   | "blunder"
+  | "miss"
   | "book";
 
 export type MoveReview = {
-  ply: number;              // 1-indexed
+  ply: number; // 1-indexed
   san: string;
   uci: string;
   color: "w" | "b";
   fenBefore: string;
   fenAfter: string;
-  evalBefore: number;       // cp from White's POV
-  evalAfter: number;        // cp from White's POV
-  bestMove: string | null;  // uci
-  bestEval: number | null;  // cp from White's POV of best line
-  cpLoss: number;           // >=0, from the mover's POV
+  evalBefore: number; // cp from White's POV
+  evalAfter: number; // cp from White's POV
+  bestMove: string | null; // uci
+  bestEval: number | null; // cp from White's POV of best line
+  cpLoss: number; // >=0, from the mover's POV
   classification: Classification;
 };
 
 export type GameReviewResult = {
   depth: number;
   moves: MoveReview[];
-  accuracyWhite: number;    // 0-100
-  accuracyBlack: number;    // 0-100
+  accuracyWhite: number; // 0-100
+  accuracyBlack: number; // 0-100
 };
 
 /** Uses a dedicated Stockfish worker to analyze every ply.
@@ -52,12 +53,20 @@ export class ReviewAnalyzer {
 
   cancel() {
     this.cancelled = true;
-    try { this.worker.postMessage("stop"); } catch {}
+    try {
+      this.worker.postMessage("stop");
+    } catch {
+      // Worker already gone; nothing to stop.
+    }
   }
 
   dispose() {
     this.cancel();
-    try { this.worker.terminate(); } catch {}
+    try {
+      this.worker.terminate();
+    } catch {
+      // Already terminated.
+    }
     URL.revokeObjectURL(this.url);
   }
 
@@ -116,7 +125,12 @@ export class ReviewAnalyzer {
         if (line.startsWith("bestmove")) {
           this.pending = null;
           this.worker.postMessage("setoption name MultiPV value 1");
-          resolve([...lines.entries()].sort((x, y) => x[0] - y[0]).map(([, v]) => v).slice(0, n));
+          resolve(
+            [...lines.entries()]
+              .sort((x, y) => x[0] - y[0])
+              .map(([, v]) => v)
+              .slice(0, n),
+          );
         }
       };
       this.worker.onmessage = (e: MessageEvent) => {
@@ -153,7 +167,13 @@ export class ReviewAnalyzer {
     onProgress?: (done: number, total: number) => void,
   ): Promise<GameReviewResult> {
     const chess = new Chess(startFen);
-    const positions: { fenBefore: string; fenAfter: string; san: string; uci: string; color: "w" | "b" }[] = [];
+    const positions: {
+      fenBefore: string;
+      fenAfter: string;
+      san: string;
+      uci: string;
+      color: "w" | "b";
+    }[] = [];
     for (const san of sanMoves) {
       const fenBefore = chess.fen();
       const mv = chess.move(san);
@@ -207,11 +227,13 @@ export class ReviewAnalyzer {
       });
     }
 
+    upgradeClassifications(moves);
+
     return {
       depth,
       moves,
-      accuracyWhite: computeAccuracy(moves.filter(m => m.color === "w")),
-      accuracyBlack: computeAccuracy(moves.filter(m => m.color === "b")),
+      accuracyWhite: computeAccuracy(moves.filter((m) => m.color === "w")),
+      accuracyBlack: computeAccuracy(moves.filter((m) => m.color === "b")),
     };
   }
 }
@@ -226,12 +248,53 @@ function classify(cpLoss: number, isTop: boolean): Classification {
 }
 
 /**
+ * Upgrades some "best"/"mistake"/"blunder" calls to "great", "brilliant" or "miss", using
+ * only data the review already computed (no extra engine calls). These are original
+ * heuristics -- chess.com popularized these labels, but publishes no formula for them, so
+ * there's nothing to port; this is a reasonable approximation, not a precise mirror:
+ * - Miss: the mover already had a big, close-to-decisive advantage (>= 300cp) and their
+ *   move wasn't the cleanest way to press it, though the game isn't actually blown.
+ * - Great: found the engine's top move in a tense, roughly balanced position (|eval| <= 100),
+ *   where missing it would plausibly have cost the advantage.
+ * - Brilliant: found the top move, it looks like giving up material (the opponent recaptures
+ *   on the very same square next move), yet the mover is still clearly better off afterward.
+ */
+function upgradeClassifications(moves: MoveReview[]): void {
+  for (let i = 0; i < moves.length; i++) {
+    const m = moves[i];
+    const sign = m.color === "w" ? 1 : -1;
+    const moverEvalBefore = m.evalBefore * sign;
+    const moverEvalAfter = m.evalAfter * sign;
+    if (
+      (m.classification === "mistake" || m.classification === "blunder") &&
+      moverEvalBefore >= 300 &&
+      moverEvalAfter > -50
+    ) {
+      m.classification = "miss";
+      continue;
+    }
+    if (m.classification === "best" && Math.abs(moverEvalBefore) <= 100) {
+      m.classification = "great";
+    }
+    const next = moves[i + 1];
+    const sacrificed = next && next.uci.slice(2, 4) === m.uci.slice(2, 4);
+    if (
+      sacrificed &&
+      (m.classification === "best" || m.classification === "great") &&
+      next.evalAfter * sign >= 150
+    ) {
+      m.classification = "brilliant";
+    }
+  }
+}
+
+/**
  * Lichess-style accuracy: winPct(before) - winPct(after) mapped 0-100. Book moves are
  * skipped -- they're theory, not something the engine's noisy opening-phase eval should
  * be allowed to mark down.
  */
 function computeAccuracy(moves: MoveReview[]): number {
-  const scored = moves.filter(m => m.classification !== "book");
+  const scored = moves.filter((m) => m.classification !== "book");
   if (scored.length === 0) return 100;
   let sum = 0;
   for (const m of scored) {
@@ -252,13 +315,17 @@ function winPct(cp: number): number {
   return 50 + 50 * (2 / (1 + Math.exp(-0.00368208 * clamped)) - 1);
 }
 
-export const CLASSIFICATION_META: Record<Classification, { label: string; color: string; symbol: string }> = {
-  brilliant:  { label: "Brilliant",  color: "text-cyan-400",   symbol: "!!" },
-  great:      { label: "Great",      color: "text-blue-400",   symbol: "!" },
-  best:       { label: "Best",       color: "text-emerald-500", symbol: "★" },
-  good:       { label: "Good",       color: "text-emerald-400", symbol: "" },
-  book:       { label: "Book",       color: "text-amber-500",   symbol: "📖" },
+export const CLASSIFICATION_META: Record<
+  Classification,
+  { label: string; color: string; symbol: string }
+> = {
+  brilliant: { label: "Brilliant", color: "text-cyan-400", symbol: "!!" },
+  great: { label: "Great", color: "text-blue-400", symbol: "!" },
+  best: { label: "Best", color: "text-emerald-500", symbol: "★" },
+  good: { label: "Good", color: "text-emerald-400", symbol: "" },
+  book: { label: "Book", color: "text-amber-500", symbol: "📖" },
+  miss: { label: "Miss", color: "text-orange-400", symbol: "?!" },
   inaccuracy: { label: "Inaccuracy", color: "text-yellow-500", symbol: "?!" },
-  mistake:    { label: "Mistake",    color: "text-orange-500", symbol: "?" },
-  blunder:    { label: "Blunder",    color: "text-red-500",    symbol: "??" },
+  mistake: { label: "Mistake", color: "text-orange-500", symbol: "?" },
+  blunder: { label: "Blunder", color: "text-red-500", symbol: "??" },
 };
