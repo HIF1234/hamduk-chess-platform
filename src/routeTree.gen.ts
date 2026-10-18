@@ -101,9 +101,11 @@ import { Route as PuzzlesBattleIndexRouteImport } from './routes/puzzles.battle.
 import { Route as PuzzlesBattleIdRouteImport } from './routes/puzzles.battle.$id'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ApiAppV1AccountRouteImport } from './routes/api/app/v1/account'
+import { Route as ApiAppV1AnalysesRouteImport } from './routes/api/app/v1/analyses'
 import { Route as ApiAppV1BotGamesRouteImport } from './routes/api/app/v1/bot-games'
 import { Route as ApiAppV1ConfigRouteImport } from './routes/api/app/v1/config'
 import { Route as ApiAppV1DevicesRouteImport } from './routes/api/app/v1/devices'
+import { Route as ApiAppV1ExplorerRouteImport } from './routes/api/app/v1/explorer'
 import { Route as ApiAppV1GuardianConsentRouteImport } from './routes/api/app/v1/guardian-consent'
 import { Route as ApiAppV1LeaderboardRouteImport } from './routes/api/app/v1/leaderboard'
 import { Route as ApiAppV1MeRouteImport } from './routes/api/app/v1/me'
@@ -113,10 +115,12 @@ import { Route as ApiAppV1PresenceRouteImport } from './routes/api/app/v1/presen
 import { Route as ApiAppV1ReportRouteImport } from './routes/api/app/v1/report'
 import { Route as ApiAppV1SeekRouteImport } from './routes/api/app/v1/seek'
 import { Route as ApiAppV1SpectateRouteImport } from './routes/api/app/v1/spectate'
+import { Route as ApiAppV1TablebaseRouteImport } from './routes/api/app/v1/tablebase'
 import { Route as ApiAppV1UsernameAvailableRouteImport } from './routes/api/app/v1/username-available'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 import { Route as ApiPublicV1TournamentsRouteImport } from './routes/api/public/v1/tournaments'
 import { Route as ApiPublicV1WebhooksRouteImport } from './routes/api/public/v1/webhooks'
+import { Route as ApiAppV1AnalysesIdRouteImport } from './routes/api/app/v1/analyses.$id'
 import { Route as ApiAppV1ChallengesIndexRouteImport } from './routes/api/app/v1/challenges.index'
 import { Route as ApiAppV1ChallengesIdRouteImport } from './routes/api/app/v1/challenges.$id'
 import { Route as ApiAppV1CoachExplainRouteImport } from './routes/api/app/v1/coach.explain'
@@ -669,6 +673,11 @@ const ApiAppV1AccountRoute = ApiAppV1AccountRouteImport.update({
   path: '/api/app/v1/account',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1AnalysesRoute = ApiAppV1AnalysesRouteImport.update({
+  id: '/api/app/v1/analyses',
+  path: '/api/app/v1/analyses',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1BotGamesRoute = ApiAppV1BotGamesRouteImport.update({
   id: '/api/app/v1/bot-games',
   path: '/api/app/v1/bot-games',
@@ -682,6 +691,11 @@ const ApiAppV1ConfigRoute = ApiAppV1ConfigRouteImport.update({
 const ApiAppV1DevicesRoute = ApiAppV1DevicesRouteImport.update({
   id: '/api/app/v1/devices',
   path: '/api/app/v1/devices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1ExplorerRoute = ApiAppV1ExplorerRouteImport.update({
+  id: '/api/app/v1/explorer',
+  path: '/api/app/v1/explorer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAppV1GuardianConsentRoute = ApiAppV1GuardianConsentRouteImport.update({
@@ -729,6 +743,11 @@ const ApiAppV1SpectateRoute = ApiAppV1SpectateRouteImport.update({
   path: '/api/app/v1/spectate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1TablebaseRoute = ApiAppV1TablebaseRouteImport.update({
+  id: '/api/app/v1/tablebase',
+  path: '/api/app/v1/tablebase',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1UsernameAvailableRoute =
   ApiAppV1UsernameAvailableRouteImport.update({
     id: '/api/app/v1/username-available',
@@ -750,6 +769,11 @@ const ApiPublicV1WebhooksRoute = ApiPublicV1WebhooksRouteImport.update({
   id: '/api/public/v1/webhooks',
   path: '/api/public/v1/webhooks',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1AnalysesIdRoute = ApiAppV1AnalysesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiAppV1AnalysesRoute,
 } as any)
 const ApiAppV1ChallengesIndexRoute = ApiAppV1ChallengesIndexRouteImport.update({
   id: '/api/app/v1/challenges/',
@@ -1346,9 +1370,11 @@ export interface FileRoutesByFullPath {
   '/admin/users/': typeof AdminUsersIndexRoute
   '/puzzles/battle/': typeof PuzzlesBattleIndexRoute
   '/api/app/v1/account': typeof ApiAppV1AccountRoute
+  '/api/app/v1/analyses': typeof ApiAppV1AnalysesRouteWithChildren
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
+  '/api/app/v1/explorer': typeof ApiAppV1ExplorerRoute
   '/api/app/v1/guardian-consent': typeof ApiAppV1GuardianConsentRoute
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
@@ -1358,10 +1384,12 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
   '/api/app/v1/spectate': typeof ApiAppV1SpectateRouteWithChildren
+  '/api/app/v1/tablebase': typeof ApiAppV1TablebaseRoute
   '/api/app/v1/username-available': typeof ApiAppV1UsernameAvailableRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
+  '/api/app/v1/analyses/$id': typeof ApiAppV1AnalysesIdRoute
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/coach/explain': typeof ApiAppV1CoachExplainRoute
   '/api/app/v1/coach/think-aloud': typeof ApiAppV1CoachThinkAloudRoute
@@ -1546,9 +1574,11 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersIndexRoute
   '/puzzles/battle': typeof PuzzlesBattleIndexRoute
   '/api/app/v1/account': typeof ApiAppV1AccountRoute
+  '/api/app/v1/analyses': typeof ApiAppV1AnalysesRouteWithChildren
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
+  '/api/app/v1/explorer': typeof ApiAppV1ExplorerRoute
   '/api/app/v1/guardian-consent': typeof ApiAppV1GuardianConsentRoute
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
@@ -1558,10 +1588,12 @@ export interface FileRoutesByTo {
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
   '/api/app/v1/spectate': typeof ApiAppV1SpectateRouteWithChildren
+  '/api/app/v1/tablebase': typeof ApiAppV1TablebaseRoute
   '/api/app/v1/username-available': typeof ApiAppV1UsernameAvailableRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
+  '/api/app/v1/analyses/$id': typeof ApiAppV1AnalysesIdRoute
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/coach/explain': typeof ApiAppV1CoachExplainRoute
   '/api/app/v1/coach/think-aloud': typeof ApiAppV1CoachThinkAloudRoute
@@ -1748,9 +1780,11 @@ export interface FileRoutesById {
   '/admin/users/': typeof AdminUsersIndexRoute
   '/puzzles/battle/': typeof PuzzlesBattleIndexRoute
   '/api/app/v1/account': typeof ApiAppV1AccountRoute
+  '/api/app/v1/analyses': typeof ApiAppV1AnalysesRouteWithChildren
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
+  '/api/app/v1/explorer': typeof ApiAppV1ExplorerRoute
   '/api/app/v1/guardian-consent': typeof ApiAppV1GuardianConsentRoute
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
@@ -1760,10 +1794,12 @@ export interface FileRoutesById {
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
   '/api/app/v1/seek': typeof ApiAppV1SeekRoute
   '/api/app/v1/spectate': typeof ApiAppV1SpectateRouteWithChildren
+  '/api/app/v1/tablebase': typeof ApiAppV1TablebaseRoute
   '/api/app/v1/username-available': typeof ApiAppV1UsernameAvailableRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
+  '/api/app/v1/analyses/$id': typeof ApiAppV1AnalysesIdRoute
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
   '/api/app/v1/coach/explain': typeof ApiAppV1CoachExplainRoute
   '/api/app/v1/coach/think-aloud': typeof ApiAppV1CoachThinkAloudRoute
@@ -1951,9 +1987,11 @@ export interface FileRouteTypes {
     | '/admin/users/'
     | '/puzzles/battle/'
     | '/api/app/v1/account'
+    | '/api/app/v1/analyses'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
+    | '/api/app/v1/explorer'
     | '/api/app/v1/guardian-consent'
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
@@ -1963,10 +2001,12 @@ export interface FileRouteTypes {
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
+    | '/api/app/v1/tablebase'
     | '/api/app/v1/username-available'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
+    | '/api/app/v1/analyses/$id'
     | '/api/app/v1/challenges/$id'
     | '/api/app/v1/coach/explain'
     | '/api/app/v1/coach/think-aloud'
@@ -2151,9 +2191,11 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/puzzles/battle'
     | '/api/app/v1/account'
+    | '/api/app/v1/analyses'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
+    | '/api/app/v1/explorer'
     | '/api/app/v1/guardian-consent'
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
@@ -2163,10 +2205,12 @@ export interface FileRouteTypes {
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
+    | '/api/app/v1/tablebase'
     | '/api/app/v1/username-available'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
+    | '/api/app/v1/analyses/$id'
     | '/api/app/v1/challenges/$id'
     | '/api/app/v1/coach/explain'
     | '/api/app/v1/coach/think-aloud'
@@ -2352,9 +2396,11 @@ export interface FileRouteTypes {
     | '/admin/users/'
     | '/puzzles/battle/'
     | '/api/app/v1/account'
+    | '/api/app/v1/analyses'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
     | '/api/app/v1/devices'
+    | '/api/app/v1/explorer'
     | '/api/app/v1/guardian-consent'
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
@@ -2364,10 +2410,12 @@ export interface FileRouteTypes {
     | '/api/app/v1/report'
     | '/api/app/v1/seek'
     | '/api/app/v1/spectate'
+    | '/api/app/v1/tablebase'
     | '/api/app/v1/username-available'
     | '/api/public/paystack/webhook'
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
+    | '/api/app/v1/analyses/$id'
     | '/api/app/v1/challenges/$id'
     | '/api/app/v1/coach/explain'
     | '/api/app/v1/coach/think-aloud'
@@ -2539,9 +2587,11 @@ export interface RootRouteChildren {
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   PuzzlesBattleIndexRoute: typeof PuzzlesBattleIndexRoute
   ApiAppV1AccountRoute: typeof ApiAppV1AccountRoute
+  ApiAppV1AnalysesRoute: typeof ApiAppV1AnalysesRouteWithChildren
   ApiAppV1BotGamesRoute: typeof ApiAppV1BotGamesRoute
   ApiAppV1ConfigRoute: typeof ApiAppV1ConfigRoute
   ApiAppV1DevicesRoute: typeof ApiAppV1DevicesRoute
+  ApiAppV1ExplorerRoute: typeof ApiAppV1ExplorerRoute
   ApiAppV1GuardianConsentRoute: typeof ApiAppV1GuardianConsentRoute
   ApiAppV1LeaderboardRoute: typeof ApiAppV1LeaderboardRoute
   ApiAppV1MeRoute: typeof ApiAppV1MeRoute
@@ -2551,6 +2601,7 @@ export interface RootRouteChildren {
   ApiAppV1ReportRoute: typeof ApiAppV1ReportRouteWithChildren
   ApiAppV1SeekRoute: typeof ApiAppV1SeekRoute
   ApiAppV1SpectateRoute: typeof ApiAppV1SpectateRouteWithChildren
+  ApiAppV1TablebaseRoute: typeof ApiAppV1TablebaseRoute
   ApiAppV1UsernameAvailableRoute: typeof ApiAppV1UsernameAvailableRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
   ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRouteWithChildren
@@ -3258,6 +3309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/analyses': {
+      id: '/api/app/v1/analyses'
+      path: '/api/app/v1/analyses'
+      fullPath: '/api/app/v1/analyses'
+      preLoaderRoute: typeof ApiAppV1AnalysesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/bot-games': {
       id: '/api/app/v1/bot-games'
       path: '/api/app/v1/bot-games'
@@ -3277,6 +3335,13 @@ declare module '@tanstack/react-router' {
       path: '/api/app/v1/devices'
       fullPath: '/api/app/v1/devices'
       preLoaderRoute: typeof ApiAppV1DevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/explorer': {
+      id: '/api/app/v1/explorer'
+      path: '/api/app/v1/explorer'
+      fullPath: '/api/app/v1/explorer'
+      preLoaderRoute: typeof ApiAppV1ExplorerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/app/v1/guardian-consent': {
@@ -3342,6 +3407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1SpectateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/tablebase': {
+      id: '/api/app/v1/tablebase'
+      path: '/api/app/v1/tablebase'
+      fullPath: '/api/app/v1/tablebase'
+      preLoaderRoute: typeof ApiAppV1TablebaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/username-available': {
       id: '/api/app/v1/username-available'
       path: '/api/app/v1/username-available'
@@ -3369,6 +3441,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/v1/webhooks'
       preLoaderRoute: typeof ApiPublicV1WebhooksRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/analyses/$id': {
+      id: '/api/app/v1/analyses/$id'
+      path: '/$id'
+      fullPath: '/api/app/v1/analyses/$id'
+      preLoaderRoute: typeof ApiAppV1AnalysesIdRouteImport
+      parentRoute: typeof ApiAppV1AnalysesRoute
     }
     '/api/app/v1/challenges/': {
       id: '/api/app/v1/challenges/'
@@ -4048,6 +4127,17 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface ApiAppV1AnalysesRouteChildren {
+  ApiAppV1AnalysesIdRoute: typeof ApiAppV1AnalysesIdRoute
+}
+
+const ApiAppV1AnalysesRouteChildren: ApiAppV1AnalysesRouteChildren = {
+  ApiAppV1AnalysesIdRoute: ApiAppV1AnalysesIdRoute,
+}
+
+const ApiAppV1AnalysesRouteWithChildren =
+  ApiAppV1AnalysesRoute._addFileChildren(ApiAppV1AnalysesRouteChildren)
+
 interface ApiAppV1ReportRouteChildren {
   ApiAppV1ReportReasonsRoute: typeof ApiAppV1ReportReasonsRoute
 }
@@ -4364,9 +4454,11 @@ const rootRouteChildren: RootRouteChildren = {
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   PuzzlesBattleIndexRoute: PuzzlesBattleIndexRoute,
   ApiAppV1AccountRoute: ApiAppV1AccountRoute,
+  ApiAppV1AnalysesRoute: ApiAppV1AnalysesRouteWithChildren,
   ApiAppV1BotGamesRoute: ApiAppV1BotGamesRoute,
   ApiAppV1ConfigRoute: ApiAppV1ConfigRoute,
   ApiAppV1DevicesRoute: ApiAppV1DevicesRoute,
+  ApiAppV1ExplorerRoute: ApiAppV1ExplorerRoute,
   ApiAppV1GuardianConsentRoute: ApiAppV1GuardianConsentRoute,
   ApiAppV1LeaderboardRoute: ApiAppV1LeaderboardRoute,
   ApiAppV1MeRoute: ApiAppV1MeRoute,
@@ -4376,6 +4468,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1ReportRoute: ApiAppV1ReportRouteWithChildren,
   ApiAppV1SeekRoute: ApiAppV1SeekRoute,
   ApiAppV1SpectateRoute: ApiAppV1SpectateRouteWithChildren,
+  ApiAppV1TablebaseRoute: ApiAppV1TablebaseRoute,
   ApiAppV1UsernameAvailableRoute: ApiAppV1UsernameAvailableRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
   ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRouteWithChildren,

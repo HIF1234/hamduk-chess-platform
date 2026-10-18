@@ -684,3 +684,69 @@ export async function getMyBeatenBots(ctx: AppContext) {
   const beaten = [...new Set((data ?? []).map((r) => r.bot_id as string))];
   return { beaten };
 }
+
+/**
+ * Saved analyses: a position or game with notes, synced with the website (same table the
+ * web's SaveAnalysisPanel writes to directly from the browser). Uses ctx.supabase, not the
+ * service role, so the table's own RLS -- anyone with the link can read, only the owner
+ * can write -- applies exactly as it does on web.
+ */
+export async function listSavedAnalyses(ctx: AppContext) {
+  const { data, error } = await ctx.supabase
+    .from("saved_analyses")
+    .select("id, title, start_fen, ply, updated_at")
+    .eq("owner_id", ctx.userId)
+    .order("updated_at", { ascending: false })
+    .limit(100);
+  if (error) throw error;
+  return { analyses: data ?? [] };
+}
+
+export async function getSavedAnalysis(ctx: AppContext, id: string) {
+  const { data, error } = await ctx.supabase
+    .from("saved_analyses")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) throw new Error("Not found");
+  return data;
+}
+
+export async function saveAnalysis(ctx: AppContext, input: unknown) {
+  const data = z
+    .object({
+      title: z.string().min(1).max(100),
+      notes: z.string().max(2000).optional(),
+      startFen: z.string().min(10).max(100),
+      moves: z.array(z.string()).max(600).default([]),
+      ply: z.number().int().min(0).default(0),
+      orientation: z.enum(["white", "black"]).default("white"),
+    })
+    .parse(input);
+  const { data: row, error } = await ctx.supabase
+    .from("saved_analyses")
+    .insert({
+      owner_id: ctx.userId,
+      title: data.title,
+      notes: data.notes ?? null,
+      start_fen: data.startFen,
+      moves: data.moves,
+      ply: data.ply,
+      orientation: data.orientation,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return row;
+}
+
+export async function deleteSavedAnalysis(ctx: AppContext, id: string) {
+  const { error } = await ctx.supabase
+    .from("saved_analyses")
+    .delete()
+    .eq("id", id)
+    .eq("owner_id", ctx.userId);
+  if (error) throw error;
+  return { ok: true };
+}
