@@ -119,6 +119,8 @@ import { Route as ApiPublicV1TournamentsRouteImport } from './routes/api/public/
 import { Route as ApiPublicV1WebhooksRouteImport } from './routes/api/public/v1/webhooks'
 import { Route as ApiAppV1ChallengesIndexRouteImport } from './routes/api/app/v1/challenges.index'
 import { Route as ApiAppV1ChallengesIdRouteImport } from './routes/api/app/v1/challenges.$id'
+import { Route as ApiAppV1CoachExplainRouteImport } from './routes/api/app/v1/coach.explain'
+import { Route as ApiAppV1CoachThinkAloudRouteImport } from './routes/api/app/v1/coach.think-aloud'
 import { Route as ApiAppV1CoachesIndexRouteImport } from './routes/api/app/v1/coaches.index'
 import { Route as ApiAppV1CoachesIdRouteImport } from './routes/api/app/v1/coaches.$id'
 import { Route as ApiAppV1CoachingSessionsRouteImport } from './routes/api/app/v1/coaching.sessions'
@@ -759,6 +761,16 @@ const ApiAppV1ChallengesIdRoute = ApiAppV1ChallengesIdRouteImport.update({
   path: '/api/app/v1/challenges/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1CoachExplainRoute = ApiAppV1CoachExplainRouteImport.update({
+  id: '/api/app/v1/coach/explain',
+  path: '/api/app/v1/coach/explain',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1CoachThinkAloudRoute = ApiAppV1CoachThinkAloudRouteImport.update({
+  id: '/api/app/v1/coach/think-aloud',
+  path: '/api/app/v1/coach/think-aloud',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1CoachesIndexRoute = ApiAppV1CoachesIndexRouteImport.update({
   id: '/api/app/v1/coaches/',
   path: '/api/app/v1/coaches/',
@@ -1351,6 +1363,8 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
+  '/api/app/v1/coach/explain': typeof ApiAppV1CoachExplainRoute
+  '/api/app/v1/coach/think-aloud': typeof ApiAppV1CoachThinkAloudRoute
   '/api/app/v1/coaches/$id': typeof ApiAppV1CoachesIdRouteWithChildren
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
@@ -1549,6 +1563,8 @@ export interface FileRoutesByTo {
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
+  '/api/app/v1/coach/explain': typeof ApiAppV1CoachExplainRoute
+  '/api/app/v1/coach/think-aloud': typeof ApiAppV1CoachThinkAloudRoute
   '/api/app/v1/coaches/$id': typeof ApiAppV1CoachesIdRouteWithChildren
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
@@ -1749,6 +1765,8 @@ export interface FileRoutesById {
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
   '/api/app/v1/challenges/$id': typeof ApiAppV1ChallengesIdRouteWithChildren
+  '/api/app/v1/coach/explain': typeof ApiAppV1CoachExplainRoute
+  '/api/app/v1/coach/think-aloud': typeof ApiAppV1CoachThinkAloudRoute
   '/api/app/v1/coaches/$id': typeof ApiAppV1CoachesIdRouteWithChildren
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
@@ -1950,6 +1968,8 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
     | '/api/app/v1/challenges/$id'
+    | '/api/app/v1/coach/explain'
+    | '/api/app/v1/coach/think-aloud'
     | '/api/app/v1/coaches/$id'
     | '/api/app/v1/coaching/sessions'
     | '/api/app/v1/correspondence/vacation'
@@ -2148,6 +2168,8 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
     | '/api/app/v1/challenges/$id'
+    | '/api/app/v1/coach/explain'
+    | '/api/app/v1/coach/think-aloud'
     | '/api/app/v1/coaches/$id'
     | '/api/app/v1/coaching/sessions'
     | '/api/app/v1/correspondence/vacation'
@@ -2347,6 +2369,8 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
     | '/api/app/v1/challenges/$id'
+    | '/api/app/v1/coach/explain'
+    | '/api/app/v1/coach/think-aloud'
     | '/api/app/v1/coaches/$id'
     | '/api/app/v1/coaching/sessions'
     | '/api/app/v1/correspondence/vacation'
@@ -2532,6 +2556,8 @@ export interface RootRouteChildren {
   ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRouteWithChildren
   ApiPublicV1WebhooksRoute: typeof ApiPublicV1WebhooksRouteWithChildren
   ApiAppV1ChallengesIdRoute: typeof ApiAppV1ChallengesIdRouteWithChildren
+  ApiAppV1CoachExplainRoute: typeof ApiAppV1CoachExplainRoute
+  ApiAppV1CoachThinkAloudRoute: typeof ApiAppV1CoachThinkAloudRoute
   ApiAppV1CoachesIdRoute: typeof ApiAppV1CoachesIdRouteWithChildren
   ApiAppV1CoachingSessionsRoute: typeof ApiAppV1CoachingSessionsRouteWithChildren
   ApiAppV1CorrespondenceVacationRoute: typeof ApiAppV1CorrespondenceVacationRoute
@@ -3356,6 +3382,20 @@ declare module '@tanstack/react-router' {
       path: '/api/app/v1/challenges/$id'
       fullPath: '/api/app/v1/challenges/$id'
       preLoaderRoute: typeof ApiAppV1ChallengesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/coach/explain': {
+      id: '/api/app/v1/coach/explain'
+      path: '/api/app/v1/coach/explain'
+      fullPath: '/api/app/v1/coach/explain'
+      preLoaderRoute: typeof ApiAppV1CoachExplainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/coach/think-aloud': {
+      id: '/api/app/v1/coach/think-aloud'
+      path: '/api/app/v1/coach/think-aloud'
+      fullPath: '/api/app/v1/coach/think-aloud'
+      preLoaderRoute: typeof ApiAppV1CoachThinkAloudRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/app/v1/coaches/': {
@@ -4341,6 +4381,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRouteWithChildren,
   ApiPublicV1WebhooksRoute: ApiPublicV1WebhooksRouteWithChildren,
   ApiAppV1ChallengesIdRoute: ApiAppV1ChallengesIdRouteWithChildren,
+  ApiAppV1CoachExplainRoute: ApiAppV1CoachExplainRoute,
+  ApiAppV1CoachThinkAloudRoute: ApiAppV1CoachThinkAloudRoute,
   ApiAppV1CoachesIdRoute: ApiAppV1CoachesIdRouteWithChildren,
   ApiAppV1CoachingSessionsRoute: ApiAppV1CoachingSessionsRouteWithChildren,
   ApiAppV1CorrespondenceVacationRoute: ApiAppV1CorrespondenceVacationRoute,
