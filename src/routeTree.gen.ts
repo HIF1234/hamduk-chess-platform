@@ -128,6 +128,7 @@ import { Route as ApiAppV1CoachThinkAloudRouteImport } from './routes/api/app/v1
 import { Route as ApiAppV1CoachesIndexRouteImport } from './routes/api/app/v1/coaches.index'
 import { Route as ApiAppV1CoachesIdRouteImport } from './routes/api/app/v1/coaches.$id'
 import { Route as ApiAppV1CoachingSessionsRouteImport } from './routes/api/app/v1/coaching.sessions'
+import { Route as ApiAppV1CoordinatesBestRouteImport } from './routes/api/app/v1/coordinates.best'
 import { Route as ApiAppV1CorrespondenceIndexRouteImport } from './routes/api/app/v1/correspondence.index'
 import { Route as ApiAppV1CorrespondenceVacationRouteImport } from './routes/api/app/v1/correspondence.vacation'
 import { Route as ApiAppV1GamesIndexRouteImport } from './routes/api/app/v1/games.index'
@@ -811,6 +812,11 @@ const ApiAppV1CoachingSessionsRoute =
     path: '/api/app/v1/coaching/sessions',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiAppV1CoordinatesBestRoute = ApiAppV1CoordinatesBestRouteImport.update({
+  id: '/api/app/v1/coordinates/best',
+  path: '/api/app/v1/coordinates/best',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1CorrespondenceIndexRoute =
   ApiAppV1CorrespondenceIndexRouteImport.update({
     id: '/api/app/v1/correspondence/',
@@ -1395,6 +1401,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/coach/think-aloud': typeof ApiAppV1CoachThinkAloudRoute
   '/api/app/v1/coaches/$id': typeof ApiAppV1CoachesIdRouteWithChildren
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
+  '/api/app/v1/coordinates/best': typeof ApiAppV1CoordinatesBestRoute
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
@@ -1599,6 +1606,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/coach/think-aloud': typeof ApiAppV1CoachThinkAloudRoute
   '/api/app/v1/coaches/$id': typeof ApiAppV1CoachesIdRouteWithChildren
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
+  '/api/app/v1/coordinates/best': typeof ApiAppV1CoordinatesBestRoute
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
@@ -1805,6 +1813,7 @@ export interface FileRoutesById {
   '/api/app/v1/coach/think-aloud': typeof ApiAppV1CoachThinkAloudRoute
   '/api/app/v1/coaches/$id': typeof ApiAppV1CoachesIdRouteWithChildren
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
+  '/api/app/v1/coordinates/best': typeof ApiAppV1CoordinatesBestRoute
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
@@ -2012,6 +2021,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/coach/think-aloud'
     | '/api/app/v1/coaches/$id'
     | '/api/app/v1/coaching/sessions'
+    | '/api/app/v1/coordinates/best'
     | '/api/app/v1/correspondence/vacation'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
@@ -2216,6 +2226,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/coach/think-aloud'
     | '/api/app/v1/coaches/$id'
     | '/api/app/v1/coaching/sessions'
+    | '/api/app/v1/coordinates/best'
     | '/api/app/v1/correspondence/vacation'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
@@ -2421,6 +2432,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/coach/think-aloud'
     | '/api/app/v1/coaches/$id'
     | '/api/app/v1/coaching/sessions'
+    | '/api/app/v1/coordinates/best'
     | '/api/app/v1/correspondence/vacation'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
@@ -2611,6 +2623,7 @@ export interface RootRouteChildren {
   ApiAppV1CoachThinkAloudRoute: typeof ApiAppV1CoachThinkAloudRoute
   ApiAppV1CoachesIdRoute: typeof ApiAppV1CoachesIdRouteWithChildren
   ApiAppV1CoachingSessionsRoute: typeof ApiAppV1CoachingSessionsRouteWithChildren
+  ApiAppV1CoordinatesBestRoute: typeof ApiAppV1CoordinatesBestRoute
   ApiAppV1CorrespondenceVacationRoute: typeof ApiAppV1CorrespondenceVacationRoute
   ApiAppV1GamesIdRoute: typeof ApiAppV1GamesIdRouteWithChildren
   ApiAppV1NotificationsReadRoute: typeof ApiAppV1NotificationsReadRoute
@@ -3496,6 +3509,13 @@ declare module '@tanstack/react-router' {
       path: '/api/app/v1/coaching/sessions'
       fullPath: '/api/app/v1/coaching/sessions'
       preLoaderRoute: typeof ApiAppV1CoachingSessionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/coordinates/best': {
+      id: '/api/app/v1/coordinates/best'
+      path: '/api/app/v1/coordinates/best'
+      fullPath: '/api/app/v1/coordinates/best'
+      preLoaderRoute: typeof ApiAppV1CoordinatesBestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/app/v1/correspondence/': {
@@ -4478,6 +4498,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1CoachThinkAloudRoute: ApiAppV1CoachThinkAloudRoute,
   ApiAppV1CoachesIdRoute: ApiAppV1CoachesIdRouteWithChildren,
   ApiAppV1CoachingSessionsRoute: ApiAppV1CoachingSessionsRouteWithChildren,
+  ApiAppV1CoordinatesBestRoute: ApiAppV1CoordinatesBestRoute,
   ApiAppV1CorrespondenceVacationRoute: ApiAppV1CorrespondenceVacationRoute,
   ApiAppV1GamesIdRoute: ApiAppV1GamesIdRouteWithChildren,
   ApiAppV1NotificationsReadRoute: ApiAppV1NotificationsReadRoute,

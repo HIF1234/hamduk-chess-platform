@@ -2285,6 +2285,32 @@ export type Database = {
           },
         ]
       }
+      coordinate_drill_scores: {
+        Row: {
+          best_score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          best_score: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          best_score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coordinate_drill_scores_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       device_tokens: {
         Row: {
           created_at: string

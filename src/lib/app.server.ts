@@ -750,3 +750,30 @@ export async function deleteSavedAnalysis(ctx: AppContext, id: string) {
   if (error) throw error;
   return { ok: true };
 }
+
+/** Coordinates trainer: a single personal-best row per player, not a log of every round. */
+export async function getMyCoordinateDrillBest(ctx: AppContext) {
+  const { data, error } = await ctx.supabase
+    .from("coordinate_drill_scores")
+    .select("best_score")
+    .eq("user_id", ctx.userId)
+    .maybeSingle();
+  if (error) throw error;
+  return { best: data?.best_score ?? null };
+}
+
+export async function submitCoordinateDrillScore(ctx: AppContext, input: unknown) {
+  const { score } = z.object({ score: z.number().int().min(0).max(500) }).parse(input);
+  const { data: existing, error: readError } = await ctx.supabase
+    .from("coordinate_drill_scores")
+    .select("best_score")
+    .eq("user_id", ctx.userId)
+    .maybeSingle();
+  if (readError) throw readError;
+  const best = Math.max(score, existing?.best_score ?? 0);
+  const { error } = await ctx.supabase
+    .from("coordinate_drill_scores")
+    .upsert({ user_id: ctx.userId, best_score: best, updated_at: new Date().toISOString() });
+  if (error) throw error;
+  return { best };
+}
