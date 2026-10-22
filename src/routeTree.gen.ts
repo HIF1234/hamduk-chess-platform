@@ -110,6 +110,7 @@ import { Route as ApiAppV1GuardianConsentRouteImport } from './routes/api/app/v1
 import { Route as ApiAppV1LeaderboardRouteImport } from './routes/api/app/v1/leaderboard'
 import { Route as ApiAppV1MeRouteImport } from './routes/api/app/v1/me'
 import { Route as ApiAppV1OpenapiDotjsonRouteImport } from './routes/api/app/v1/openapi[.]json'
+import { Route as ApiAppV1OpeningsRouteImport } from './routes/api/app/v1/openings'
 import { Route as ApiAppV1PingRouteImport } from './routes/api/app/v1/ping'
 import { Route as ApiAppV1PresenceRouteImport } from './routes/api/app/v1/presence'
 import { Route as ApiAppV1ReportRouteImport } from './routes/api/app/v1/report'
@@ -136,6 +137,8 @@ import { Route as ApiAppV1GamesIndexRouteImport } from './routes/api/app/v1/game
 import { Route as ApiAppV1GamesIdRouteImport } from './routes/api/app/v1/games.$id'
 import { Route as ApiAppV1NotificationsIndexRouteImport } from './routes/api/app/v1/notifications.index'
 import { Route as ApiAppV1NotificationsReadRouteImport } from './routes/api/app/v1/notifications.read'
+import { Route as ApiAppV1OpeningsProgressRouteImport } from './routes/api/app/v1/openings.progress'
+import { Route as ApiAppV1OpeningsRepertoireRouteImport } from './routes/api/app/v1/openings.repertoire'
 import { Route as ApiAppV1ProfileUsernameRouteImport } from './routes/api/app/v1/profile.$username'
 import { Route as ApiAppV1PuzzlesDailyRouteImport } from './routes/api/app/v1/puzzles.daily'
 import { Route as ApiAppV1PuzzlesFromGamesRouteImport } from './routes/api/app/v1/puzzles.from-games'
@@ -182,6 +185,7 @@ import { Route as ApiAppV1GamesIdReadyRouteImport } from './routes/api/app/v1/ga
 import { Route as ApiAppV1GamesIdRematchRouteImport } from './routes/api/app/v1/games.$id.rematch'
 import { Route as ApiAppV1GamesIdResignRouteImport } from './routes/api/app/v1/games.$id.resign'
 import { Route as ApiAppV1GamesIdTakebackRouteImport } from './routes/api/app/v1/games.$id.takeback'
+import { Route as ApiAppV1OpeningsRepertoireIdRouteImport } from './routes/api/app/v1/openings.repertoire.$id'
 import { Route as ApiAppV1PuzzlesIdAttemptRouteImport } from './routes/api/app/v1/puzzles.$id.attempt'
 import { Route as ApiAppV1PuzzlesBattleIdRouteImport } from './routes/api/app/v1/puzzles.battle.$id'
 import { Route as ApiAppV1PuzzlesBattleCreateRouteImport } from './routes/api/app/v1/puzzles.battle.create'
@@ -720,6 +724,11 @@ const ApiAppV1OpenapiDotjsonRoute = ApiAppV1OpenapiDotjsonRouteImport.update({
   path: '/api/app/v1/openapi.json',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1OpeningsRoute = ApiAppV1OpeningsRouteImport.update({
+  id: '/api/app/v1/openings',
+  path: '/api/app/v1/openings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1PingRoute = ApiAppV1PingRouteImport.update({
   id: '/api/app/v1/ping',
   path: '/api/app/v1/ping',
@@ -857,6 +866,18 @@ const ApiAppV1NotificationsReadRoute =
     id: '/api/app/v1/notifications/read',
     path: '/api/app/v1/notifications/read',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAppV1OpeningsProgressRoute =
+  ApiAppV1OpeningsProgressRouteImport.update({
+    id: '/progress',
+    path: '/progress',
+    getParentRoute: () => ApiAppV1OpeningsRoute,
+  } as any)
+const ApiAppV1OpeningsRepertoireRoute =
+  ApiAppV1OpeningsRepertoireRouteImport.update({
+    id: '/repertoire',
+    path: '/repertoire',
+    getParentRoute: () => ApiAppV1OpeningsRoute,
   } as any)
 const ApiAppV1ProfileUsernameRoute = ApiAppV1ProfileUsernameRouteImport.update({
   id: '/api/app/v1/profile/$username',
@@ -1099,6 +1120,12 @@ const ApiAppV1GamesIdTakebackRoute = ApiAppV1GamesIdTakebackRouteImport.update({
   path: '/takeback',
   getParentRoute: () => ApiAppV1GamesIdRoute,
 } as any)
+const ApiAppV1OpeningsRepertoireIdRoute =
+  ApiAppV1OpeningsRepertoireIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => ApiAppV1OpeningsRepertoireRoute,
+  } as any)
 const ApiAppV1PuzzlesIdAttemptRoute =
   ApiAppV1PuzzlesIdAttemptRouteImport.update({
     id: '/api/app/v1/puzzles/$id/attempt',
@@ -1392,6 +1419,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
+  '/api/app/v1/openings': typeof ApiAppV1OpeningsRouteWithChildren
   '/api/app/v1/ping': typeof ApiAppV1PingRoute
   '/api/app/v1/presence': typeof ApiAppV1PresenceRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
@@ -1413,6 +1441,8 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
+  '/api/app/v1/openings/progress': typeof ApiAppV1OpeningsProgressRoute
+  '/api/app/v1/openings/repertoire': typeof ApiAppV1OpeningsRepertoireRouteWithChildren
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
   '/api/app/v1/puzzles/from-games': typeof ApiAppV1PuzzlesFromGamesRouteWithChildren
@@ -1464,6 +1494,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/games/$id/rematch': typeof ApiAppV1GamesIdRematchRoute
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
+  '/api/app/v1/openings/repertoire/$id': typeof ApiAppV1OpeningsRepertoireIdRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
   '/api/app/v1/puzzles/battle/$id': typeof ApiAppV1PuzzlesBattleIdRouteWithChildren
   '/api/app/v1/puzzles/battle/create': typeof ApiAppV1PuzzlesBattleCreateRoute
@@ -1598,6 +1629,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
+  '/api/app/v1/openings': typeof ApiAppV1OpeningsRouteWithChildren
   '/api/app/v1/ping': typeof ApiAppV1PingRoute
   '/api/app/v1/presence': typeof ApiAppV1PresenceRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
@@ -1619,6 +1651,8 @@ export interface FileRoutesByTo {
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
+  '/api/app/v1/openings/progress': typeof ApiAppV1OpeningsProgressRoute
+  '/api/app/v1/openings/repertoire': typeof ApiAppV1OpeningsRepertoireRouteWithChildren
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
   '/api/app/v1/puzzles/from-games': typeof ApiAppV1PuzzlesFromGamesRouteWithChildren
@@ -1670,6 +1704,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/games/$id/rematch': typeof ApiAppV1GamesIdRematchRoute
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
+  '/api/app/v1/openings/repertoire/$id': typeof ApiAppV1OpeningsRepertoireIdRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
   '/api/app/v1/puzzles/battle/$id': typeof ApiAppV1PuzzlesBattleIdRouteWithChildren
   '/api/app/v1/puzzles/battle/create': typeof ApiAppV1PuzzlesBattleCreateRoute
@@ -1806,6 +1841,7 @@ export interface FileRoutesById {
   '/api/app/v1/leaderboard': typeof ApiAppV1LeaderboardRoute
   '/api/app/v1/me': typeof ApiAppV1MeRoute
   '/api/app/v1/openapi.json': typeof ApiAppV1OpenapiDotjsonRoute
+  '/api/app/v1/openings': typeof ApiAppV1OpeningsRouteWithChildren
   '/api/app/v1/ping': typeof ApiAppV1PingRoute
   '/api/app/v1/presence': typeof ApiAppV1PresenceRoute
   '/api/app/v1/report': typeof ApiAppV1ReportRouteWithChildren
@@ -1827,6 +1863,8 @@ export interface FileRoutesById {
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
+  '/api/app/v1/openings/progress': typeof ApiAppV1OpeningsProgressRoute
+  '/api/app/v1/openings/repertoire': typeof ApiAppV1OpeningsRepertoireRouteWithChildren
   '/api/app/v1/profile/$username': typeof ApiAppV1ProfileUsernameRoute
   '/api/app/v1/puzzles/daily': typeof ApiAppV1PuzzlesDailyRoute
   '/api/app/v1/puzzles/from-games': typeof ApiAppV1PuzzlesFromGamesRouteWithChildren
@@ -1878,6 +1916,7 @@ export interface FileRoutesById {
   '/api/app/v1/games/$id/rematch': typeof ApiAppV1GamesIdRematchRoute
   '/api/app/v1/games/$id/resign': typeof ApiAppV1GamesIdResignRoute
   '/api/app/v1/games/$id/takeback': typeof ApiAppV1GamesIdTakebackRoute
+  '/api/app/v1/openings/repertoire/$id': typeof ApiAppV1OpeningsRepertoireIdRoute
   '/api/app/v1/puzzles/$id/attempt': typeof ApiAppV1PuzzlesIdAttemptRoute
   '/api/app/v1/puzzles/battle/$id': typeof ApiAppV1PuzzlesBattleIdRouteWithChildren
   '/api/app/v1/puzzles/battle/create': typeof ApiAppV1PuzzlesBattleCreateRoute
@@ -2015,6 +2054,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
+    | '/api/app/v1/openings'
     | '/api/app/v1/ping'
     | '/api/app/v1/presence'
     | '/api/app/v1/report'
@@ -2036,6 +2076,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/correspondence/vacation'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
+    | '/api/app/v1/openings/progress'
+    | '/api/app/v1/openings/repertoire'
     | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
     | '/api/app/v1/puzzles/from-games'
@@ -2087,6 +2129,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/rematch'
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
+    | '/api/app/v1/openings/repertoire/$id'
     | '/api/app/v1/puzzles/$id/attempt'
     | '/api/app/v1/puzzles/battle/$id'
     | '/api/app/v1/puzzles/battle/create'
@@ -2221,6 +2264,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
+    | '/api/app/v1/openings'
     | '/api/app/v1/ping'
     | '/api/app/v1/presence'
     | '/api/app/v1/report'
@@ -2242,6 +2286,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/correspondence/vacation'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
+    | '/api/app/v1/openings/progress'
+    | '/api/app/v1/openings/repertoire'
     | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
     | '/api/app/v1/puzzles/from-games'
@@ -2293,6 +2339,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/rematch'
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
+    | '/api/app/v1/openings/repertoire/$id'
     | '/api/app/v1/puzzles/$id/attempt'
     | '/api/app/v1/puzzles/battle/$id'
     | '/api/app/v1/puzzles/battle/create'
@@ -2428,6 +2475,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/leaderboard'
     | '/api/app/v1/me'
     | '/api/app/v1/openapi.json'
+    | '/api/app/v1/openings'
     | '/api/app/v1/ping'
     | '/api/app/v1/presence'
     | '/api/app/v1/report'
@@ -2449,6 +2497,8 @@ export interface FileRouteTypes {
     | '/api/app/v1/correspondence/vacation'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
+    | '/api/app/v1/openings/progress'
+    | '/api/app/v1/openings/repertoire'
     | '/api/app/v1/profile/$username'
     | '/api/app/v1/puzzles/daily'
     | '/api/app/v1/puzzles/from-games'
@@ -2500,6 +2550,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/games/$id/rematch'
     | '/api/app/v1/games/$id/resign'
     | '/api/app/v1/games/$id/takeback'
+    | '/api/app/v1/openings/repertoire/$id'
     | '/api/app/v1/puzzles/$id/attempt'
     | '/api/app/v1/puzzles/battle/$id'
     | '/api/app/v1/puzzles/battle/create'
@@ -2621,6 +2672,7 @@ export interface RootRouteChildren {
   ApiAppV1LeaderboardRoute: typeof ApiAppV1LeaderboardRoute
   ApiAppV1MeRoute: typeof ApiAppV1MeRoute
   ApiAppV1OpenapiDotjsonRoute: typeof ApiAppV1OpenapiDotjsonRoute
+  ApiAppV1OpeningsRoute: typeof ApiAppV1OpeningsRouteWithChildren
   ApiAppV1PingRoute: typeof ApiAppV1PingRoute
   ApiAppV1PresenceRoute: typeof ApiAppV1PresenceRoute
   ApiAppV1ReportRoute: typeof ApiAppV1ReportRouteWithChildren
@@ -3399,6 +3451,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1OpenapiDotjsonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/openings': {
+      id: '/api/app/v1/openings'
+      path: '/api/app/v1/openings'
+      fullPath: '/api/app/v1/openings'
+      preLoaderRoute: typeof ApiAppV1OpeningsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/ping': {
       id: '/api/app/v1/ping'
       path: '/api/app/v1/ping'
@@ -3580,6 +3639,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/app/v1/notifications/read'
       preLoaderRoute: typeof ApiAppV1NotificationsReadRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/openings/progress': {
+      id: '/api/app/v1/openings/progress'
+      path: '/progress'
+      fullPath: '/api/app/v1/openings/progress'
+      preLoaderRoute: typeof ApiAppV1OpeningsProgressRouteImport
+      parentRoute: typeof ApiAppV1OpeningsRoute
+    }
+    '/api/app/v1/openings/repertoire': {
+      id: '/api/app/v1/openings/repertoire'
+      path: '/repertoire'
+      fullPath: '/api/app/v1/openings/repertoire'
+      preLoaderRoute: typeof ApiAppV1OpeningsRepertoireRouteImport
+      parentRoute: typeof ApiAppV1OpeningsRoute
     }
     '/api/app/v1/profile/$username': {
       id: '/api/app/v1/profile/$username'
@@ -3903,6 +3976,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1GamesIdTakebackRouteImport
       parentRoute: typeof ApiAppV1GamesIdRoute
     }
+    '/api/app/v1/openings/repertoire/$id': {
+      id: '/api/app/v1/openings/repertoire/$id'
+      path: '/$id'
+      fullPath: '/api/app/v1/openings/repertoire/$id'
+      preLoaderRoute: typeof ApiAppV1OpeningsRepertoireIdRouteImport
+      parentRoute: typeof ApiAppV1OpeningsRepertoireRoute
+    }
     '/api/app/v1/puzzles/$id/attempt': {
       id: '/api/app/v1/puzzles/$id/attempt'
       path: '/api/app/v1/puzzles/$id/attempt'
@@ -4178,6 +4258,33 @@ const ApiAppV1AnalysesRouteChildren: ApiAppV1AnalysesRouteChildren = {
 
 const ApiAppV1AnalysesRouteWithChildren =
   ApiAppV1AnalysesRoute._addFileChildren(ApiAppV1AnalysesRouteChildren)
+
+interface ApiAppV1OpeningsRepertoireRouteChildren {
+  ApiAppV1OpeningsRepertoireIdRoute: typeof ApiAppV1OpeningsRepertoireIdRoute
+}
+
+const ApiAppV1OpeningsRepertoireRouteChildren: ApiAppV1OpeningsRepertoireRouteChildren =
+  {
+    ApiAppV1OpeningsRepertoireIdRoute: ApiAppV1OpeningsRepertoireIdRoute,
+  }
+
+const ApiAppV1OpeningsRepertoireRouteWithChildren =
+  ApiAppV1OpeningsRepertoireRoute._addFileChildren(
+    ApiAppV1OpeningsRepertoireRouteChildren,
+  )
+
+interface ApiAppV1OpeningsRouteChildren {
+  ApiAppV1OpeningsProgressRoute: typeof ApiAppV1OpeningsProgressRoute
+  ApiAppV1OpeningsRepertoireRoute: typeof ApiAppV1OpeningsRepertoireRouteWithChildren
+}
+
+const ApiAppV1OpeningsRouteChildren: ApiAppV1OpeningsRouteChildren = {
+  ApiAppV1OpeningsProgressRoute: ApiAppV1OpeningsProgressRoute,
+  ApiAppV1OpeningsRepertoireRoute: ApiAppV1OpeningsRepertoireRouteWithChildren,
+}
+
+const ApiAppV1OpeningsRouteWithChildren =
+  ApiAppV1OpeningsRoute._addFileChildren(ApiAppV1OpeningsRouteChildren)
 
 interface ApiAppV1ReportRouteChildren {
   ApiAppV1ReportReasonsRoute: typeof ApiAppV1ReportReasonsRoute
@@ -4504,6 +4611,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1LeaderboardRoute: ApiAppV1LeaderboardRoute,
   ApiAppV1MeRoute: ApiAppV1MeRoute,
   ApiAppV1OpenapiDotjsonRoute: ApiAppV1OpenapiDotjsonRoute,
+  ApiAppV1OpeningsRoute: ApiAppV1OpeningsRouteWithChildren,
   ApiAppV1PingRoute: ApiAppV1PingRoute,
   ApiAppV1PresenceRoute: ApiAppV1PresenceRoute,
   ApiAppV1ReportRoute: ApiAppV1ReportRouteWithChildren,
