@@ -837,7 +837,48 @@ export async function markCourseStep(ctx: AppContext, input: unknown) {
     updated_at: new Date().toISOString(),
   });
   if (error) throw error;
-  return { ...next, completed: allDone };
+  // First time this unit is fully done: issue the certificate the QR code on the mobile-
+  // rendered PDF will point at. Snapshot name/level text now, not read live later, so a
+  // later rename or curriculum edit never changes an already-issued certificate's wording.
+  let certificateId: string | null = null;
+  if (allDone && !existing?.completed_at) {
+    const { getCourseUnit } = await import("@/lib/course-data");
+    const unit = getCourseUnit(unitId);
+    const { data: profile } = await ctx.supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", ctx.userId)
+      .maybeSingle();
+    if (unit && profile?.username) {
+      const { data: cert, error: certError } = await ctx.supabase
+        .from("certificates")
+        .upsert(
+          {
+            user_id: ctx.userId,
+            unit_id: unitId,
+            piece_name: unit.pieceName,
+            unit_title: unit.title,
+            player_name: profile.username,
+          },
+          { onConflict: "user_id,unit_id" },
+        )
+        .select("id")
+        .single();
+      if (certError) throw certError;
+      certificateId = cert.id;
+    }
+  }
+  return { ...next, completed: allDone, certificateId };
+}
+
+/** This player's earned certificates (one per completed course unit). */
+export async function getMyCertificates(ctx: AppContext) {
+  const { data, error } = await ctx.supabase
+    .from("certificates")
+    .select("id, unit_id, piece_name, unit_title, player_name, issued_at")
+    .eq("user_id", ctx.userId);
+  if (error) throw error;
+  return { certificates: data ?? [] };
 }
 
 /** Coordinates trainer: a single personal-best row per player, not a log of every round. */

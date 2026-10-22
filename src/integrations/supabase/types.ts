@@ -1793,6 +1793,44 @@ export type Database = {
           },
         ]
       }
+      certificates: {
+        Row: {
+          id: string
+          issued_at: string
+          piece_name: string
+          player_name: string
+          unit_id: string
+          unit_title: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          issued_at?: string
+          piece_name: string
+          player_name: string
+          unit_id: string
+          unit_title: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          issued_at?: string
+          piece_name?: string
+          player_name?: string
+          unit_id?: string
+          unit_title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       class_session_students: {
         Row: {
           board_fen: string | null

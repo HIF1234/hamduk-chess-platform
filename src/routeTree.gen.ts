@@ -53,6 +53,7 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AssistantIndexRouteImport } from './routes/assistant.index'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as CertificateIdRouteImport } from './routes/certificate.$id'
 import { Route as ChallengeIdRouteImport } from './routes/challenge.$id'
 import { Route as ClubsIndexRouteImport } from './routes/clubs.index'
 import { Route as ClubsSlugRouteImport } from './routes/clubs.$slug'
@@ -103,6 +104,7 @@ import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$da
 import { Route as ApiAppV1AccountRouteImport } from './routes/api/app/v1/account'
 import { Route as ApiAppV1AnalysesRouteImport } from './routes/api/app/v1/analyses'
 import { Route as ApiAppV1BotGamesRouteImport } from './routes/api/app/v1/bot-games'
+import { Route as ApiAppV1CertificatesRouteImport } from './routes/api/app/v1/certificates'
 import { Route as ApiAppV1ConfigRouteImport } from './routes/api/app/v1/config'
 import { Route as ApiAppV1CourseRouteImport } from './routes/api/app/v1/course'
 import { Route as ApiAppV1DevicesRouteImport } from './routes/api/app/v1/devices'
@@ -444,6 +446,11 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertificateIdRoute = CertificateIdRouteImport.update({
+  id: '/certificate/$id',
+  path: '/certificate/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChallengeIdRoute = ChallengeIdRouteImport.update({
   id: '/challenge/$id',
   path: '/challenge/$id',
@@ -692,6 +699,11 @@ const ApiAppV1AnalysesRoute = ApiAppV1AnalysesRouteImport.update({
 const ApiAppV1BotGamesRoute = ApiAppV1BotGamesRouteImport.update({
   id: '/api/app/v1/bot-games',
   path: '/api/app/v1/bot-games',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAppV1CertificatesRoute = ApiAppV1CertificatesRouteImport.update({
+  id: '/api/app/v1/certificates',
+  path: '/api/app/v1/certificates',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAppV1ConfigRoute = ApiAppV1ConfigRouteImport.update({
@@ -1391,6 +1403,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/certificate/$id': typeof CertificateIdRoute
   '/challenge/$id': typeof ChallengeIdRoute
   '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -1444,6 +1457,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/account': typeof ApiAppV1AccountRoute
   '/api/app/v1/analyses': typeof ApiAppV1AnalysesRouteWithChildren
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
+  '/api/app/v1/certificates': typeof ApiAppV1CertificatesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/course': typeof ApiAppV1CourseRouteWithChildren
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
@@ -1606,6 +1620,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/certificate/$id': typeof CertificateIdRoute
   '/challenge/$id': typeof ChallengeIdRoute
   '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -1659,6 +1674,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/account': typeof ApiAppV1AccountRoute
   '/api/app/v1/analyses': typeof ApiAppV1AnalysesRouteWithChildren
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
+  '/api/app/v1/certificates': typeof ApiAppV1CertificatesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/course': typeof ApiAppV1CourseRouteWithChildren
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
@@ -1823,6 +1839,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/certificate/$id': typeof CertificateIdRoute
   '/challenge/$id': typeof ChallengeIdRoute
   '/clubs/$slug': typeof ClubsSlugRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -1876,6 +1893,7 @@ export interface FileRoutesById {
   '/api/app/v1/account': typeof ApiAppV1AccountRoute
   '/api/app/v1/analyses': typeof ApiAppV1AnalysesRouteWithChildren
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
+  '/api/app/v1/certificates': typeof ApiAppV1CertificatesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
   '/api/app/v1/course': typeof ApiAppV1CourseRouteWithChildren
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
@@ -2041,6 +2059,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/assistant/$threadId'
     | '/auth/callback'
+    | '/certificate/$id'
     | '/challenge/$id'
     | '/clubs/$slug'
     | '/coaches/$coachId'
@@ -2094,6 +2113,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/account'
     | '/api/app/v1/analyses'
     | '/api/app/v1/bot-games'
+    | '/api/app/v1/certificates'
     | '/api/app/v1/config'
     | '/api/app/v1/course'
     | '/api/app/v1/devices'
@@ -2256,6 +2276,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/assistant/$threadId'
     | '/auth/callback'
+    | '/certificate/$id'
     | '/challenge/$id'
     | '/clubs/$slug'
     | '/coaches/$coachId'
@@ -2309,6 +2330,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/account'
     | '/api/app/v1/analyses'
     | '/api/app/v1/bot-games'
+    | '/api/app/v1/certificates'
     | '/api/app/v1/config'
     | '/api/app/v1/course'
     | '/api/app/v1/devices'
@@ -2472,6 +2494,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/assistant/$threadId'
     | '/auth/callback'
+    | '/certificate/$id'
     | '/challenge/$id'
     | '/clubs/$slug'
     | '/coaches/$coachId'
@@ -2525,6 +2548,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/account'
     | '/api/app/v1/analyses'
     | '/api/app/v1/bot-games'
+    | '/api/app/v1/certificates'
     | '/api/app/v1/config'
     | '/api/app/v1/course'
     | '/api/app/v1/devices'
@@ -2677,6 +2701,7 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  CertificateIdRoute: typeof CertificateIdRoute
   ChallengeIdRoute: typeof ChallengeIdRoute
   ClubsSlugRoute: typeof ClubsSlugRoute
   CoachesCoachIdRoute: typeof CoachesCoachIdRoute
@@ -2727,6 +2752,7 @@ export interface RootRouteChildren {
   ApiAppV1AccountRoute: typeof ApiAppV1AccountRoute
   ApiAppV1AnalysesRoute: typeof ApiAppV1AnalysesRouteWithChildren
   ApiAppV1BotGamesRoute: typeof ApiAppV1BotGamesRoute
+  ApiAppV1CertificatesRoute: typeof ApiAppV1CertificatesRoute
   ApiAppV1ConfigRoute: typeof ApiAppV1ConfigRoute
   ApiAppV1CourseRoute: typeof ApiAppV1CourseRouteWithChildren
   ApiAppV1DevicesRoute: typeof ApiAppV1DevicesRoute
@@ -3117,6 +3143,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/certificate/$id': {
+      id: '/certificate/$id'
+      path: '/certificate/$id'
+      fullPath: '/certificate/$id'
+      preLoaderRoute: typeof CertificateIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/challenge/$id': {
       id: '/challenge/$id'
       path: '/challenge/$id'
@@ -3465,6 +3498,13 @@ declare module '@tanstack/react-router' {
       path: '/api/app/v1/bot-games'
       fullPath: '/api/app/v1/bot-games'
       preLoaderRoute: typeof ApiAppV1BotGamesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/certificates': {
+      id: '/api/app/v1/certificates'
+      path: '/api/app/v1/certificates'
+      fullPath: '/api/app/v1/certificates'
+      preLoaderRoute: typeof ApiAppV1CertificatesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/app/v1/config': {
@@ -4677,6 +4717,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  CertificateIdRoute: CertificateIdRoute,
   ChallengeIdRoute: ChallengeIdRoute,
   ClubsSlugRoute: ClubsSlugRoute,
   CoachesCoachIdRoute: CoachesCoachIdRoute,
@@ -4727,6 +4768,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1AccountRoute: ApiAppV1AccountRoute,
   ApiAppV1AnalysesRoute: ApiAppV1AnalysesRouteWithChildren,
   ApiAppV1BotGamesRoute: ApiAppV1BotGamesRoute,
+  ApiAppV1CertificatesRoute: ApiAppV1CertificatesRoute,
   ApiAppV1ConfigRoute: ApiAppV1ConfigRoute,
   ApiAppV1CourseRoute: ApiAppV1CourseRouteWithChildren,
   ApiAppV1DevicesRoute: ApiAppV1DevicesRoute,
