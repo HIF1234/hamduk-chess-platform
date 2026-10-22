@@ -163,6 +163,7 @@ import { Route as ApiAppV1TournamentsIndexRouteImport } from './routes/api/app/v
 import { Route as ApiAppV1TournamentsIdRouteImport } from './routes/api/app/v1/tournaments.$id'
 import { Route as ApiAppV1TutorialsIndexRouteImport } from './routes/api/app/v1/tutorials.index'
 import { Route as ApiAppV1TutorialsIdRouteImport } from './routes/api/app/v1/tutorials.$id'
+import { Route as ApiAppV1TutorialsProgressRouteImport } from './routes/api/app/v1/tutorials.progress'
 import { Route as ApiAppV1VideosIndexRouteImport } from './routes/api/app/v1/videos.index'
 import { Route as ApiAppV1VideosProgressRouteImport } from './routes/api/app/v1/videos.progress'
 import { Route as ApiAppV1VoiceTranscribeRouteImport } from './routes/api/app/v1/voice.transcribe'
@@ -1006,6 +1007,12 @@ const ApiAppV1TutorialsIdRoute = ApiAppV1TutorialsIdRouteImport.update({
   path: '/api/app/v1/tutorials/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1TutorialsProgressRoute =
+  ApiAppV1TutorialsProgressRouteImport.update({
+    id: '/api/app/v1/tutorials/progress',
+    path: '/api/app/v1/tutorials/progress',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAppV1VideosIndexRoute = ApiAppV1VideosIndexRouteImport.update({
   id: '/api/app/v1/videos/',
   path: '/api/app/v1/videos/',
@@ -1478,6 +1485,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/app/v1/tutorials/$id': typeof ApiAppV1TutorialsIdRoute
+  '/api/app/v1/tutorials/progress': typeof ApiAppV1TutorialsProgressRoute
   '/api/app/v1/videos/progress': typeof ApiAppV1VideosProgressRoute
   '/api/app/v1/voice/transcribe': typeof ApiAppV1VoiceTranscribeRoute
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
@@ -1690,6 +1698,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/app/v1/tutorials/$id': typeof ApiAppV1TutorialsIdRoute
+  '/api/app/v1/tutorials/progress': typeof ApiAppV1TutorialsProgressRoute
   '/api/app/v1/videos/progress': typeof ApiAppV1VideosProgressRoute
   '/api/app/v1/voice/transcribe': typeof ApiAppV1VoiceTranscribeRoute
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
@@ -1904,6 +1913,7 @@ export interface FileRoutesById {
   '/api/app/v1/subscription/checkout': typeof ApiAppV1SubscriptionCheckoutRoute
   '/api/app/v1/tournaments/$id': typeof ApiAppV1TournamentsIdRouteWithChildren
   '/api/app/v1/tutorials/$id': typeof ApiAppV1TutorialsIdRoute
+  '/api/app/v1/tutorials/progress': typeof ApiAppV1TutorialsProgressRoute
   '/api/app/v1/videos/progress': typeof ApiAppV1VideosProgressRoute
   '/api/app/v1/voice/transcribe': typeof ApiAppV1VoiceTranscribeRoute
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
@@ -2119,6 +2129,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/app/v1/tutorials/$id'
+    | '/api/app/v1/tutorials/progress'
     | '/api/app/v1/videos/progress'
     | '/api/app/v1/voice/transcribe'
     | '/api/public/v1/classes/session'
@@ -2331,6 +2342,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/app/v1/tutorials/$id'
+    | '/api/app/v1/tutorials/progress'
     | '/api/app/v1/videos/progress'
     | '/api/app/v1/voice/transcribe'
     | '/api/public/v1/classes/session'
@@ -2544,6 +2556,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/subscription/checkout'
     | '/api/app/v1/tournaments/$id'
     | '/api/app/v1/tutorials/$id'
+    | '/api/app/v1/tutorials/progress'
     | '/api/app/v1/videos/progress'
     | '/api/app/v1/voice/transcribe'
     | '/api/public/v1/classes/session'
@@ -2737,6 +2750,7 @@ export interface RootRouteChildren {
   ApiAppV1SubscriptionCheckoutRoute: typeof ApiAppV1SubscriptionCheckoutRoute
   ApiAppV1TournamentsIdRoute: typeof ApiAppV1TournamentsIdRouteWithChildren
   ApiAppV1TutorialsIdRoute: typeof ApiAppV1TutorialsIdRoute
+  ApiAppV1TutorialsProgressRoute: typeof ApiAppV1TutorialsProgressRoute
   ApiAppV1VideosProgressRoute: typeof ApiAppV1VideosProgressRoute
   ApiAppV1VoiceTranscribeRoute: typeof ApiAppV1VoiceTranscribeRoute
   ApiPublicV1ClassesSessionRoute: typeof ApiPublicV1ClassesSessionRouteWithChildren
@@ -3848,6 +3862,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1TutorialsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/tutorials/progress': {
+      id: '/api/app/v1/tutorials/progress'
+      path: '/api/app/v1/tutorials/progress'
+      fullPath: '/api/app/v1/tutorials/progress'
+      preLoaderRoute: typeof ApiAppV1TutorialsProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/videos/': {
       id: '/api/app/v1/videos/'
       path: '/api/app/v1/videos'
@@ -4702,6 +4723,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1SubscriptionCheckoutRoute: ApiAppV1SubscriptionCheckoutRoute,
   ApiAppV1TournamentsIdRoute: ApiAppV1TournamentsIdRouteWithChildren,
   ApiAppV1TutorialsIdRoute: ApiAppV1TutorialsIdRoute,
+  ApiAppV1TutorialsProgressRoute: ApiAppV1TutorialsProgressRoute,
   ApiAppV1VideosProgressRoute: ApiAppV1VideosProgressRoute,
   ApiAppV1VoiceTranscribeRoute: ApiAppV1VoiceTranscribeRoute,
   ApiPublicV1ClassesSessionRoute: ApiPublicV1ClassesSessionRouteWithChildren,
