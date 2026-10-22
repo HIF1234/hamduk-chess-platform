@@ -16,6 +16,9 @@ export type VideoLesson = {
   instructor: string | null;
   is_premium: boolean;
   sort_order: number;
+  /** Cloud-hosted lessons only -- the mobile app shows this before playing and offers
+   * "Download on WiFi". Null for youtube/vimeo (no file of ours to measure or offer). */
+  file_size_bytes: number | null;
 };
 
 export type VideoProgress = {
@@ -36,7 +39,8 @@ export const listVideoLessons = createServerFn({ method: "GET" }).handler(async 
     global: {
       fetch: (input, init) => {
         const h = new Headers(init?.headers);
-        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
+        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`)
+          h.delete("Authorization");
         h.set("apikey", key);
         return fetch(input, { ...init, headers: h });
       },
@@ -51,7 +55,26 @@ export const listVideoLessons = createServerFn({ method: "GET" }).handler(async 
     .order("category")
     .order("sort_order");
   if (error) throw new Error(error.message);
-  return (data ?? []) as VideoLesson[];
+  const lessons = (data ?? []) as Omit<VideoLesson, "file_size_bytes">[];
+  const cloud = lessons.filter((l) => l.source === "cloud" && l.storage_path);
+  const sizes = new Map<string, number>();
+  if (cloud.length > 0) {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await Promise.all(
+      cloud.map(async (l) => {
+        const path = l.storage_path!;
+        const slash = path.lastIndexOf("/");
+        const folder = slash === -1 ? "" : path.slice(0, slash);
+        const filename = slash === -1 ? path : path.slice(slash + 1);
+        const { data: entries } = await supabaseAdmin.storage
+          .from("lesson-videos")
+          .list(folder, { search: filename });
+        const size = entries?.find((e) => e.name === filename)?.metadata?.size;
+        if (typeof size === "number") sizes.set(l.id, size);
+      }),
+    );
+  }
+  return lessons.map((l) => ({ ...l, file_size_bytes: sizes.get(l.id) ?? null })) as VideoLesson[];
 });
 
 export const getMyVideoProgress = createServerFn({ method: "GET" })
