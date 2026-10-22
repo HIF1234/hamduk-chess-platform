@@ -4708,6 +4708,47 @@ export type Database = {
           },
         ]
       }
+      user_course_progress: {
+        Row: {
+          bot_beaten: boolean
+          completed_at: string | null
+          lesson_done: boolean
+          puzzles_done: boolean
+          quiz_passed: boolean
+          unit_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bot_beaten?: boolean
+          completed_at?: string | null
+          lesson_done?: boolean
+          puzzles_done?: boolean
+          quiz_passed?: boolean
+          unit_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bot_beaten?: boolean
+          completed_at?: string | null
+          lesson_done?: boolean
+          puzzles_done?: boolean
+          quiz_passed?: boolean
+          unit_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_course_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_endgame_progress: {
         Row: {
           attempts: number

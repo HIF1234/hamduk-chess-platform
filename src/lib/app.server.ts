@@ -788,6 +788,58 @@ export async function getBoardVisionPuzzles(ctx: AppContext) {
   return { puzzles: list.slice(0, 40) };
 }
 
+/** Course path: this player's progress on every unit they've touched. */
+export async function getMyCourseProgress(ctx: AppContext) {
+  const { data, error } = await ctx.supabase
+    .from("user_course_progress")
+    .select("*")
+    .eq("user_id", ctx.userId);
+  if (error) throw error;
+  return { progress: data ?? [] };
+}
+
+const COURSE_STEP_COLUMN = {
+  lesson: "lesson_done",
+  quiz: "quiz_passed",
+  puzzles: "puzzles_done",
+  bot: "bot_beaten",
+} as const;
+
+/** Marks one part (lesson/quiz/puzzles/bot) of a course unit done; stamps completed_at once
+ * all four parts are true. */
+export async function markCourseStep(ctx: AppContext, input: unknown) {
+  const { unitId, step } = z
+    .object({
+      unitId: z.string().min(1).max(32),
+      step: z.enum(["lesson", "quiz", "puzzles", "bot"]),
+    })
+    .parse(input);
+  const { data: existing, error: readError } = await ctx.supabase
+    .from("user_course_progress")
+    .select("lesson_done,quiz_passed,puzzles_done,bot_beaten,completed_at")
+    .eq("user_id", ctx.userId)
+    .eq("unit_id", unitId)
+    .maybeSingle();
+  if (readError) throw readError;
+  const next = {
+    lesson_done: existing?.lesson_done ?? false,
+    quiz_passed: existing?.quiz_passed ?? false,
+    puzzles_done: existing?.puzzles_done ?? false,
+    bot_beaten: existing?.bot_beaten ?? false,
+  };
+  next[COURSE_STEP_COLUMN[step]] = true;
+  const allDone = next.lesson_done && next.quiz_passed && next.puzzles_done && next.bot_beaten;
+  const { error } = await ctx.supabase.from("user_course_progress").upsert({
+    user_id: ctx.userId,
+    unit_id: unitId,
+    ...next,
+    completed_at: allDone ? (existing?.completed_at ?? new Date().toISOString()) : null,
+    updated_at: new Date().toISOString(),
+  });
+  if (error) throw error;
+  return { ...next, completed: allDone };
+}
+
 /** Coordinates trainer: a single personal-best row per player, not a log of every round. */
 export async function getMyCoordinateDrillBest(ctx: AppContext) {
   const { data, error } = await ctx.supabase

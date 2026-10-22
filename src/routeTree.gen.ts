@@ -104,6 +104,7 @@ import { Route as ApiAppV1AccountRouteImport } from './routes/api/app/v1/account
 import { Route as ApiAppV1AnalysesRouteImport } from './routes/api/app/v1/analyses'
 import { Route as ApiAppV1BotGamesRouteImport } from './routes/api/app/v1/bot-games'
 import { Route as ApiAppV1ConfigRouteImport } from './routes/api/app/v1/config'
+import { Route as ApiAppV1CourseRouteImport } from './routes/api/app/v1/course'
 import { Route as ApiAppV1DevicesRouteImport } from './routes/api/app/v1/devices'
 import { Route as ApiAppV1EndgamesRouteImport } from './routes/api/app/v1/endgames'
 import { Route as ApiAppV1ExplorerRouteImport } from './routes/api/app/v1/explorer'
@@ -134,6 +135,7 @@ import { Route as ApiAppV1CoachingSessionsRouteImport } from './routes/api/app/v
 import { Route as ApiAppV1CoordinatesBestRouteImport } from './routes/api/app/v1/coordinates.best'
 import { Route as ApiAppV1CorrespondenceIndexRouteImport } from './routes/api/app/v1/correspondence.index'
 import { Route as ApiAppV1CorrespondenceVacationRouteImport } from './routes/api/app/v1/correspondence.vacation'
+import { Route as ApiAppV1CourseProgressRouteImport } from './routes/api/app/v1/course.progress'
 import { Route as ApiAppV1EndgamesProgressRouteImport } from './routes/api/app/v1/endgames.progress'
 import { Route as ApiAppV1GamesIndexRouteImport } from './routes/api/app/v1/games.index'
 import { Route as ApiAppV1GamesIdRouteImport } from './routes/api/app/v1/games.$id'
@@ -697,6 +699,11 @@ const ApiAppV1ConfigRoute = ApiAppV1ConfigRouteImport.update({
   path: '/api/app/v1/config',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAppV1CourseRoute = ApiAppV1CourseRouteImport.update({
+  id: '/api/app/v1/course',
+  path: '/api/app/v1/course',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAppV1DevicesRoute = ApiAppV1DevicesRouteImport.update({
   id: '/api/app/v1/devices',
   path: '/api/app/v1/devices',
@@ -853,6 +860,11 @@ const ApiAppV1CorrespondenceVacationRoute =
     path: '/api/app/v1/correspondence/vacation',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiAppV1CourseProgressRoute = ApiAppV1CourseProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => ApiAppV1CourseRoute,
+} as any)
 const ApiAppV1EndgamesProgressRoute =
   ApiAppV1EndgamesProgressRouteImport.update({
     id: '/progress',
@@ -1433,6 +1445,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/analyses': typeof ApiAppV1AnalysesRouteWithChildren
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
+  '/api/app/v1/course': typeof ApiAppV1CourseRouteWithChildren
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
   '/api/app/v1/endgames': typeof ApiAppV1EndgamesRouteWithChildren
   '/api/app/v1/explorer': typeof ApiAppV1ExplorerRoute
@@ -1460,6 +1473,7 @@ export interface FileRoutesByFullPath {
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
   '/api/app/v1/coordinates/best': typeof ApiAppV1CoordinatesBestRoute
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
+  '/api/app/v1/course/progress': typeof ApiAppV1CourseProgressRoute
   '/api/app/v1/endgames/progress': typeof ApiAppV1EndgamesProgressRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
@@ -1646,6 +1660,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/analyses': typeof ApiAppV1AnalysesRouteWithChildren
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
+  '/api/app/v1/course': typeof ApiAppV1CourseRouteWithChildren
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
   '/api/app/v1/endgames': typeof ApiAppV1EndgamesRouteWithChildren
   '/api/app/v1/explorer': typeof ApiAppV1ExplorerRoute
@@ -1673,6 +1688,7 @@ export interface FileRoutesByTo {
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
   '/api/app/v1/coordinates/best': typeof ApiAppV1CoordinatesBestRoute
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
+  '/api/app/v1/course/progress': typeof ApiAppV1CourseProgressRoute
   '/api/app/v1/endgames/progress': typeof ApiAppV1EndgamesProgressRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
@@ -1861,6 +1877,7 @@ export interface FileRoutesById {
   '/api/app/v1/analyses': typeof ApiAppV1AnalysesRouteWithChildren
   '/api/app/v1/bot-games': typeof ApiAppV1BotGamesRoute
   '/api/app/v1/config': typeof ApiAppV1ConfigRoute
+  '/api/app/v1/course': typeof ApiAppV1CourseRouteWithChildren
   '/api/app/v1/devices': typeof ApiAppV1DevicesRoute
   '/api/app/v1/endgames': typeof ApiAppV1EndgamesRouteWithChildren
   '/api/app/v1/explorer': typeof ApiAppV1ExplorerRoute
@@ -1888,6 +1905,7 @@ export interface FileRoutesById {
   '/api/app/v1/coaching/sessions': typeof ApiAppV1CoachingSessionsRouteWithChildren
   '/api/app/v1/coordinates/best': typeof ApiAppV1CoordinatesBestRoute
   '/api/app/v1/correspondence/vacation': typeof ApiAppV1CorrespondenceVacationRoute
+  '/api/app/v1/course/progress': typeof ApiAppV1CourseProgressRoute
   '/api/app/v1/endgames/progress': typeof ApiAppV1EndgamesProgressRoute
   '/api/app/v1/games/$id': typeof ApiAppV1GamesIdRouteWithChildren
   '/api/app/v1/notifications/read': typeof ApiAppV1NotificationsReadRoute
@@ -2077,6 +2095,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/analyses'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
+    | '/api/app/v1/course'
     | '/api/app/v1/devices'
     | '/api/app/v1/endgames'
     | '/api/app/v1/explorer'
@@ -2104,6 +2123,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/coaching/sessions'
     | '/api/app/v1/coordinates/best'
     | '/api/app/v1/correspondence/vacation'
+    | '/api/app/v1/course/progress'
     | '/api/app/v1/endgames/progress'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
@@ -2290,6 +2310,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/analyses'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
+    | '/api/app/v1/course'
     | '/api/app/v1/devices'
     | '/api/app/v1/endgames'
     | '/api/app/v1/explorer'
@@ -2317,6 +2338,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/coaching/sessions'
     | '/api/app/v1/coordinates/best'
     | '/api/app/v1/correspondence/vacation'
+    | '/api/app/v1/course/progress'
     | '/api/app/v1/endgames/progress'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
@@ -2504,6 +2526,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/analyses'
     | '/api/app/v1/bot-games'
     | '/api/app/v1/config'
+    | '/api/app/v1/course'
     | '/api/app/v1/devices'
     | '/api/app/v1/endgames'
     | '/api/app/v1/explorer'
@@ -2531,6 +2554,7 @@ export interface FileRouteTypes {
     | '/api/app/v1/coaching/sessions'
     | '/api/app/v1/coordinates/best'
     | '/api/app/v1/correspondence/vacation'
+    | '/api/app/v1/course/progress'
     | '/api/app/v1/endgames/progress'
     | '/api/app/v1/games/$id'
     | '/api/app/v1/notifications/read'
@@ -2704,6 +2728,7 @@ export interface RootRouteChildren {
   ApiAppV1AnalysesRoute: typeof ApiAppV1AnalysesRouteWithChildren
   ApiAppV1BotGamesRoute: typeof ApiAppV1BotGamesRoute
   ApiAppV1ConfigRoute: typeof ApiAppV1ConfigRoute
+  ApiAppV1CourseRoute: typeof ApiAppV1CourseRouteWithChildren
   ApiAppV1DevicesRoute: typeof ApiAppV1DevicesRoute
   ApiAppV1EndgamesRoute: typeof ApiAppV1EndgamesRouteWithChildren
   ApiAppV1ExplorerRoute: typeof ApiAppV1ExplorerRoute
@@ -3449,6 +3474,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAppV1ConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/app/v1/course': {
+      id: '/api/app/v1/course'
+      path: '/api/app/v1/course'
+      fullPath: '/api/app/v1/course'
+      preLoaderRoute: typeof ApiAppV1CourseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/app/v1/devices': {
       id: '/api/app/v1/devices'
       path: '/api/app/v1/devices'
@@ -3658,6 +3690,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/app/v1/correspondence/vacation'
       preLoaderRoute: typeof ApiAppV1CorrespondenceVacationRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/app/v1/course/progress': {
+      id: '/api/app/v1/course/progress'
+      path: '/progress'
+      fullPath: '/api/app/v1/course/progress'
+      preLoaderRoute: typeof ApiAppV1CourseProgressRouteImport
+      parentRoute: typeof ApiAppV1CourseRoute
     }
     '/api/app/v1/endgames/progress': {
       id: '/api/app/v1/endgames/progress'
@@ -4320,6 +4359,18 @@ const ApiAppV1AnalysesRouteChildren: ApiAppV1AnalysesRouteChildren = {
 const ApiAppV1AnalysesRouteWithChildren =
   ApiAppV1AnalysesRoute._addFileChildren(ApiAppV1AnalysesRouteChildren)
 
+interface ApiAppV1CourseRouteChildren {
+  ApiAppV1CourseProgressRoute: typeof ApiAppV1CourseProgressRoute
+}
+
+const ApiAppV1CourseRouteChildren: ApiAppV1CourseRouteChildren = {
+  ApiAppV1CourseProgressRoute: ApiAppV1CourseProgressRoute,
+}
+
+const ApiAppV1CourseRouteWithChildren = ApiAppV1CourseRoute._addFileChildren(
+  ApiAppV1CourseRouteChildren,
+)
+
 interface ApiAppV1EndgamesRouteChildren {
   ApiAppV1EndgamesProgressRoute: typeof ApiAppV1EndgamesProgressRoute
 }
@@ -4677,6 +4728,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppV1AnalysesRoute: ApiAppV1AnalysesRouteWithChildren,
   ApiAppV1BotGamesRoute: ApiAppV1BotGamesRoute,
   ApiAppV1ConfigRoute: ApiAppV1ConfigRoute,
+  ApiAppV1CourseRoute: ApiAppV1CourseRouteWithChildren,
   ApiAppV1DevicesRoute: ApiAppV1DevicesRoute,
   ApiAppV1EndgamesRoute: ApiAppV1EndgamesRouteWithChildren,
   ApiAppV1ExplorerRoute: ApiAppV1ExplorerRoute,
