@@ -751,6 +751,43 @@ export async function deleteSavedAnalysis(ctx: AppContext, id: string) {
   return { ok: true };
 }
 
+/**
+ * Board vision drills: "spot the hanging piece or the checking move within 10 seconds."
+ * Half the batch is real hangingPiece puzzles (the mobile app reads the piece sitting on
+ * the solution's capture square -- that's the hanging piece); the rest are unthemed
+ * positions the app scans client-side for any legal move that gives check, purely by chess
+ * rules -- no puzzle theme exists for "a check is available" since that's not a tactic. No
+ * daily limit or rating gating: this isn't the puzzle-rating feature, just a quick drill.
+ */
+export async function getBoardVisionPuzzles(ctx: AppContext) {
+  const s = await admin();
+  const [{ data: hanging, error: e1 }, { data: general, error: e2 }] = await Promise.all([
+    s
+      .from("puzzles")
+      .select("fen,solution,themes")
+      .eq("approved", true)
+      .contains("themes", ["hangingPiece"])
+      .gte("rating", 700)
+      .lte("rating", 1800)
+      .limit(60),
+    s
+      .from("puzzles")
+      .select("fen,solution,themes")
+      .eq("approved", true)
+      .gte("rating", 700)
+      .lte("rating", 1800)
+      .limit(60),
+  ]);
+  if (e1) throw e1;
+  if (e2) throw e2;
+  const list = [...(hanging ?? []), ...(general ?? [])];
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
+  }
+  return { puzzles: list.slice(0, 40) };
+}
+
 /** Coordinates trainer: a single personal-best row per player, not a log of every round. */
 export async function getMyCoordinateDrillBest(ctx: AppContext) {
   const { data, error } = await ctx.supabase
