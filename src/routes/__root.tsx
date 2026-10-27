@@ -85,6 +85,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Hamduk Chess" },
+      { name: "theme-color", content: "#0f0f11" },
+      // iOS has no install prompt or <link rel="manifest"> support -- "Add to Home Screen"
+      // only picks up a real icon/standalone chrome with these.
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: "Hamduk Chess" },
       {
         name: "description",
         content:
@@ -116,6 +122,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "canonical", href: "https://play.chess.hamduk.com.ng" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/icons/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -137,7 +145,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           url: "https://play.chess.hamduk.com.ng",
           description:
             "Play, learn and compete in chess. Africa-first: Nigerian bots, puzzles, tournaments, clubs and coaching.",
-          publisher: { "@type": "Organization", name: "Hamduk Chess", url: "https://chess.hamduk.com.ng" },
+          publisher: {
+            "@type": "Organization",
+            name: "Hamduk Chess",
+            url: "https://chess.hamduk.com.ng",
+          },
         }),
       },
     ],
@@ -175,6 +187,12 @@ function RootComponent() {
 function AuthAwareShell() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  useEffect(() => {
+    // Hand-written sw.js, not vite-plugin-pwa (see its own header comment for why).
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  }, []);
   useEffect(() => {
     initTheme();
     // Remember an invite code from ?ref=… until the visitor has a real account.
