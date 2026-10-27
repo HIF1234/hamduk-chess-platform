@@ -1,9 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Swords, Puzzle, BarChart3, Rss, Trophy, Bell, GraduationCap } from "lucide-react";
+import { Swords, Puzzle, BarChart3, Rss, Bell, GraduationCap, LogIn } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useUnreadCount } from "@/components/notifications/useUnreadCount";
 
-// Mobile-only bottom navigation. Hidden on >= md.
+// Mobile-only bottom navigation. Hidden on >= md. Desktop uses Sidebar, which has its own
+// sign-in/account footer -- this is the only persistent nav on mobile, so a logged-out
+// visitor's last slot must be a way to sign in, not just another content page. Previously it
+// was "Ranks" (leaderboard), which left no reachable sign-in control anywhere once a guest
+// navigated off the homepage (its hero CTA was the only entry point).
 export function BottomNav() {
   const { user } = useAuth();
   const unread = useUnreadCount();
@@ -16,7 +20,7 @@ export function BottomNav() {
       : { to: "/learn", label: "Learn", Icon: GraduationCap },
     user
       ? { to: "/notifications", label: "Alerts", Icon: Bell }
-      : { to: "/leaderboard", label: "Ranks", Icon: Trophy },
+      : { to: "/login", label: "Sign in", Icon: LogIn },
   ] as const;
 
   return (
